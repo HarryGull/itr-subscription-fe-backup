@@ -1,5 +1,5 @@
 # Add all the application routes to the app.routes file
-->         /investment-tax-relief-subscription-frontend              app.Routes
+->         /investment-tax-relief-subscription              app.Routes
 ->         /                          health.Routes
 ->     	   /template                  template.Routes
 
