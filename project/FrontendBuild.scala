@@ -20,14 +20,15 @@ private object AppDependencies {
 
   private val playHealthVersion = "1.1.0"    
   private val playJsonLoggerVersion = "2.1.1"      
-  private val frontendBootstrapVersion = "6.5.0"
+  private val frontendBootstrapVersion = "6.7.0"
   private val govukTemplateVersion = "4.0.0"
   private val playUiVersion = "4.14.0"
-  private val playPartialsVersion = "4.2.0"
-  private val playAuthorisedFrontendVersion = "5.0.0"
+  private val playPartialsVersion = "4.5.0"
+  private val playAuthorisedFrontendVersion = "5.5.0"
   private val playConfigVersion = "2.0.1"
   private val hmrcTestVersion = "1.6.0"
-  
+  private val cachingClientVersion = "5.6.0"
+
   val compile = Seq(
     ws,
     "uk.gov.hmrc" %% "frontend-bootstrap" % frontendBootstrapVersion,
@@ -37,7 +38,8 @@ private object AppDependencies {
     "uk.gov.hmrc" %% "play-json-logger" % playJsonLoggerVersion,
     "uk.gov.hmrc" %% "govuk-template" % govukTemplateVersion,
     "uk.gov.hmrc" %% "play-health" % playHealthVersion,
-    "uk.gov.hmrc" %% "play-ui" % playUiVersion
+    "uk.gov.hmrc" %% "play-ui" % playUiVersion,
+    "uk.gov.hmrc" %% "http-caching-client" % cachingClientVersion
   )
 
   trait TestDependencies {
