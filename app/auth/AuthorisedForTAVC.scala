@@ -27,7 +27,7 @@ import scala.concurrent.Future
 trait AuthorisedForTAVC extends Actions {
 
   val applicationConfig: AppConfig
-  val postSignInRedirectUrl = FrontendAppConfig.startUrl
+  val postSignInRedirectUrl: String = FrontendAppConfig.introductionUrl
 
   private type PlayRequest = Request[AnyContent] => Result
   private type UserRequest = TAVCUser => PlayRequest
@@ -35,9 +35,6 @@ trait AuthorisedForTAVC extends Actions {
   private type AsyncUserRequest = TAVCUser => AsyncPlayRequest
 
   implicit private def hc(implicit request: Request[_]): HeaderCarrier = HeaderCarrier.fromHeadersAndSession(request.headers, Some(request.session))
-
-//  lazy val visibilityPredicate = new TAVCStrongCredentialPredicate(applicationConfig.twoFactorUrl,applicationConfig.startUrl,
-//    applicationConfig.notAuthorisedRedirectUrl)
 
   class AuthorisedBy(regime: TaxRegime) {
     def async(action: AsyncUserRequest): Action[AnyContent] = {
@@ -52,7 +49,7 @@ trait AuthorisedForTAVC extends Actions {
 
   object Authorised extends AuthorisedBy(TAVCRegime)
 
-  val tavcAuthProvider = new GovernmentGatewayProvider(postSignInRedirectUrl, applicationConfig.ggSignInUrl)
+  val tavcAuthProvider: GovernmentGatewayProvider = new GovernmentGatewayProvider(postSignInRedirectUrl, applicationConfig.ggSignInUrl)
 
   trait TAVCRegime extends TaxRegime {
     override def isAuthorised(accounts: Accounts): Boolean = true

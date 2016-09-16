@@ -16,7 +16,6 @@
 
 package auth
 
-import auth.AuthorisedForTAVC
 import uk.gov.hmrc.play.frontend.controller.FrontendController
 
 import scala.concurrent.Future
@@ -29,11 +28,11 @@ object AuthTestController extends AuthTestController {
 
 trait AuthTestController extends FrontendController with AuthorisedForTAVC {
 
-  val authorisedAsyncAction = AuthorisedByAny.async {
+  val authorisedAsyncAction = Authorised.async {
     implicit user =>  implicit request => Future.successful(Ok)
   }
 
-  val authorisedAction = AuthorisedByAny {
+  val authorisedAction = Authorised {
     implicit user =>  implicit request => Ok
   }
 

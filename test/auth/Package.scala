@@ -32,7 +32,7 @@ package object auth {
 
     val twoFactorURI: URI =
       new URI(s"${mockConfig.twoFactorUrl}?" +
-        s"continue=${URLEncoder.encode(mockConfig.startUrl, "UTF-8")}&" +
+        s"continue=${URLEncoder.encode(mockConfig.introductionUrl, "UTF-8")}&" +
         s"failure=${URLEncoder.encode(mockConfig.notAuthorisedRedirectUrl, "UTF-8")}")
 
     object ggSession {
@@ -42,13 +42,6 @@ package object auth {
       val name = "Dave Agent"
     }
 
-    val authorisedUserAccounts = domain.Accounts(
-      paye = Some(domain.PayeAccount(link = "/paye/abc", nino = Nino("123")))
-    )
-
-    val nonAuthorisedUserAccounts = domain.Accounts(
-      paye = None
-    )
 
     object ggUser {
 
@@ -58,7 +51,7 @@ package object auth {
 
       val sufficientAuthority = domain.Authority(
         uri = ggSession.userId,
-        accounts = authorisedUserAccounts,
+        accounts = domain.Accounts(),
         loggedInAt = loggedInAt,
         previouslyLoggedInAt = previouslyLoggedInAt,
         credentialStrength = CredentialStrength.Strong,
@@ -74,41 +67,6 @@ package object auth {
         nameFromSession = Some(ggSession.name)
       )
 
-      val tooWeakCredentialsAuthority = domain.Authority(
-        uri = ggSession.userId,
-        accounts = authorisedUserAccounts,
-        loggedInAt = loggedInAt,
-        previouslyLoggedInAt = previouslyLoggedInAt,
-        credentialStrength = CredentialStrength.Weak,
-        confidenceLevel = ConfidenceLevel.L200,
-        userDetailsLink = None,
-        enrolments = None,
-        ids = None
-      )
-
-      val tooWeakCredentialsAuthContext = AuthContext(
-        authority = tooWeakCredentialsAuthority,
-        governmentGatewayToken = Some(ggSession.governmentGatewayToken),
-        nameFromSession = Some(ggSession.name)
-      )
-
-      val needsUpliftAuthority = domain.Authority(
-        uri = ggSession.userId,
-        accounts = authorisedUserAccounts,
-        loggedInAt = loggedInAt,
-        previouslyLoggedInAt = previouslyLoggedInAt,
-        credentialStrength = CredentialStrength.Weak,
-        confidenceLevel = ConfidenceLevel.L50,
-        userDetailsLink = None,
-        enrolments = None,
-        ids = None
-      )
-
-      val needsUpliftAuthContext = AuthContext(
-        authority = needsUpliftAuthority,
-        governmentGatewayToken = Some(ggSession.governmentGatewayToken),
-        nameFromSession = Some(ggSession.name)
-      )
     }
 
     import uk.gov.hmrc.play.frontend.auth.AuthenticationProviderIds
