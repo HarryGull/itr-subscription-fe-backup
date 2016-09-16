@@ -16,15 +16,18 @@
 
 package auth
 
+import java.net.URLEncoder
+
 import play.api.test.FakeRequest
 import play.api.http.Status
 import uk.gov.hmrc.play.frontend.auth.AuthenticationProviderIds
 import uk.gov.hmrc.play.test.{UnitSpec, WithFakeApplication}
+import play.api.test.Helpers._
 
 class TAVCAuthSpec extends UnitSpec with WithFakeApplication {
 
   "Government Gateway Provider" should {
-    "have an account type additional parameter set to individual" in {
+    "have an account type additional parameter set to organisation" in {
       val ggw=new GovernmentGatewayProvider(MockConfig.introductionUrl,MockConfig.ggSignInUrl)
       ggw.additionalLoginParameters("accountType") shouldEqual List("organisation")
     }
@@ -49,7 +52,8 @@ class TAVCAuthSpec extends UnitSpec with WithFakeApplication {
       implicit val fakeRequest = FakeRequest()
       val ggw=new GovernmentGatewayProvider(MockConfig.introductionUrl,MockConfig.ggSignInUrl)
       val timeoutHandler = ggw.handleSessionTimeout(fakeRequest)
-      status(timeoutHandler) shouldBe Status.SEE_OTHER
+      status(timeoutHandler) shouldBe SEE_OTHER
+      redirectLocation(timeoutHandler) shouldBe Some("/investment-tax-relief-subscription/timeout")
     }
   }
 
@@ -65,6 +69,7 @@ class TAVCAuthSpec extends UnitSpec with WithFakeApplication {
 
       val result = AuthTestController.authorisedAsyncAction(fakeRequest)
       status(result) shouldBe Status.SEE_OTHER
+      redirectLocation(result) shouldBe Some(s"/gg/sign-in?continue=${URLEncoder.encode(MockConfig.introductionUrl)}&origin=investment-tax-relief-subscription-frontend&accountType=organisation")
     }
   }
 

@@ -30,11 +30,6 @@ package object auth {
     val mockConfig: AppConfig = MockConfig
     val mockAuthConnector = MockAuthConnector
 
-    val twoFactorURI: URI =
-      new URI(s"${mockConfig.twoFactorUrl}?" +
-        s"continue=${URLEncoder.encode(mockConfig.introductionUrl, "UTF-8")}&" +
-        s"failure=${URLEncoder.encode(mockConfig.notAuthorisedRedirectUrl, "UTF-8")}")
-
     object ggSession {
       val userId = "/auth/oid/1234567890"
       val oid = "1234567890"
@@ -54,8 +49,8 @@ package object auth {
         accounts = domain.Accounts(),
         loggedInAt = loggedInAt,
         previouslyLoggedInAt = previouslyLoggedInAt,
-        credentialStrength = CredentialStrength.Strong,
-        confidenceLevel = ConfidenceLevel.L200,
+        credentialStrength = CredentialStrength.Weak,
+        confidenceLevel = ConfidenceLevel.L50,
         userDetailsLink = None,
         enrolments = None,
         ids = None

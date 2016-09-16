@@ -27,5 +27,5 @@ object MockConfig extends AppConfig {
   override val notAuthorisedRedirectUrl: String = "/investment-tax-relief-subscription/not-authorised"
   override val twoFactorUrl: String = "/two-step-verification/register/"
   override val ggSignInUrl: String = "/gg/sign-in"
-  override val introductionUrl: String = "/investment-tax-relief-subscription/"
+  override val introductionUrl: String = "http://localhost:9637/investment-tax-relief-subscription/"
 }
