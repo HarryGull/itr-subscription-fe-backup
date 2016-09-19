@@ -40,7 +40,7 @@ class IntroductionControllerSpec extends UnitSpec with WithFakeApplication {
       lazy val result = TestIntroductionController.show(fakeRequest)
 
       "return a 303" in {
-        status(result) shouldBe Status.SEE_OTHER
+        status(result) shouldBe SEE_OTHER
       }
 
       s"should redirect to GG login" in {
@@ -53,7 +53,7 @@ class IntroductionControllerSpec extends UnitSpec with WithFakeApplication {
       lazy val result = TestIntroductionController.show(fakeRequestWithSession)
 
       "return a 303" in {
-        status(result) shouldBe Status.SEE_OTHER
+        status(result) shouldBe SEE_OTHER
       }
 
       s"should redirect to GG login" in {
@@ -66,7 +66,20 @@ class IntroductionControllerSpec extends UnitSpec with WithFakeApplication {
       lazy val result = TestIntroductionController.show(authorisedFakeRequest)
 
       "return a 200 in" in {
-        status(result) shouldBe Status.OK
+        status(result) shouldBe OK
+      }
+    }
+
+    "when called with a session that's timed out" should {
+
+      lazy val result = TestIntroductionController.show(timedOutFakeRequest)
+
+      "return a 303 in" in {
+        status(result) shouldBe SEE_OTHER
+      }
+
+      s"should redirect to timeout page" in {
+        redirectLocation(result) shouldBe Some(routes.TimeoutController.timeout().url)
       }
     }
   }

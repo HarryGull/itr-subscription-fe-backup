@@ -26,4 +26,5 @@ object FakeRequestHelper {
   val fakeRequest = FakeRequest()
   val fakeRequestWithSession = fakeRequest.withSession(SessionKeys.sessionId -> s"session-$sessionId")
   val authorisedFakeRequest = authenticatedFakeRequest()
+  val timedOutFakeRequest = timeoutFakeRequest()
 }

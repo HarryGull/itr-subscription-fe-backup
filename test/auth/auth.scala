@@ -76,4 +76,14 @@ package object auth {
       SessionKeys.authProvider -> provider
     )
 
+  def timeoutFakeRequest(provider: String = AuthenticationProviderIds.GovernmentGatewayId,
+                               userId: String = mockUserId): FakeRequest[AnyContentAsEmpty.type] =
+    FakeRequest().withSession(
+      SessionKeys.userId -> userId,
+      SessionKeys.sessionId -> s"session-${UUID.randomUUID()}",
+      SessionKeys.lastRequestTimestamp -> DateTimeUtils.now.minusDays(1).getMillis.toString,
+      SessionKeys.token -> "ANYOLDTOKEN",
+      SessionKeys.authProvider -> provider
+    )
+
 }
