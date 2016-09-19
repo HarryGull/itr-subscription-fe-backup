@@ -16,12 +16,10 @@
 
 package controllers
 
-import java.util.UUID
 import config.{FrontendAuthConnector, FrontendAppConfig}
 import auth.AuthorisedForTAVC
 import uk.gov.hmrc.play.frontend.controller.FrontendController
-import uk.gov.hmrc.play.http.{SessionKeys, HeaderCarrier}
-import uk.gov.hmrc.play.http.logging.SessionId
+import uk.gov.hmrc.play.http.HeaderCarrier
 import play.api.mvc._
 import scala.concurrent.Future
 import views.html.introduction._
@@ -35,9 +33,8 @@ trait IntroductionController extends FrontendController with AuthorisedForTAVC{
 
   implicit val hc = new HeaderCarrier()
 
-  def show:Action[AnyContent] = Authorised.async { implicit user =>
-    implicit request =>
-      Future.successful(Ok(Introduction()))
+  val show = Authorised.async { implicit user => implicit request =>
+    Future.successful(Ok(Introduction()))
   }
 
   val submit = Action.async { implicit request =>

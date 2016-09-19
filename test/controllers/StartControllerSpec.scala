@@ -16,47 +16,29 @@
 
 package controllers
 
-import java.util.UUID
-import org.jsoup.Jsoup
-import play.api.i18n.Messages
-import play.api.mvc.{AnyContent, Action}
-import play.api.test.FakeRequest
-import play.api.test.Helpers._
-import uk.gov.hmrc.play.http.SessionKeys
 import uk.gov.hmrc.play.test.{UnitSpec, WithFakeApplication}
+import helpers.FakeRequestHelper._
+import play.api.http.Status
 
 class StartControllerSpec extends UnitSpec with WithFakeApplication {
 
-  class fakeRequestTo(url: String, controllerAction: Action[AnyContent]) {
-    val fakeRequest = FakeRequest("GET", "/investment-tax-relief/" + url)
-    val result = controllerAction(fakeRequest)
-    val jsoupDoc = Jsoup.parse(bodyOf(result))
-  }
-
-  class fakeRequestToWithSessionId(url: String, controllerAction: Action[AnyContent]) {
-    val sessionId = UUID.randomUUID.toString
-    val fakeRequest = FakeRequest("GET", "/investment-tax-relief/" + url).withSession(SessionKeys.sessionId -> s"session-$sessionId")
-    val result = controllerAction(fakeRequest)
-    val jsoupDoc = Jsoup.parse(bodyOf(result))
-  }
-
-  "IntroductionController.introduction" should {
+  "StartController.start" should {
 
     "when called with no session" should {
 
-      object IntroductionTestDataItem extends fakeRequestTo("", StartController.start)
+      lazy val result = StartController.start(fakeRequest)
 
       "return a 303" in {
-        status(IntroductionTestDataItem.result) shouldBe 303
+        status(result) shouldBe Status.SEE_OTHER
       }
     }
 
-    "when called with a session" should {
+    "when called with a session that's not authenticated" should {
 
-      object IntroductionWithSessionTestDataItem extends fakeRequestToWithSessionId("", StartController.start)
+      lazy val result = StartController.start(fakeRequestWithSession)
 
       "return a 303" in {
-        status(IntroductionWithSessionTestDataItem.result) shouldBe 303
+        status(result) shouldBe Status.SEE_OTHER
       }
     }
   }

@@ -17,7 +17,6 @@
 package auth
 
 import java.net.URLEncoder
-
 import play.api.test.FakeRequest
 import play.api.http.Status
 import uk.gov.hmrc.play.frontend.auth.AuthenticationProviderIds

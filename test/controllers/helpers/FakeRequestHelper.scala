@@ -14,18 +14,16 @@
  * limitations under the License.
  */
 
-package auth
+package controllers.helpers
 
-import config.AppConfig
+import java.util.UUID
+import auth._
+import play.api.test.FakeRequest
+import uk.gov.hmrc.play.http.SessionKeys
 
-object MockConfig extends AppConfig {
-  override val assetsPrefix: String = ""
-  override val analyticsToken: String = ""
-  override val analyticsHost: String = ""
-  override val reportAProblemPartialUrl: String = ""
-  override val reportAProblemNonJSUrl: String = ""
-  override val notAuthorisedRedirectUrl: String = "/investment-tax-relief-subscription/not-authorised"
-  override val twoFactorUrl: String = ""
-  override val ggSignInUrl: String = "/gg/sign-in"
-  override val introductionUrl: String = "http://localhost:9637/investment-tax-relief-subscription/"
+object FakeRequestHelper {
+  val sessionId = UUID.randomUUID.toString
+  val fakeRequest = FakeRequest()
+  val fakeRequestWithSession = fakeRequest.withSession(SessionKeys.sessionId -> s"session-$sessionId")
+  val authorisedFakeRequest = authenticatedFakeRequest()
 }
