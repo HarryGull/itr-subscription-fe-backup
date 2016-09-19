@@ -42,6 +42,10 @@ class IntroductionControllerSpec extends UnitSpec with WithFakeApplication {
       "return a 303" in {
         status(result) shouldBe Status.SEE_OTHER
       }
+
+      s"should redirect to GG login" in {
+        redirectLocation(result) shouldBe Some(s"${FrontendAppConfig.ggSignInUrl}?continue=${URLEncoder.encode(MockConfig.introductionUrl)}&origin=investment-tax-relief-subscription-frontend&accountType=organisation")
+      }
     }
 
     "when called with a session that's not authenticated" should {
