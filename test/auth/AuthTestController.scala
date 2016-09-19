@@ -14,30 +14,26 @@
  * limitations under the License.
  */
 
-package controllers
+package auth
 
-import config.{FrontendAuthConnector, FrontendAppConfig}
-import auth.AuthorisedForTAVC
 import uk.gov.hmrc.play.frontend.controller.FrontendController
-import uk.gov.hmrc.play.http.HeaderCarrier
-import play.api.mvc._
-import scala.concurrent.Future
-import views.html.introduction._
 
-object IntroductionController extends IntroductionController{
-  override lazy val applicationConfig = FrontendAppConfig
-  override lazy val authConnector = FrontendAuthConnector
+import scala.concurrent.Future
+
+object AuthTestController extends AuthTestController {
+
+  override lazy val applicationConfig = mockConfig
+  override lazy val authConnector = mockAuthConnector
 }
 
-trait IntroductionController extends FrontendController with AuthorisedForTAVC{
+trait AuthTestController extends FrontendController with AuthorisedForTAVC {
 
-  implicit val hc = new HeaderCarrier()
-
-  val show = Authorised.async { implicit user => implicit request =>
-    Future.successful(Ok(Introduction()))
+  val authorisedAsyncAction = Authorised.async {
+    implicit user =>  implicit request => Future.successful(Ok)
   }
 
-  val submit = Action.async { implicit request =>
-    Future.successful(Ok)
+  val authorisedAction = Authorised {
+    implicit user =>  implicit request => Ok
   }
+
 }
