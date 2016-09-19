@@ -1,0 +1,89 @@
+@import models.ProvideCorrespondAddressModel
+@import uk.gov.hmrc.play.views.html.helpers.form
+@import views.html.helpers.{backButtonWithProgress, input, errorSummary}
+
+@(provideCorrespondAddressForm: Form[ProvideCorrespondAddressModel])(implicit request: Request[_])
+
+@main_template(Messages("page.registrationInformation.ProvideCorrespondAddress.title")) {
+
+@backButtonWithProgress(controllers.routes.ConfirmCorrespondAddressController.show().toString, Messages("common.section.progress.registration"))
+
+<div class="grid-row">
+    <div class="column-two-thirds">
+
+        @errorSummary(provideCorrespondAddressForm, "provide-correspondence-address")
+
+        <h1 id="main-heading" class="form-title heading-xlarge">@Messages("page.registrationInformation.ProvideCorrespondAddress.heading")</h1>
+
+        @form(action = controllers.routes.ProvideCorrespondAddressController.submit()) {
+        <div class="form-group">
+
+            @input(
+            provideCorrespondAddressForm("addressline1"),
+            '_divClass -> "form-label",
+            '_labelId -> "label-addressline1",
+            '_label -> Messages("page.registrationInformation.ProvideCorrespondAddress.addressline1.label"),
+            '_maxlength -> "35",
+            '_inputClass -> "input--medium input--cleared",
+            'id -> "addressline1"
+            )
+
+            @input(
+            provideCorrespondAddressForm("addressline2"),
+            '_divClass -> "form-label",
+            '_labelId -> "label-addressline2",
+            '_label -> Messages("page.registrationInformation.ProvideCorrespondAddress.addressline2.label"),
+            '_maxlength -> "35",
+            '_inputClass -> "input--medium input--cleared",
+            'id -> "addressline2"
+            )
+
+            @input(
+            provideCorrespondAddressForm("addressline3"),
+            '_divClass -> "form-label",
+            '_labelId -> "label-addressline3",
+            '_label -> Messages("page.registrationInformation.ProvideCorrespondAddress.addressline3.label"),
+            '_maxlength -> "35",
+            '_inputClass -> "input--medium input--cleared",
+            'id -> "addressline3"
+            )
+
+            @input(
+            provideCorrespondAddressForm("addressline4"),
+            '_divClass -> "form-label",
+            '_labelId -> "label-addressline4",
+            '_label -> Messages("page.registrationInformation.ProvideCorrespondAddress.addressline4.label"),
+            '_maxlength -> "35",
+            '_inputClass -> "input--medium input--cleared",
+            'id -> "addressline4"
+            )
+
+            @input(
+            provideCorrespondAddressForm("postcode"),
+            '_divClass -> "form-label",
+            '_labelId -> "label-postcode",
+            '_label -> Messages("page.registrationInformation.ProvideCorrespondAddress.postcode.label"),
+            '_maxlength -> "10",
+            '_inputClass -> "input--small input--cleared",
+            'id -> "postcode"
+            )
+
+            @input(
+            provideCorrespondAddressForm("country"),
+            '_divClass -> "form-label",
+            '_labelId -> "label-country",
+            '_label -> Messages("page.registrationInformation.ProvideCorrespondAddress.country.label"),
+            '_maxlength -> "35",
+            '_inputClass -> "input--medium input--cleared",
+            'id -> "country"
+            )
+
+        </div>
+        <div class="form-group">
+            <button class="btn button" id="next">@Messages("common.button.continue")</button>
+        </div>
+        }
+    </div>
+</div>
+
+}

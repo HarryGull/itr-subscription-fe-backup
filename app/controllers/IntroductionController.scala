@@ -17,18 +17,25 @@
 package controllers
 
 import java.util.UUID
+
+import connectors.KeystoreConnector
 import uk.gov.hmrc.play.frontend.controller.FrontendController
-import uk.gov.hmrc.play.http.{SessionKeys, HeaderCarrier}
+import uk.gov.hmrc.play.http.{HeaderCarrier, SessionKeys}
 import uk.gov.hmrc.play.http.logging.SessionId
 import play.api.mvc._
+
 import scala.concurrent.Future
 import views.html.introduction._
 
 object IntroductionController extends IntroductionController
+{
+  val keyStoreConnector: KeystoreConnector = KeystoreConnector
+}
 
 trait IntroductionController extends FrontendController {
 
   implicit val hc = new HeaderCarrier()
+  val keystoreConnector: KeystoreConnector = KeystoreConnector
 
   def show:Action[AnyContent] = Action.async { implicit request =>
       //Future.successful(Ok(views.html.pages.introduction.Introduction()))
@@ -36,6 +43,12 @@ trait IntroductionController extends FrontendController {
   }
 
   val submit = Action.async { implicit request =>
-    Future.successful(Ok)
+    Future.successful(Redirect(routes.ConfirmCorrespondAddressController.show()))
+  }
+
+  // this method is called on any restart - e.g. on session timeout
+  def restart(): Action[AnyContent] = Action.async { implicit request =>
+    keystoreConnector.clearKeystore()
+    Future.successful(Redirect(routes.StartController.start()))
   }
 }

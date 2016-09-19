@@ -1,11 +1,13 @@
 #common
 common.button.next=Next
+common.button.continue=Continue
 common.button.continueNextSection=continue to next section
 common.button.snc=Save and continue
 common.button.sign-in=Sign in
 common.button.back=Back
 common.button.start=Start now
 common.button.findAddress=Find address
+common.button.checkAnswers=Check your answers
 common.errorSummary.label=The following errors were identified on this page.
 common.radioNoLabel=No
 common.radioYesLabel=Yes
@@ -29,4 +31,29 @@ page.introduction.welcome.helpFirst=You will not be able to save your applicatio
 page.introduction.welcome.helpSecond=On completion you will be able to download your application to email as an attachment.
 page.introduction.welcome.schemeGuidance=scheme guidance
 
+##common section headings##
+common.section.progress.registration= Register for this service
+
+#Confirm Correspondence Address
+page.registrationInformation.ConfirmCorrespondAddress.heading=Is this your correspondence address?
+page.registrationInformation.ConfirmCorrespondAddress.title=Confirm correspondence address
+
+#Provide Correspondence Address
+page.registrationInformation.ProvideCorrespondAddress.heading=Where should we send your correspondence?
+page.registrationInformation.ProvideCorrespondAddress.title=Provide correspondence address
+page.registrationInformation.ProvideCorrespondAddress.addressline1.label=Address
+page.registrationInformation.ProvideCorrespondAddress.addressline2.label=
+page.registrationInformation.ProvideCorrespondAddress.addressline3.label=(optional)
+page.registrationInformation.ProvideCorrespondAddress.addressline4.label=(optional)
+page.registrationInformation.ProvideCorrespondAddress.postcode.label=Postcode (optional)
+page.registrationInformation.ProvideCorrespondAddress.country.label=Country
+
+#Contact Details Subscription
+page.registrationInformation.ContactDetailsSubscription.heading= Who should we contact?
+page.registrationInformation.ContactDetailsSubscription.title= Contact details subscription
+page.registrationInformation.ContactDetailsSubscription.firstName.label=First Name
+page.registrationInformation.ContactDetailsSubscription.lastName.label=Last Name
+page.registrationInformation.ContactDetailsSubscription.telephoneNumber.label= Telephone Number
+page.registrationInformation.ContactDetailsSubscription.telephoneNumber2.label= Telephone Number 2 (optional)
+page.registrationInformation.ContactDetailsSubscription.email.label= Email
 
