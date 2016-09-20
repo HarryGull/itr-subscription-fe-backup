@@ -31,7 +31,7 @@ trait StartController extends FrontendController {
 
   implicit val hc = new HeaderCarrier()
 
-  def start:Action[AnyContent] = Action.async { implicit request =>
+  val start = Action.async { implicit request =>
     if (request.session.get(SessionKeys.sessionId).isEmpty) {
       val sessionId = UUID.randomUUID.toString
       Future.successful(Redirect(routes.IntroductionController.show()).withSession(request.session + (SessionKeys.sessionId -> s"session-$sessionId")))

@@ -16,30 +16,29 @@
 
 package controllers
 
-import java.util.UUID
-
 import connectors.KeystoreConnector
+import config.{FrontendAuthConnector, FrontendAppConfig}
+import auth.AuthorisedForTAVC
 import uk.gov.hmrc.play.frontend.controller.FrontendController
-import uk.gov.hmrc.play.http.{HeaderCarrier, SessionKeys}
-import uk.gov.hmrc.play.http.logging.SessionId
+import uk.gov.hmrc.play.http.HeaderCarrier
 import play.api.mvc._
 
 import scala.concurrent.Future
 import views.html.introduction._
 
-object IntroductionController extends IntroductionController
-{
+object IntroductionController extends IntroductionController{
+  override lazy val applicationConfig = FrontendAppConfig
+  override lazy val authConnector = FrontendAuthConnector
   val keyStoreConnector: KeystoreConnector = KeystoreConnector
 }
 
-trait IntroductionController extends FrontendController {
+trait IntroductionController extends FrontendController with AuthorisedForTAVC{
 
   implicit val hc = new HeaderCarrier()
   val keystoreConnector: KeystoreConnector = KeystoreConnector
 
-  def show:Action[AnyContent] = Action.async { implicit request =>
-      //Future.successful(Ok(views.html.pages.introduction.Introduction()))
-      Future.successful(Ok(Introduction()))
+  val show = Authorised.async { implicit user => implicit request =>
+    Future.successful(Ok(Introduction()))
   }
 
   val submit = Action.async { implicit request =>
