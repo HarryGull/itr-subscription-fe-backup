@@ -18,6 +18,20 @@ common.feedbackFirst=This is a new service – your
 common.feedbackSecond=will help us to improve it.
 common.feedbackLinkText=feedback
 
+## Common report error ##
+common.error.summary.heading=This page has errors
+
+#validation errors
+validation.error.countrypostcode=Only one of country or postcode should be entered
+validation.error.optionaladdresssline=Address line must be no more than 27 valid characters if entered
+validation.error.mandatoryaddresssline=Address line must be entered and no more than 27 characters
+validation.error.email=Enter a valid email address
+validation.error.telephoneNumber=Please enter a valid telephone number
+validation.error.postcode=Please enter a valid postcode
+validation.error.country=Country must be no more than 20 valid characters if entered
+validation.error.linefouraddresssline=Address line must be no more than 17 valid characters if entered
+
+
 #Welcome page
 page.introduction.welcome.title=WelcomeSubscription
 page.introduction.welcome.heading=Get tax relief for your investors - Subscription

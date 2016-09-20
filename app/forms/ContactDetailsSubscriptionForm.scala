@@ -25,9 +25,9 @@ object ContactDetailsSubscriptionForm {
     mapping(
       "firstName" -> nonEmptyText,
       "lastName" -> nonEmptyText,
-      "telephoneNumber" -> nonEmptyText,
-      "telephoneNumber2" -> text,
-      "email" -> nonEmptyText
+      "telephoneNumber" -> utils.Validation.telephoneNumberCheck,
+      "telephoneNumber2" -> utils.Validation.optionalTelephoneNumberCheck,
+      "email" -> utils.Validation.emailCheck
     )(ContactDetailsSubscriptionModel.apply)(ContactDetailsSubscriptionModel.unapply)
   )
 }

@@ -23,12 +23,12 @@ import play.api.data.Forms._
 object ProvideCorrespondAddressForm {
   val provideCorrespondAddressForm = Form(
     mapping(
-      "addressline1" -> nonEmptyText,
-      "addressline2" -> nonEmptyText,
-      "addressline3" -> text,
-      "addressline4" -> text,
-      "postcode" -> text,
-      "country" -> nonEmptyText
+      "addressline1" -> utils.Validation.mandatoryAddressLineCheck,
+      "addressline2" -> utils.Validation.mandatoryAddressLineCheck,
+      "addressline3" -> utils.Validation.optionalAddressLineCheck,
+      "addressline4" -> utils.Validation.addressLineFourCheck,
+      "postcode" -> utils.Validation.optionalPostcodeCheck,
+      "country" -> utils.Validation.countryCheck
     )(ProvideCorrespondAddressModel.apply)(ProvideCorrespondAddressModel.unapply)
   )
 }
