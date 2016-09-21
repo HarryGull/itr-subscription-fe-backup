@@ -20,6 +20,7 @@ common.feedbackLinkText=feedback
 
 ## Common report error ##
 common.error.summary.heading=This page has errors
+common.error.help.text=Get help with this page.
 
 #validation errors
 validation.error.countrypostcode=Only one of country or postcode should be entered
@@ -29,7 +30,7 @@ validation.error.email=Enter a valid email address
 validation.error.telephoneNumber=Please enter a valid telephone number
 validation.error.postcode=Please enter a valid postcode
 validation.error.country=Country must be no more than 20 valid characters if entered
-validation.error.linefouraddresssline=Address line must be no more than 17 valid characters if entered
+validation.error.linefouraddresshesline=Address line must be no more than 17 valid characters if entered
 
 
 #Welcome page

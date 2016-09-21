@@ -158,11 +158,13 @@ object Validation {
   }
 
   def countryCheck: Mapping[String] = {
-    val validCountryLine = "^$|[A-Za-z0-9]{1}[A-Za-z 0-9]{0,19}".r
+    val validCountryLine = "^$|[A-Za-z]{2}[A-Za-z-'. ]{0,18}".r
+
     val countryCheckConstraint: Constraint[String] =
       Constraint("contraints.country")({
         text =>
           val error = text match {
+            case "" => Seq(ValidationError(Messages("validation.error.country")))
             case validCountryLine() => Nil
             case _ => Seq(ValidationError(Messages("validation.error.country")))
           }
