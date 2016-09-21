@@ -22,9 +22,9 @@ import play.api.test.FakeRequest
 import uk.gov.hmrc.play.http.SessionKeys
 
 object FakeRequestHelper {
-  val sessionId = UUID.randomUUID.toString
-  val fakeRequest = FakeRequest()
-  val fakeRequestWithSession = fakeRequest.withSession(SessionKeys.sessionId -> s"session-$sessionId")
-  val authorisedFakeRequest = authenticatedFakeRequest()
-  val timedOutFakeRequest = timeoutFakeRequest()
+  lazy val sessionId = UUID.randomUUID.toString
+  lazy val fakeRequest = FakeRequest()
+  lazy val fakeRequestWithSession = fakeRequest.withSession(SessionKeys.sessionId -> s"session-$sessionId")
+  lazy val authorisedFakeRequest = authenticatedFakeRequest()
+  lazy val timedOutFakeRequest = timeoutFakeRequest()
 }

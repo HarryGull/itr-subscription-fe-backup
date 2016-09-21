@@ -21,6 +21,7 @@ common.feedbackLinkText=feedback
 ## Common report error ##
 common.error.summary.heading=This page has errors
 common.error.help.text=Get help with this page.
+common.error.missingField= This field is required
 
 #validation errors
 validation.error.countrypostcode=Only one of country or postcode should be entered
@@ -48,6 +49,10 @@ page.introduction.welcome.schemeGuidance=scheme guidance
 
 ##common section headings##
 common.section.progress.registration= Register for this service
+
+## Session Timeout message ##
+session.timeout.message=Your session has ended
+session.timeout.startAgain=Start again
 
 #Confirm Correspondence Address
 page.registrationInformation.ConfirmCorrespondAddress.heading=Is this your correspondence address?

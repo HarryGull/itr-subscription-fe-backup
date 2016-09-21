@@ -24,9 +24,8 @@ import config.FrontendAppConfig
 import controllers.helpers.FakeRequestHelper._
 import play.api.test.Helpers._
 import uk.gov.hmrc.play.test.{UnitSpec, WithFakeApplication}
-import play.api.http.Status
 
-class IntroductionControllerSpec extends UnitSpec with WithFakeApplication {
+class IntroductionControllerSpec extends UnitSpec with WithFakeApplication{
 
   object TestIntroductionController extends IntroductionController {
     override lazy val applicationConfig = FrontendAppConfig
