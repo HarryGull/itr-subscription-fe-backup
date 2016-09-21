@@ -31,7 +31,7 @@ validation.error.email=Enter a valid email address
 validation.error.telephoneNumber=Please enter a valid telephone number
 validation.error.postcode=Please enter a valid postcode
 validation.error.country=Country must be no more than 20 valid characters if entered
-validation.error.linefouraddresshesline=Address line must be no more than 17 valid characters if entered
+validation.error.linefouraddresssline=Address line must be no more than 17 valid characters if entered
 
 
 #Welcome page
