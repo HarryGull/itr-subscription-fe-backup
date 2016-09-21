@@ -158,7 +158,7 @@ object Validation {
   }
 
   def countryCheck: Mapping[String] = {
-    val validCountryLine = "^$|[A-Za-z]{2}[A-Za-z-'. ]{0,18}".r
+    val validCountryLine = "^$|[A-Za-z]{2}[A-Za-z ]{0,18}".r
 
     val countryCheckConstraint: Constraint[String] =
       Constraint("contraints.country")({

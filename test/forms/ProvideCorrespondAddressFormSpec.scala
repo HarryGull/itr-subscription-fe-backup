@@ -874,10 +874,14 @@ class provideCorrespondAddressFormSpec extends UnitSpec {
       "country" -> "Cote d'Ivoire")
     )
     "raise form error" in {
-      form.hasErrors shouldBe false
+      form.hasErrors shouldBe true
     }
-    "raise 0 form errors" in {
-      form.errors.length shouldBe 0
+    "raise 1 form error" in {
+      form.errors.length shouldBe 1
+      form.errors.head.key shouldBe "country"
+    }
+    "associate the correct error message to the error" in {
+      form.error("country").get.message shouldBe Messages("validation.error.country")
     }
   }
 
@@ -891,10 +895,14 @@ class provideCorrespondAddressFormSpec extends UnitSpec {
       "country" -> "Timor-Leste")
     )
     "raise form error" in {
-      form.hasErrors shouldBe false
+      form.hasErrors shouldBe true
     }
-    "raise 0 form errors" in {
-      form.errors.length shouldBe 0
+    "raise 1 form error" in {
+      form.errors.length shouldBe 1
+      form.errors.head.key shouldBe "country"
+    }
+    "associate the correct error message to the error" in {
+      form.error("country").get.message shouldBe Messages("validation.error.country")
     }
   }
 
@@ -908,10 +916,14 @@ class provideCorrespondAddressFormSpec extends UnitSpec {
       "country" -> "St. Lucia")
     )
     "raise form error" in {
-      form.hasErrors shouldBe false
+      form.hasErrors shouldBe true
     }
-    "raise 0 form errors" in {
-      form.errors.length shouldBe 0
+    "raise 1 form error" in {
+      form.errors.length shouldBe 1
+      form.errors.head.key shouldBe "country"
+    }
+    "associate the correct error message to the error" in {
+      form.error("country").get.message shouldBe Messages("validation.error.country")
     }
   }
 
@@ -922,7 +934,7 @@ class provideCorrespondAddressFormSpec extends UnitSpec {
       "addressline3" -> "",
       "addressline4" -> "",
       "postcode" -> "",
-      "country" -> "St. Lucia ")
+      "country" -> "Saint Lucia ")
     )
     "raise form error" in {
       form.hasErrors shouldBe false
