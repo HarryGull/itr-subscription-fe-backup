@@ -16,10 +16,9 @@
 
 package controllers
 
-import java.net.URLEncoder
-
 import auth.MockConfig
 import auth.MockAuthConnector
+import common.Encoder._
 import config.{FrontendAppConfig, FrontendAuthConnector}
 import connectors.KeystoreConnector
 import controllers.helpers.FakeRequestHelper
@@ -56,7 +55,7 @@ class IntroductionControllerSpec extends UnitSpec with WithFakeApplication with 
       }
 
       s"should redirect to GG login" in {
-        redirectLocation(result) shouldBe Some(s"${FrontendAppConfig.ggSignInUrl}?continue=${URLEncoder.encode(MockConfig.introductionUrl,"UTF-8")}&origin=investment-tax-relief-subscription-frontend&accountType=organisation")
+        redirectLocation(result) shouldBe Some(s"${FrontendAppConfig.ggSignInUrl}?continue=${encode(MockConfig.introductionUrl)}&origin=investment-tax-relief-subscription-frontend&accountType=organisation")
       }
     }
 
@@ -69,7 +68,7 @@ class IntroductionControllerSpec extends UnitSpec with WithFakeApplication with 
       }
 
       s"should redirect to GG login" in {
-        redirectLocation(result) shouldBe Some(s"${FrontendAppConfig.ggSignInUrl}?continue=${URLEncoder.encode(MockConfig.introductionUrl,"UTF-8")}&origin=investment-tax-relief-subscription-frontend&accountType=organisation")
+        redirectLocation(result) shouldBe Some(s"${FrontendAppConfig.ggSignInUrl}?continue=${encode(MockConfig.introductionUrl)}&origin=investment-tax-relief-subscription-frontend&accountType=organisation")
       }
     }
 

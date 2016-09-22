@@ -6,7 +6,7 @@
 
 @views.html.main_template(title = Messages("page.introduction.welcome.title"), bodyClasses = None) {
 
-@backButton(controllers.routes.IntroductionController.show().toString)
+@backButton(controllers.routes.IntroductionController.show().url)
 
 <div class="grid-row">
     <div class="column-two-thirds">

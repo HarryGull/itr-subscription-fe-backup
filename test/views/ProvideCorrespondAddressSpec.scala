@@ -71,7 +71,7 @@ class ProvideCorrespondAddressSpec extends UnitSpec with MockitoSugar with WithF
       document.title() shouldBe Messages("page.registrationInformation.ProvideCorrespondAddress.title")
       document.getElementById("main-heading").text() shouldBe Messages("page.registrationInformation.ProvideCorrespondAddress.heading")
       document.getElementById("next").text() shouldBe Messages("common.button.continue")
-      document.body.getElementById("back-link").attr("href") shouldEqual routes.ConfirmCorrespondAddressController.show().toString()
+      document.body.getElementById("back-link").attr("href") shouldEqual routes.ConfirmCorrespondAddressController.show().url
       document.body.getElementById("progress-section").text shouldBe Messages("common.section.progress.registration")
       document.body.getElementById("addressline1").`val`() shouldBe provideCorrespondAddressModel.addressline1
       document.body.getElementById("addressline2").`val`() shouldBe provideCorrespondAddressModel.addressline2
@@ -92,7 +92,7 @@ class ProvideCorrespondAddressSpec extends UnitSpec with MockitoSugar with WithF
       document.title() shouldBe Messages("page.registrationInformation.ProvideCorrespondAddress.title")
       document.getElementById("main-heading").text() shouldBe Messages("page.registrationInformation.ProvideCorrespondAddress.heading")
       document.getElementById("next").text() shouldBe Messages("common.button.continue")
-      document.body.getElementById("back-link").attr("href") shouldEqual routes.ConfirmCorrespondAddressController.show().toString()
+      document.body.getElementById("back-link").attr("href") shouldEqual routes.ConfirmCorrespondAddressController.show().url
       document.body.getElementById("progress-section").text shouldBe  Messages("common.section.progress.registration")
       document.body.getElementById("get-help-action").text shouldBe  Messages("common.error.help.text")
       document.getElementById("error-summary-display").hasClass("error-summary--show")
@@ -110,7 +110,7 @@ class ProvideCorrespondAddressSpec extends UnitSpec with MockitoSugar with WithF
       document.title() shouldBe Messages("page.registrationInformation.ProvideCorrespondAddress.title")
       document.getElementById("main-heading").text() shouldBe Messages("page.registrationInformation.ProvideCorrespondAddress.heading")
       document.getElementById("next").text() shouldBe Messages("common.button.continue")
-      document.body.getElementById("back-link").attr("href") shouldEqual routes.ConfirmCorrespondAddressController.show().toString()
+      document.body.getElementById("back-link").attr("href") shouldEqual routes.ConfirmCorrespondAddressController.show().url
       document.body.getElementById("progress-section").text shouldBe  Messages("common.section.progress.registration")
       document.body.getElementById("get-help-action").text shouldBe  Messages("common.error.help.text")
       document.getElementById("error-summary-display").hasClass("error-summary--show")

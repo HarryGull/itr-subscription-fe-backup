@@ -47,7 +47,7 @@ class ContactDetailsSubscriptionSpec extends UnitSpec with WithFakeApplication w
         Messages("page.registrationInformation.ContactDetailsSubscription.telephoneNumber2.label")
       document.getElementById("label-email").text() shouldBe Messages("page.registrationInformation.ContactDetailsSubscription.email.label")
       document.getElementById("next").text() shouldBe Messages("common.button.continue")
-      document.body.getElementById("back-link").attr("href") shouldEqual routes.ConfirmCorrespondAddressController.show().toString()
+      document.body.getElementById("back-link").attr("href") shouldEqual routes.ConfirmCorrespondAddressController.show().url
       document.body.getElementById("progress-section").text shouldBe  Messages("common.section.progress.registration")
     }
 
@@ -66,7 +66,7 @@ class ContactDetailsSubscriptionSpec extends UnitSpec with WithFakeApplication w
         Messages("page.registrationInformation.ContactDetailsSubscription.telephoneNumber2.label")
       document.getElementById("label-email").text() shouldBe Messages("page.registrationInformation.ContactDetailsSubscription.email.label")
       document.getElementById("next").text() shouldBe Messages("common.button.continue")
-      document.body.getElementById("back-link").attr("href") shouldEqual routes.ConfirmCorrespondAddressController.show().toString()
+      document.body.getElementById("back-link").attr("href") shouldEqual routes.ConfirmCorrespondAddressController.show().url
       document.body.getElementById("progress-section").text shouldBe  Messages("common.section.progress.registration")
     }
 
@@ -85,7 +85,7 @@ class ContactDetailsSubscriptionSpec extends UnitSpec with WithFakeApplication w
         Messages("page.registrationInformation.ContactDetailsSubscription.telephoneNumber2.label")
       document.getElementById("label-email").text() contains Messages("page.registrationInformation.ContactDetailsSubscription.email.label")
       document.getElementById("next").text() shouldBe Messages("common.button.continue")
-      document.body.getElementById("back-link").attr("href") shouldEqual routes.ConfirmCorrespondAddressController.show().toString()
+      document.body.getElementById("back-link").attr("href") shouldEqual routes.ConfirmCorrespondAddressController.show().url
       document.body.getElementById("progress-section").text shouldBe  Messages("common.section.progress.registration")
 //      document.getElementById("error-summary-display").hasClass("error-summary--show")
 

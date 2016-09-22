@@ -7,7 +7,7 @@
 
 @main_template(Messages("page.registrationInformation.ConfirmCorrespondAddress.title")){
 
-@backButtonWithProgress(controllers.routes.IntroductionController.show().toString, Messages("common.section.progress.registration"))
+@backButtonWithProgress(controllers.routes.IntroductionController.show().url, Messages("common.section.progress.registration"))
 
 <div class="grid-row">
     <div class="column-two-thirds">

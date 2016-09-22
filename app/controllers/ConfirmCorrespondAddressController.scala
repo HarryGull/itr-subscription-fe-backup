@@ -56,7 +56,7 @@ trait ConfirmCorrespondAddressController extends FrontendController with Authori
         validFormData.contactAddressUse match {
           case Constants.StandardRadioButtonYesValue => {
             keyStoreConnector.saveFormData(KeystoreKeys.backLinkConfirmCorrespondAddress,
-              routes.ConfirmCorrespondAddressController.show().toString())
+              routes.ConfirmCorrespondAddressController.show().url)
             Future.successful(Redirect(routes.ContactDetailsSubscriptionController.show()))
           }
           case Constants.StandardRadioButtonNoValue => Future.successful(Redirect(routes.ProvideCorrespondAddressController.show()))

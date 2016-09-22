@@ -16,12 +16,9 @@
 
 package controllers
 
-import java.net.URLEncoder
-import java.util.UUID
-
 import auth.{MockAuthConnector, MockConfig}
-import builders.SessionBuilder
 import common.Constants
+import common.Encoder._
 import config.{FrontendAppConfig, FrontendAuthConnector}
 import connectors.KeystoreConnector
 import controllers.helpers.FakeRequestHelper
@@ -32,7 +29,6 @@ import org.scalatest.BeforeAndAfterEach
 import org.scalatest.mock.MockitoSugar
 import org.scalatestplus.play.OneServerPerSuite
 import play.api.libs.json.Json
-import play.api.mvc.{AnyContentAsFormUrlEncoded, Result}
 import play.api.test.Helpers._
 import uk.gov.hmrc.http.cache.client.CacheMap
 import uk.gov.hmrc.play.http.HeaderCarrier
@@ -94,7 +90,7 @@ class ConfirmCorrespondAddressControllerSpec extends UnitSpec with MockitoSugar 
 //        result => {
 //          status(result) shouldBe SEE_OTHER
 //          redirectLocation(result) shouldBe Some(s"${FrontendAppConfig.ggSignInUrl}?continue=${
-//            URLEncoder.encode(MockConfig.introductionUrl,"UTF-8")
+//           encode(MockConfig.introductionUrl)
 //          }&origin=investment-tax-relief-subscription-frontend&accountType=organisation")
 //        }
       )
@@ -107,7 +103,7 @@ class ConfirmCorrespondAddressControllerSpec extends UnitSpec with MockitoSugar 
         result => {
           status(result) shouldBe SEE_OTHER
           redirectLocation(result) shouldBe Some(s"${FrontendAppConfig.ggSignInUrl}?continue=${
-            URLEncoder.encode(MockConfig.introductionUrl,"UTF-8")
+            encode(MockConfig.introductionUrl)
           }&origin=investment-tax-relief-subscription-frontend&accountType=organisation")
         }
       )
@@ -120,7 +116,7 @@ class ConfirmCorrespondAddressControllerSpec extends UnitSpec with MockitoSugar 
         result => {
           status(result) shouldBe SEE_OTHER
           redirectLocation(result) shouldBe Some(s"${FrontendAppConfig.ggSignInUrl}?continue=${
-            URLEncoder.encode(MockConfig.introductionUrl,"UTF-8")
+            encode(MockConfig.introductionUrl)
           }&origin=investment-tax-relief-subscription-frontend&accountType=organisation")
         }
       )
@@ -187,7 +183,7 @@ class ConfirmCorrespondAddressControllerSpec extends UnitSpec with MockitoSugar 
         result => {
           status(result) shouldBe SEE_OTHER
           redirectLocation(result) shouldBe Some(s"${FrontendAppConfig.ggSignInUrl}?continue=${
-            URLEncoder.encode(MockConfig.introductionUrl,"UTF-8")
+            encode(MockConfig.introductionUrl)
           }&origin=investment-tax-relief-subscription-frontend&accountType=organisation")
         }
       )
@@ -198,7 +194,7 @@ class ConfirmCorrespondAddressControllerSpec extends UnitSpec with MockitoSugar 
         result => {
           status(result) shouldBe SEE_OTHER
           redirectLocation(result) shouldBe Some(s"${FrontendAppConfig.ggSignInUrl}?continue=${
-            URLEncoder.encode(MockConfig.introductionUrl,"UTF-8")
+            encode(MockConfig.introductionUrl)
           }&origin=investment-tax-relief-subscription-frontend&accountType=organisation")
         }
       )
