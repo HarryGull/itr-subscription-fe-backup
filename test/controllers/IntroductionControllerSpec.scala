@@ -56,7 +56,7 @@ class IntroductionControllerSpec extends UnitSpec with WithFakeApplication with 
       }
 
       s"should redirect to GG login" in {
-        redirectLocation(result) shouldBe Some(s"${FrontendAppConfig.ggSignInUrl}?continue=${URLEncoder.encode(MockConfig.introductionUrl)}&origin=investment-tax-relief-subscription-frontend&accountType=organisation")
+        redirectLocation(result) shouldBe Some(s"${FrontendAppConfig.ggSignInUrl}?continue=${URLEncoder.encode(MockConfig.introductionUrl,"UTF-8")}&origin=investment-tax-relief-subscription-frontend&accountType=organisation")
       }
     }
 
@@ -69,7 +69,7 @@ class IntroductionControllerSpec extends UnitSpec with WithFakeApplication with 
       }
 
       s"should redirect to GG login" in {
-        redirectLocation(result) shouldBe Some(s"${FrontendAppConfig.ggSignInUrl}?continue=${URLEncoder.encode(MockConfig.introductionUrl)}&origin=investment-tax-relief-subscription-frontend&accountType=organisation")
+        redirectLocation(result) shouldBe Some(s"${FrontendAppConfig.ggSignInUrl}?continue=${URLEncoder.encode(MockConfig.introductionUrl,"UTF-8")}&origin=investment-tax-relief-subscription-frontend&accountType=organisation")
       }
     }
 

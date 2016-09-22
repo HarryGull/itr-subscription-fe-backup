@@ -100,7 +100,7 @@ class ProvideCorrespondAddressControllerSpec extends UnitSpec with MockitoSugar 
         result => {
           status(result) shouldBe SEE_OTHER
           redirectLocation(result) shouldBe Some(s"${FrontendAppConfig.ggSignInUrl}?continue=${
-            URLEncoder.encode(MockConfig.introductionUrl)
+            URLEncoder.encode(MockConfig.introductionUrl,"UTF-8")
           }&origin=investment-tax-relief-subscription-frontend&accountType=organisation")
         }
       )
@@ -113,7 +113,7 @@ class ProvideCorrespondAddressControllerSpec extends UnitSpec with MockitoSugar 
         result => {
           status(result) shouldBe SEE_OTHER
           redirectLocation(result) shouldBe Some(s"${FrontendAppConfig.ggSignInUrl}?continue=${
-            URLEncoder.encode(MockConfig.introductionUrl)
+            URLEncoder.encode(MockConfig.introductionUrl,"UTF-8")
           }&origin=investment-tax-relief-subscription-frontend&accountType=organisation")
         }
       )
