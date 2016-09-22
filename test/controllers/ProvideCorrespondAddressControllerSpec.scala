@@ -16,11 +16,15 @@
 
 package controllers
 
+import java.net.URLEncoder
 import java.util.UUID
 
+import auth.{MockAuthConnector, MockConfig}
 import builders.SessionBuilder
 import common.Constants
+import config.{FrontendAppConfig, FrontendAuthConnector}
 import connectors.KeystoreConnector
+import controllers.helpers.FakeRequestHelper
 import models.ProvideCorrespondAddressModel
 import org.mockito.Matchers
 import org.mockito.Mockito._
@@ -37,12 +41,14 @@ import uk.gov.hmrc.play.test.UnitSpec
 
 import scala.concurrent.Future
 
-class ProvideCorrespondAddressControllerSpec extends UnitSpec with MockitoSugar with BeforeAndAfterEach with OneServerPerSuite{
+class ProvideCorrespondAddressControllerSpec extends UnitSpec with MockitoSugar with BeforeAndAfterEach with OneServerPerSuite with FakeRequestHelper{
 
   val mockKeyStoreConnector = mock[KeystoreConnector]
 
 
   object ProvideCorrespondAddressControllerTest extends ProvideCorrespondAddressController {
+    override lazy val applicationConfig = FrontendAppConfig
+    override lazy val authConnector = MockAuthConnector
     val keyStoreConnector: KeystoreConnector = mockKeyStoreConnector
   }
 
@@ -74,12 +80,18 @@ class ProvideCorrespondAddressControllerSpec extends UnitSpec with MockitoSugar 
     }
   }
 
+  "ProvideCorrespondAddressController" should {
+    "use the correct auth connector" in {
+      ProvideCorrespondAddressController.authConnector shouldBe FrontendAuthConnector
+    }
+  }
+
   "Sending a GET request to ProvideCorrespondAddressController" should {
     "return a 200 when something is fetched from keystore" in {
       when(mockKeyStoreConnector.saveFormData(Matchers.any(), Matchers.any())(Matchers.any(), Matchers.any())).thenReturn(cacheMap)
       when(mockKeyStoreConnector.fetchAndGetFormData[ProvideCorrespondAddressModel](Matchers.any())(Matchers.any(), Matchers.any()))
         .thenReturn(Future.successful(Option(keyStoreSavedProvideCorrespondAddress)))
-      showWithSession(
+      showWithSessionAndAuth(ProvideCorrespondAddressControllerTest.show)(
         result => status(result) shouldBe OK
       )
     }
@@ -88,23 +100,60 @@ class ProvideCorrespondAddressControllerSpec extends UnitSpec with MockitoSugar 
       when(mockKeyStoreConnector.saveFormData(Matchers.any(), Matchers.any())(Matchers.any(), Matchers.any())).thenReturn(cacheMap)
       when(mockKeyStoreConnector.fetchAndGetFormData[ProvideCorrespondAddressModel](Matchers.any())(Matchers.any(), Matchers.any()))
         .thenReturn(Future.successful(None))
-      showWithSession(
+      showWithSessionAndAuth(ProvideCorrespondAddressControllerTest.show)(
         result => status(result) shouldBe OK
+      )
+    }
+  }
+
+  "Sending an Unauthenticated request with a session to ProvideCorrespondAddressController" should {
+    "return a 302 and redirect to GG login" in {
+      showWithSessionWithoutAuth(ProvideCorrespondAddressControllerTest.show())(
+        result => {
+          status(result) shouldBe SEE_OTHER
+          redirectLocation(result) shouldBe Some(s"${FrontendAppConfig.ggSignInUrl}?continue=${
+            URLEncoder.encode(MockConfig.introductionUrl)
+          }&origin=investment-tax-relief-subscription-frontend&accountType=organisation")
+        }
+      )
+    }
+  }
+
+  "Sending a request with no session to ProvideCorrespondAddressController" should {
+    "return a 302 and redirect to GG login" in {
+      showWithoutSession(ProvideCorrespondAddressControllerTest.show())(
+        result => {
+          status(result) shouldBe SEE_OTHER
+          redirectLocation(result) shouldBe Some(s"${FrontendAppConfig.ggSignInUrl}?continue=${
+            URLEncoder.encode(MockConfig.introductionUrl)
+          }&origin=investment-tax-relief-subscription-frontend&accountType=organisation")
+        }
+      )
+    }
+  }
+
+  "Sending a timed-out request to ProvideCorrespondAddressController" should {
+    "return a 302 and redirect to the timeout page" in {
+      showWithTimeout(ProvideCorrespondAddressControllerTest.show())(
+        result => {
+          status(result) shouldBe SEE_OTHER
+          redirectLocation(result) shouldBe Some(routes.TimeoutController.timeout().url)
+        }
       )
     }
   }
 
   "Sending a valid form submit to the ProvideCorrespondAddressController" should {
     "redirect to the Confirm Correspondence Address Controller page" in {
-      val request = FakeRequest().withFormUrlEncodedBody(
-        "addressline1" -> "Akina Speed Stars",
+      val formInput =
+        Seq("addressline1" -> "Akina Speed Stars",
         "addressline2" -> "Mt. Akina",
         "addressline3" -> "",
         "addressline4" -> "",
         "postcode" -> "",
-        "country" -> "Japan"
-      )
-      submitWithSession(request)(
+        "country" -> "Japan")
+
+      submitWithSessionAndAuth(ProvideCorrespondAddressControllerTest.submit,formInput:_*)(
         result => {
           status(result) shouldBe SEE_OTHER
           redirectLocation(result) shouldBe Some("/investment-tax-relief-subscription/confirm-correspondence-address")
@@ -115,15 +164,15 @@ class ProvideCorrespondAddressControllerSpec extends UnitSpec with MockitoSugar 
 
   "Sending an invalid form submission with validation errors to the ProvideCorrespondAddressController" should {
     "redirect with a bad request" in {
-      val request = FakeRequest().withFormUrlEncodedBody(
-        "addressline1" -> "Akina Speed Stars",
+      val formInput =
+        Seq("addressline1" -> "Akina Speed Stars",
         "addressline2" -> "",
         "addressline3" -> "",
         "addressline4" -> "",
         "postcode" -> "",
-        "country" -> "Japan"
-        )
-      submitWithSession(request)(
+        "country" -> "Japan")
+
+      submitWithSessionAndAuth(ProvideCorrespondAddressControllerTest.submit,formInput:_*)(
         result => {
           status(result) shouldBe BAD_REQUEST
         }
@@ -134,13 +183,47 @@ class ProvideCorrespondAddressControllerSpec extends UnitSpec with MockitoSugar 
   "Sending an empty invalid form submission with validation errors to the ProvideCorrespondAddressController" should {
     "redirect to itself" in {
 
-      val request = FakeRequest().withFormUrlEncodedBody(
-        "addressline1" -> "Akina Speed Stars"
-      )
+      val formInput = "addressline1" -> "Akina Speed Stars"
 
-      submitWithSession(request)(
+      submitWithSessionAndAuth(ProvideCorrespondAddressControllerTest.submit,formInput)(
         result => {
           status(result) shouldBe BAD_REQUEST
+        }
+      )
+    }
+  }
+
+  "Sending a submission to the ProvideCorrespondAddressController when not authenticated" should {
+
+    "redirect to the GG login page when having a session but not authenticated" in {
+      submitWithSessionWithoutAuth(ProvideCorrespondAddressControllerTest.submit)(
+        result => {
+          status(result) shouldBe SEE_OTHER
+          redirectLocation(result) shouldBe Some(s"${FrontendAppConfig.ggSignInUrl}?continue=${
+            URLEncoder.encode(MockConfig.introductionUrl,"UTF-8")
+          }&origin=investment-tax-relief-subscription-frontend&accountType=organisation")
+        }
+      )
+    }
+
+    "redirect to the GG login page with no session" in {
+      submitWithoutSession(ProvideCorrespondAddressControllerTest.submit)(
+        result => {
+          status(result) shouldBe SEE_OTHER
+          redirectLocation(result) shouldBe Some(s"${FrontendAppConfig.ggSignInUrl}?continue=${
+            URLEncoder.encode(MockConfig.introductionUrl,"UTF-8")
+          }&origin=investment-tax-relief-subscription-frontend&accountType=organisation")
+        }
+      )
+    }
+  }
+
+  "Sending a submission to the ProvideCorrespondAddressController when a timeout has occured" should {
+    "redirect to the Timeout page when session has timed out" in {
+      submitWithTimeout(ProvideCorrespondAddressControllerTest.submit)(
+        result => {
+          status(result) shouldBe SEE_OTHER
+          redirectLocation(result) shouldBe Some(routes.TimeoutController.timeout().url)
         }
       )
     }

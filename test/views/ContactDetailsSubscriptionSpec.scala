@@ -16,7 +16,7 @@
 
 package views
 
-import controllers.helpers.FakeRequestHelper._
+import controllers.helpers.FakeRequestHelper
 import controllers.routes
 import models.ContactDetailsSubscriptionModel
 import org.jsoup.Jsoup
@@ -27,7 +27,7 @@ import forms.ContactDetailsSubscriptionForm._
 import views.html.registrationInformation.ContactDetailsSubscription
 
 
-class ContactDetailsSubscriptionSpec extends UnitSpec with WithFakeApplication with MockitoSugar{
+class ContactDetailsSubscriptionSpec extends UnitSpec with WithFakeApplication with MockitoSugar with FakeRequestHelper{
 
   "The Contact Details page" should {
 
@@ -35,7 +35,7 @@ class ContactDetailsSubscriptionSpec extends UnitSpec with WithFakeApplication w
 
       val contactDetailsSubscriptionModel = new ContactDetailsSubscriptionModel("Jeff","Stelling","01384 555678", "01783432876", "Jeff.Stelling@HMRC.gov.uk")
       lazy val form = contactDetailsSubscriptionForm.fill(contactDetailsSubscriptionModel)
-      lazy val page = ContactDetailsSubscription(form)(fakeRequestWithSession)
+      lazy val page = ContactDetailsSubscription(form)(authorisedFakeRequest)
       lazy val document = Jsoup.parse(page.body)
 
       document.title() shouldBe Messages("page.registrationInformation.ContactDetailsSubscription.title")
@@ -54,7 +54,7 @@ class ContactDetailsSubscriptionSpec extends UnitSpec with WithFakeApplication w
     "Verify that the contact details page contains the correct elements when a valid (empty) ContactDetailsSubscriptionModel is passed" in {
 
       val emptyForm = contactDetailsSubscriptionForm.fill(new ContactDetailsSubscriptionModel("", "" , "", "", ""))
-      lazy val page = ContactDetailsSubscription(emptyForm)(fakeRequestWithSession)
+      lazy val page = ContactDetailsSubscription(emptyForm)(authorisedFakeRequest)
       lazy val document = Jsoup.parse(page.body)
 
       document.title() shouldBe Messages("page.registrationInformation.ContactDetailsSubscription.title")
@@ -73,7 +73,7 @@ class ContactDetailsSubscriptionSpec extends UnitSpec with WithFakeApplication w
     "Verify that the proposed investment page contains the correct elements (error elements) when an invalid ContactDetailsSubscriptionModel is submitted" in {
 
       val emptyForm = contactDetailsSubscriptionForm.bind(Map("firstname" -> "", "lastname" -> "", "telephone" -> "T", "telephone2" -> "", "email" -> ""))
-      lazy val emptyPage = ContactDetailsSubscription(emptyForm)(fakeRequestWithSession)
+      lazy val emptyPage = ContactDetailsSubscription(emptyForm)(authorisedFakeRequest)
       lazy val document = Jsoup.parse(emptyPage.body)
 
       document.title() shouldBe Messages("page.registrationInformation.ContactDetailsSubscription.title")

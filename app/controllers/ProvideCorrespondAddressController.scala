@@ -16,9 +16,10 @@
 
 package controllers
 
+import auth.AuthorisedForTAVC
 import common.KeystoreKeys
+import config.{FrontendAppConfig, FrontendAuthConnector}
 import connectors.KeystoreConnector
-import controllers.predicates.ValidActiveSession
 import play.api.mvc.Action
 import models.ProvideCorrespondAddressModel
 import forms.ProvideCorrespondAddressForm._
@@ -29,21 +30,23 @@ import scala.concurrent.Future
 
 object ProvideCorrespondAddressController extends ProvideCorrespondAddressController
 {
+  override lazy val applicationConfig = FrontendAppConfig
+  override lazy val authConnector = FrontendAuthConnector
   val keyStoreConnector: KeystoreConnector = KeystoreConnector
 }
 
-trait ProvideCorrespondAddressController extends FrontendController with ValidActiveSession {
+trait ProvideCorrespondAddressController extends FrontendController with AuthorisedForTAVC {
 
   val keyStoreConnector: KeystoreConnector
 
-  val show = ValidateSession.async { implicit request =>
+  val show = Authorised.async { implicit user => implicit request =>
     keyStoreConnector.fetchAndGetFormData[ProvideCorrespondAddressModel](KeystoreKeys.provideCorrespondAddress).map {
       case Some(data) => Ok(ProvideCorrespondAddress(provideCorrespondAddressForm.fill(data)))
       case None => Ok(ProvideCorrespondAddress(provideCorrespondAddressForm))
     }
   }
 
-  val submit = Action.async { implicit request =>
+  val submit = Authorised.async { implicit user => implicit request =>
     provideCorrespondAddressForm.bindFromRequest().fold(
       formWithErrors => {
         Future.successful(BadRequest(ProvideCorrespondAddress(formWithErrors)))

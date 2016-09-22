@@ -17,7 +17,7 @@
 package views
 
 import connectors.KeystoreConnector
-import controllers.helpers.FakeRequestHelper._
+import controllers.helpers.FakeRequestHelper
 import controllers.{ProvideCorrespondAddressController, routes}
 import forms.ProvideCorrespondAddressForm._
 import models.ProvideCorrespondAddressModel
@@ -28,7 +28,7 @@ import play.api.test.Helpers._
 import uk.gov.hmrc.play.test.{UnitSpec, WithFakeApplication}
 import views.html.registrationInformation.ProvideCorrespondAddress
 
-class ProvideCorrespondAddressSpec extends UnitSpec with MockitoSugar with WithFakeApplication{
+class ProvideCorrespondAddressSpec extends UnitSpec with MockitoSugar with WithFakeApplication with FakeRequestHelper{
 
   val mockKeystoreConnector = mock[KeystoreConnector]
 
@@ -56,16 +56,9 @@ class ProvideCorrespondAddressSpec extends UnitSpec with MockitoSugar with WithF
     "postcode" -> "",
     "country" -> "J"))
 
-  lazy val page = ProvideCorrespondAddress(form)(fakeRequestWithSession)
-  lazy val emptyPage = ProvideCorrespondAddress(emptyForm)(fakeRequestWithSession)
-  lazy val errorPage = ProvideCorrespondAddress(errorForm)(fakeRequestWithSession)
-
-  class SetupPage {
-
-    val controller = new ProvideCorrespondAddressController{
-      val keyStoreConnector: KeystoreConnector = mockKeystoreConnector
-    }
-  }
+  lazy val page = ProvideCorrespondAddress(form)(authorisedFakeRequest)
+  lazy val emptyPage = ProvideCorrespondAddress(emptyForm)(authorisedFakeRequest)
+  lazy val errorPage = ProvideCorrespondAddress(errorForm)(authorisedFakeRequest)
 
   "The Provide Correspondence Address page" should {
 
@@ -90,7 +83,7 @@ class ProvideCorrespondAddressSpec extends UnitSpec with MockitoSugar with WithF
     }
 
     "Verify that the Provide Correspondence Address page contains the correct elements " +
-      "when an empty ProvideCorrespondAddressModel is passed" in new SetupPage {
+      "when an empty ProvideCorrespondAddressModel is passed" in {
 
       lazy val document = {
         Jsoup.parse(contentAsString(emptyPage))
@@ -109,7 +102,7 @@ class ProvideCorrespondAddressSpec extends UnitSpec with MockitoSugar with WithF
     }
 
     "Verify that the Provide Correspondence Address page contains the correct elements " +
-      "when an invalid ProvideCorrespondAddressModel is passed" in new SetupPage {
+      "when an invalid ProvideCorrespondAddressModel is passed" in {
 
       lazy val document = {
         Jsoup.parse(contentAsString(errorPage))

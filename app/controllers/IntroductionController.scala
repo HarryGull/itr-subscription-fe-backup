@@ -41,7 +41,7 @@ trait IntroductionController extends FrontendController with AuthorisedForTAVC{
     Future.successful(Ok(Introduction()))
   }
 
-  val submit = Action.async { implicit request =>
+  val submit = Authorised.async { implicit user => implicit request =>
     Future.successful(Redirect(routes.ConfirmCorrespondAddressController.show()))
   }
 

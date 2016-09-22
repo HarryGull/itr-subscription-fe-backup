@@ -16,11 +16,15 @@
 
 package controllers
 
+import java.net.URLEncoder
 import java.util.UUID
 
+import auth.{MockAuthConnector, MockConfig}
 import builders.SessionBuilder
 import common.Constants
+import config.{FrontendAppConfig, FrontendAuthConnector}
 import connectors.KeystoreConnector
+import controllers.helpers.FakeRequestHelper
 import models.ContactDetailsSubscriptionModel
 import org.mockito.Matchers
 import org.mockito.Mockito._
@@ -37,30 +41,20 @@ import uk.gov.hmrc.play.test.UnitSpec
 
 import scala.concurrent.Future
 
-class ContactDetailsSubscriptionControllerSpec extends UnitSpec with MockitoSugar with BeforeAndAfterEach with OneServerPerSuite{
+class ContactDetailsSubscriptionControllerSpec extends UnitSpec with MockitoSugar with BeforeAndAfterEach with OneServerPerSuite with FakeRequestHelper{
 
   val mockKeyStoreConnector = mock[KeystoreConnector]
 
 
   object ContactDetailsSubscriptionControllerTest extends ContactDetailsSubscriptionController {
+    override lazy val applicationConfig = FrontendAppConfig
+    override lazy val authConnector = MockAuthConnector
     val keyStoreConnector: KeystoreConnector = mockKeyStoreConnector
   }
 
   val model = ContactDetailsSubscriptionModel("Dagumi","Fujiwara","86","86","dagumi.tofuboy@akinaSpeedStars.com")
   val cacheMap: CacheMap = CacheMap("", Map("" -> Json.toJson(model)))
   val keyStoreSavedContactDetailsSubscription = ContactDetailsSubscriptionModel("Dagumi","Fujiwara","86","86","dagumi.tofuboy@akinaSpeedStars.com")
-
-  def showWithSession(test: Future[Result] => Any) {
-    val sessionId = s"user-${UUID.randomUUID}"
-    val result = ContactDetailsSubscriptionControllerTest.show().apply(SessionBuilder.buildRequestWithSession(sessionId))
-    test(result)
-  }
-
-  def submitWithSession(request: FakeRequest[AnyContentAsFormUrlEncoded])(test: Future[Result] => Any) {
-    val sessionId = s"user-${UUID.randomUUID}"
-    val result = ContactDetailsSubscriptionControllerTest.submit.apply(SessionBuilder.updateRequestFormWithSession(request, sessionId))
-    test(result)
-  }
 
   implicit val hc = HeaderCarrier()
 
@@ -74,12 +68,18 @@ class ContactDetailsSubscriptionControllerSpec extends UnitSpec with MockitoSuga
     }
   }
 
+  "ContactDetailsSubscriptionController" should {
+    "use the correct auth connector" in {
+      ContactDetailsSubscriptionController.authConnector shouldBe FrontendAuthConnector
+    }
+  }
+
   "Sending a GET request to ContactDetailsSubscriptionController" should {
     "return a 200 when something is fetched from keystore" in {
       when(mockKeyStoreConnector.saveFormData(Matchers.any(), Matchers.any())(Matchers.any(), Matchers.any())).thenReturn(cacheMap)
       when(mockKeyStoreConnector.fetchAndGetFormData[ContactDetailsSubscriptionModel](Matchers.any())(Matchers.any(), Matchers.any()))
         .thenReturn(Future.successful(Option(keyStoreSavedContactDetailsSubscription)))
-      showWithSession(
+      showWithSessionAndAuth(ContactDetailsSubscriptionControllerTest.show)(
         result => status(result) shouldBe OK
       )
     }
@@ -88,22 +88,59 @@ class ContactDetailsSubscriptionControllerSpec extends UnitSpec with MockitoSuga
       when(mockKeyStoreConnector.saveFormData(Matchers.any(), Matchers.any())(Matchers.any(), Matchers.any())).thenReturn(cacheMap)
       when(mockKeyStoreConnector.fetchAndGetFormData[ContactDetailsSubscriptionModel](Matchers.any())(Matchers.any(), Matchers.any()))
         .thenReturn(Future.successful(None))
-      showWithSession(
+      showWithSessionAndAuth(ContactDetailsSubscriptionControllerTest.show)(
         result => status(result) shouldBe OK
+      )
+    }
+  }
+
+  "Sending an Unauthenticated request with a session to ContactDetailsSubscriptionController" should {
+    "return a 302 and redirect to GG login" in {
+      showWithSessionWithoutAuth(ContactDetailsSubscriptionControllerTest.show())(
+        result => {
+          status(result) shouldBe SEE_OTHER
+          redirectLocation(result) shouldBe Some(s"${FrontendAppConfig.ggSignInUrl}?continue=${
+            URLEncoder.encode(MockConfig.introductionUrl,"UTF-8")
+          }&origin=investment-tax-relief-subscription-frontend&accountType=organisation")
+        }
+      )
+    }
+  }
+
+  "Sending a request with no session to ContactDetailsSubscriptionController" should {
+    "return a 302 and redirect to GG login" in {
+      showWithoutSession(ContactDetailsSubscriptionControllerTest.show())(
+        result => {
+          status(result) shouldBe SEE_OTHER
+          redirectLocation(result) shouldBe Some(s"${FrontendAppConfig.ggSignInUrl}?continue=${
+            URLEncoder.encode(MockConfig.introductionUrl,"UTF-8")
+          }&origin=investment-tax-relief-subscription-frontend&accountType=organisation")
+        }
+      )
+    }
+  }
+
+  "Sending a timed-out request to ContactDetailsSubscriptionController" should {
+    "return a 302 and redirect to the timeout page" in {
+      showWithTimeout(ContactDetailsSubscriptionControllerTest.show())(
+        result => {
+          status(result) shouldBe SEE_OTHER
+          redirectLocation(result) shouldBe Some(routes.TimeoutController.timeout().url)
+        }
       )
     }
   }
 
   "Sending a valid form submit to the ContactDetailsSubscriptionController" should {
     "redirect to the Confirm Correspondence Address Controller page" in {
-      val request = FakeRequest().withFormUrlEncodedBody(
-        "firstName" -> "Dagumi",
+
+      val formInput = Seq("firstName" -> "Dagumi",
         "lastName" -> "Fujiwara",
         "telephoneNumber" -> "94594594586",
         "telephoneNumber2" -> "",
-        "email" -> "dagumi.tofuboy@akinaSpeedStars.com"
-      )
-      submitWithSession(request)(
+        "email" -> "dagumi.tofuboy@akinaSpeedStars.com")
+
+      submitWithSessionAndAuth(ContactDetailsSubscriptionControllerTest.submit,formInput:_*)(
         result => {
           status(result) shouldBe SEE_OTHER
           redirectLocation(result) shouldBe Some("/investment-tax-relief-subscription/confirm-correspondence-address")
@@ -114,14 +151,15 @@ class ContactDetailsSubscriptionControllerSpec extends UnitSpec with MockitoSuga
 
   "Sending an invalid form submission with validation errors to the ContactDetailsSubscriptionController" should {
     "redirect with a bad request" in {
-      val request = FakeRequest().withFormUrlEncodedBody(
-        "firstName" -> "Dagumi",
+
+      val formInput =
+        Seq("firstName" -> "Dagumi",
         "lastName" -> "Fujiwara",
         "telephoneNumber" -> "94594594586",
         "telephoneNumber2" -> "",
-        "email" -> ""
-      )
-      submitWithSession(request)(
+        "email" -> "")
+
+      submitWithSessionAndAuth(ContactDetailsSubscriptionControllerTest.submit,formInput:_*)(
         result => {
           status(result) shouldBe BAD_REQUEST
         }
@@ -132,15 +170,51 @@ class ContactDetailsSubscriptionControllerSpec extends UnitSpec with MockitoSuga
   "Sending an empty invalid form submission with validation errors to the ContactDetailsSubscriptionController" should {
     "redirect to itself" in {
 
-      val request = FakeRequest().withFormUrlEncodedBody(
-        "addressline1" -> "Akina Speed Stars"
-      )
+      val formInput = "addressline1" -> "Akina Speed Stars"
 
-      submitWithSession(request)(
+
+      submitWithSessionAndAuth(ContactDetailsSubscriptionControllerTest.submit,formInput)(
         result => {
           status(result) shouldBe BAD_REQUEST
         }
       )
     }
   }
+
+  "Sending a submission to the ContactDetailsSubscriptionController when not authenticated" should {
+
+    "redirect to the GG login page when having a session but not authenticated" in {
+      submitWithSessionWithoutAuth(ContactDetailsSubscriptionControllerTest.submit)(
+        result => {
+          status(result) shouldBe SEE_OTHER
+          redirectLocation(result) shouldBe Some(s"${FrontendAppConfig.ggSignInUrl}?continue=${
+            URLEncoder.encode(MockConfig.introductionUrl,"UTF-8")
+          }&origin=investment-tax-relief-subscription-frontend&accountType=organisation")
+        }
+      )
+    }
+
+    "redirect to the GG login page with no session" in {
+      submitWithoutSession(ContactDetailsSubscriptionControllerTest.submit)(
+        result => {
+          status(result) shouldBe SEE_OTHER
+          redirectLocation(result) shouldBe Some(s"${FrontendAppConfig.ggSignInUrl}?continue=${
+            URLEncoder.encode(MockConfig.introductionUrl,"UTF-8")
+          }&origin=investment-tax-relief-subscription-frontend&accountType=organisation")
+        }
+      )
+    }
+  }
+
+  "Sending a submission to the ContactDetailsSubscriptionController when a timeout has occured" should {
+    "redirect to the Timeout page when session has timed out" in {
+      submitWithTimeout(ContactDetailsSubscriptionControllerTest.submit)(
+        result => {
+          status(result) shouldBe SEE_OTHER
+          redirectLocation(result) shouldBe Some(routes.TimeoutController.timeout().url)
+        }
+      )
+    }
+  }
+
 }

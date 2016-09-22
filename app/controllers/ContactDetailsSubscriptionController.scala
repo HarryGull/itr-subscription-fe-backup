@@ -16,9 +16,10 @@
 
 package controllers
 
+import auth.AuthorisedForTAVC
 import common.KeystoreKeys
+import config.{FrontendAppConfig, FrontendAuthConnector}
 import connectors.KeystoreConnector
-import controllers.predicates.ValidActiveSession
 import play.api.mvc.Action
 import models.ContactDetailsSubscriptionModel
 import forms.ContactDetailsSubscriptionForm._
@@ -29,21 +30,23 @@ import scala.concurrent.Future
 
 object ContactDetailsSubscriptionController extends ContactDetailsSubscriptionController
 {
+  override lazy val applicationConfig = FrontendAppConfig
+  override lazy val authConnector = FrontendAuthConnector
   val keyStoreConnector: KeystoreConnector = KeystoreConnector
 }
 
-trait ContactDetailsSubscriptionController extends FrontendController with ValidActiveSession {
+trait ContactDetailsSubscriptionController extends FrontendController with AuthorisedForTAVC {
 
   val keyStoreConnector: KeystoreConnector
 
-  val show = ValidateSession.async { implicit request =>
+  val show = Authorised.async { implicit user => implicit request =>
     keyStoreConnector.fetchAndGetFormData[ContactDetailsSubscriptionModel](KeystoreKeys.contactDetailsSubscription).map {
       case Some(data) => Ok(ContactDetailsSubscription(contactDetailsSubscriptionForm.fill(data)))
       case None => Ok(ContactDetailsSubscription(contactDetailsSubscriptionForm))
     }
   }
 
-  val submit = Action.async { implicit request =>
+  val submit = Authorised.async { implicit user => implicit request =>
     contactDetailsSubscriptionForm.bindFromRequest().fold(
       formWithErrors => {
         Future.successful(BadRequest(ContactDetailsSubscription(formWithErrors)))

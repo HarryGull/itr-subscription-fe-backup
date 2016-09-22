@@ -20,7 +20,7 @@ import java.util.UUID
 
 import common.Constants
 import connectors.KeystoreConnector
-import controllers.helpers.FakeRequestHelper._
+import controllers.helpers.FakeRequestHelper
 import controllers.{ConfirmCorrespondAddressController, routes}
 import forms.ConfirmCorrespondAddressForm._
 import models.ConfirmCorrespondAddressModel
@@ -36,7 +36,7 @@ import views.html.registrationInformation.ConfirmCorrespondAddress
 
 import scala.concurrent.Future
 
-class ConfirmCorrespondAddressSpec extends UnitSpec with MockitoSugar with WithFakeApplication{
+class ConfirmCorrespondAddressSpec extends UnitSpec with MockitoSugar with WithFakeApplication with FakeRequestHelper{
 
   val mockKeystoreConnector = mock[KeystoreConnector]
 
@@ -45,8 +45,8 @@ class ConfirmCorrespondAddressSpec extends UnitSpec with MockitoSugar with WithF
 
   lazy val form = confirmCorrespondAddressForm.bind(Map("contactAddressUse" -> Constants.StandardRadioButtonYesValue))
   lazy val emptyForm = confirmCorrespondAddressForm.bind(Map("contactAddressUse" -> ""))
-  lazy val page = ConfirmCorrespondAddress(form)(fakeRequestWithSession)
-  lazy val emptyPage = ConfirmCorrespondAddress(emptyForm)(fakeRequestWithSession)
+  lazy val page = ConfirmCorrespondAddress(form)(authorisedFakeRequest)
+  lazy val emptyPage = ConfirmCorrespondAddress(emptyForm)(authorisedFakeRequest)
 
   "The Confirm Correspondence Address page" should {
 
