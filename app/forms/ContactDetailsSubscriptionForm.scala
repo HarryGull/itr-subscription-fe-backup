@@ -14,20 +14,20 @@
  * limitations under the License.
  */
 
-package controllers
+package forms
 
-import views.html.warnings._
-import play.api.mvc.{Action, AnyContent}
-import uk.gov.hmrc.play.frontend.controller.FrontendController
-import uk.gov.hmrc.play.http.{HeaderCarrier, SessionKeys}
+import models.ContactDetailsSubscriptionModel
+import play.api.data.Form
+import play.api.data.Forms._
 
-import scala.concurrent.Future
-
-object TimeoutController extends TimeoutController
-
-trait TimeoutController extends FrontendController {
-
-  def timeout:Action[AnyContent] = Action.async { implicit request =>
-    Future.successful(Ok(sessionTimeout()))
-  }
+object ContactDetailsSubscriptionForm {
+  val contactDetailsSubscriptionForm = Form(
+    mapping(
+      "firstName" -> nonEmptyText,
+      "lastName" -> nonEmptyText,
+      "telephoneNumber" -> utils.Validation.telephoneNumberCheck,
+      "telephoneNumber2" -> utils.Validation.optionalTelephoneNumberCheck,
+      "email" -> utils.Validation.emailCheck
+    )(ContactDetailsSubscriptionModel.apply)(ContactDetailsSubscriptionModel.unapply)
+  )
 }

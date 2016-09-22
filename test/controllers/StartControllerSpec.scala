@@ -16,11 +16,11 @@
 
 package controllers
 
+import controllers.helpers.FakeRequestHelper
 import uk.gov.hmrc.play.test.{UnitSpec, WithFakeApplication}
-import helpers.FakeRequestHelper._
 import play.api.http.Status
 
-class StartControllerSpec extends UnitSpec with WithFakeApplication {
+class StartControllerSpec extends UnitSpec with WithFakeApplication with FakeRequestHelper{
 
   "StartController.start" should {
 

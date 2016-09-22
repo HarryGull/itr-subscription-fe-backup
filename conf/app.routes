@@ -12,3 +12,18 @@ GET        /hello-world                             controllers.HelloWorld.hello
 GET        /                                        controllers.StartController.start
 GET        /introduction                            controllers.IntroductionController.show
 POST       /introduction                            controllers.IntroductionController.submit
+
+GET        /confirm-correspondence-address          controllers.ConfirmCorrespondAddressController.show
+POST       /confirm-correspondence-address          controllers.ConfirmCorrespondAddressController.submit
+
+GET        /provide-correspondence-address          controllers.ProvideCorrespondAddressController.show
+POST       /provide-correspondence-address          controllers.ProvideCorrespondAddressController.submit
+
+GET        /contact-details-subscription            controllers.ContactDetailsSubscriptionController.show
+POST       /contact-details-subscription            controllers.ContactDetailsSubscriptionController.submit
+
+#Session Timeout route
+#####################################################################################################################
+GET         /session-timeout         controllers.TimeoutController.timeout
+GET         /restart                 controllers.IntroductionController.restart
+#####################################################################################################################

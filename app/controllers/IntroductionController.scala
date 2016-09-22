@@ -16,28 +16,38 @@
 
 package controllers
 
+import connectors.KeystoreConnector
 import config.{FrontendAuthConnector, FrontendAppConfig}
 import auth.AuthorisedForTAVC
 import uk.gov.hmrc.play.frontend.controller.FrontendController
 import uk.gov.hmrc.play.http.HeaderCarrier
 import play.api.mvc._
+
 import scala.concurrent.Future
 import views.html.introduction._
 
 object IntroductionController extends IntroductionController{
   override lazy val applicationConfig = FrontendAppConfig
   override lazy val authConnector = FrontendAuthConnector
+  val keyStoreConnector: KeystoreConnector = KeystoreConnector
 }
 
 trait IntroductionController extends FrontendController with AuthorisedForTAVC{
 
   implicit val hc = new HeaderCarrier()
+  val keystoreConnector: KeystoreConnector = KeystoreConnector
 
   val show = Authorised.async { implicit user => implicit request =>
     Future.successful(Ok(Introduction()))
   }
 
-  val submit = Action.async { implicit request =>
-    Future.successful(Ok)
+  val submit = Authorised.async { implicit user => implicit request =>
+    Future.successful(Redirect(routes.ConfirmCorrespondAddressController.show()))
+  }
+
+  // this method is called on any restart - e.g. on session timeout
+  def restart(): Action[AnyContent] = Action.async { implicit request =>
+    keystoreConnector.clearKeystore()
+    Future.successful(Redirect(routes.StartController.start()))
   }
 }

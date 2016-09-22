@@ -14,20 +14,17 @@
  * limitations under the License.
  */
 
-package controllers
+package models
 
-import views.html.warnings._
-import play.api.mvc.{Action, AnyContent}
-import uk.gov.hmrc.play.frontend.controller.FrontendController
-import uk.gov.hmrc.play.http.{HeaderCarrier, SessionKeys}
+import play.api.libs.json.Json
 
-import scala.concurrent.Future
+case class ContactDetailsSubscriptionModel(firstName : String,
+                                         lastName : String,
+                                         telephoneNumber : String,
+                                         telephoneNumber2 : String,
+                                         email : String)
 
-object TimeoutController extends TimeoutController
-
-trait TimeoutController extends FrontendController {
-
-  def timeout:Action[AnyContent] = Action.async { implicit request =>
-    Future.successful(Ok(sessionTimeout()))
-  }
+object ContactDetailsSubscriptionModel {
+  implicit val format = Json.format[ContactDetailsSubscriptionModel]
+  implicit val writes = Json.writes[ContactDetailsSubscriptionModel]
 }

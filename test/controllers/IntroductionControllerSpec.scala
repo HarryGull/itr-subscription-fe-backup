@@ -16,21 +16,32 @@
 
 package controllers
 
-import java.net.URLEncoder
-
 import auth.MockConfig
 import auth.MockAuthConnector
-import config.FrontendAppConfig
-import controllers.helpers.FakeRequestHelper._
+import common.Encoder._
+import config.{FrontendAppConfig, FrontendAuthConnector}
+import connectors.KeystoreConnector
+import controllers.helpers.FakeRequestHelper
 import play.api.test.Helpers._
 import uk.gov.hmrc.play.test.{UnitSpec, WithFakeApplication}
-import play.api.http.Status
 
-class IntroductionControllerSpec extends UnitSpec with WithFakeApplication {
+class IntroductionControllerSpec extends UnitSpec with WithFakeApplication with FakeRequestHelper{
 
   object TestIntroductionController extends IntroductionController {
     override lazy val applicationConfig = FrontendAppConfig
     override lazy val authConnector = MockAuthConnector
+  }
+
+  "IntroductionController" should {
+    "use the correct keystore connector" in {
+      IntroductionController.keyStoreConnector shouldBe KeystoreConnector
+    }
+  }
+
+  "IntroductionController" should {
+    "use the correct auth connector" in {
+      IntroductionController.authConnector shouldBe FrontendAuthConnector
+    }
   }
 
   "IntroductionController.introduction" should {
@@ -44,7 +55,7 @@ class IntroductionControllerSpec extends UnitSpec with WithFakeApplication {
       }
 
       s"should redirect to GG login" in {
-        redirectLocation(result) shouldBe Some(s"${FrontendAppConfig.ggSignInUrl}?continue=${URLEncoder.encode(MockConfig.introductionUrl)}&origin=investment-tax-relief-subscription-frontend&accountType=organisation")
+        redirectLocation(result) shouldBe Some(s"${FrontendAppConfig.ggSignInUrl}?continue=${encode(MockConfig.introductionUrl)}&origin=investment-tax-relief-subscription-frontend&accountType=organisation")
       }
     }
 
@@ -57,7 +68,7 @@ class IntroductionControllerSpec extends UnitSpec with WithFakeApplication {
       }
 
       s"should redirect to GG login" in {
-        redirectLocation(result) shouldBe Some(s"${FrontendAppConfig.ggSignInUrl}?continue=${URLEncoder.encode(MockConfig.introductionUrl)}&origin=investment-tax-relief-subscription-frontend&accountType=organisation")
+        redirectLocation(result) shouldBe Some(s"${FrontendAppConfig.ggSignInUrl}?continue=${encode(MockConfig.introductionUrl)}&origin=investment-tax-relief-subscription-frontend&accountType=organisation")
       }
     }
 
@@ -82,6 +93,9 @@ class IntroductionControllerSpec extends UnitSpec with WithFakeApplication {
         redirectLocation(result) shouldBe Some(routes.TimeoutController.timeout().url)
       }
     }
+
+
+
   }
 }
 

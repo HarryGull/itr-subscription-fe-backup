@@ -1,11 +1,13 @@
 #common
 common.button.next=Next
+common.button.continue=Continue
 common.button.continueNextSection=continue to next section
 common.button.snc=Save and continue
 common.button.sign-in=Sign in
 common.button.back=Back
 common.button.start=Start now
 common.button.findAddress=Find address
+common.button.checkAnswers=Check your answers
 common.errorSummary.label=The following errors were identified on this page.
 common.radioNoLabel=No
 common.radioYesLabel=Yes
@@ -15,6 +17,22 @@ common.signInOut=Sign in/out
 common.feedbackFirst=This is a new service – your
 common.feedbackSecond=will help us to improve it.
 common.feedbackLinkText=feedback
+
+## Common report error ##
+common.error.summary.heading=This page has errors
+common.error.help.text=Get help with this page.
+common.error.missingField= This field is required
+
+#validation errors
+validation.error.countrypostcode=Only one of country or postcode should be entered
+validation.error.optionaladdresssline=Address line must be no more than 27 valid characters if entered
+validation.error.mandatoryaddresssline=Address line must be entered and no more than 27 characters
+validation.error.email=Enter a valid email address
+validation.error.telephoneNumber=Please enter a valid telephone number
+validation.error.postcode=Please enter a valid postcode
+validation.error.country=Country must be no more than 20 valid characters if entered
+validation.error.linefouraddresssline=Address line must be no more than 17 valid characters if entered
+
 
 #Welcome page
 page.introduction.welcome.title=WelcomeSubscription
@@ -29,4 +47,33 @@ page.introduction.welcome.helpFirst=You will not be able to save your applicatio
 page.introduction.welcome.helpSecond=On completion you will be able to download your application to email as an attachment.
 page.introduction.welcome.schemeGuidance=scheme guidance
 
+##common section headings##
+common.section.progress.registration= Register for this service
+
+## Session Timeout message ##
+session.timeout.message=Your session has ended
+session.timeout.startAgain=Start again
+
+#Confirm Correspondence Address
+page.registrationInformation.ConfirmCorrespondAddress.heading=Is this your correspondence address?
+page.registrationInformation.ConfirmCorrespondAddress.title=Confirm correspondence address
+
+#Provide Correspondence Address
+page.registrationInformation.ProvideCorrespondAddress.heading=Where should we send your correspondence?
+page.registrationInformation.ProvideCorrespondAddress.title=Provide correspondence address
+page.registrationInformation.ProvideCorrespondAddress.addressline1.label=Address
+page.registrationInformation.ProvideCorrespondAddress.addressline2.label=
+page.registrationInformation.ProvideCorrespondAddress.addressline3.label=(optional)
+page.registrationInformation.ProvideCorrespondAddress.addressline4.label=(optional)
+page.registrationInformation.ProvideCorrespondAddress.postcode.label=Postcode (optional)
+page.registrationInformation.ProvideCorrespondAddress.country.label=Country
+
+#Contact Details Subscription
+page.registrationInformation.ContactDetailsSubscription.heading= Who should we contact?
+page.registrationInformation.ContactDetailsSubscription.title= Contact details subscription
+page.registrationInformation.ContactDetailsSubscription.firstName.label=First Name
+page.registrationInformation.ContactDetailsSubscription.lastName.label=Last Name
+page.registrationInformation.ContactDetailsSubscription.telephoneNumber.label= Telephone Number
+page.registrationInformation.ContactDetailsSubscription.telephoneNumber2.label= Telephone Number 2 (optional)
+page.registrationInformation.ContactDetailsSubscription.email.label= Email
 

@@ -14,20 +14,18 @@
  * limitations under the License.
  */
 
-package controllers
+package models
 
-import views.html.warnings._
-import play.api.mvc.{Action, AnyContent}
-import uk.gov.hmrc.play.frontend.controller.FrontendController
-import uk.gov.hmrc.play.http.{HeaderCarrier, SessionKeys}
+import play.api.libs.json.Json
 
-import scala.concurrent.Future
+case class ProvideCorrespondAddressModel(addressline1 : String,
+                                         addressline2 : String,
+                                         addressline3 : String,
+                                         addressline4 : String,
+                                         postcode : String,
+                                         country : String)
 
-object TimeoutController extends TimeoutController
-
-trait TimeoutController extends FrontendController {
-
-  def timeout:Action[AnyContent] = Action.async { implicit request =>
-    Future.successful(Ok(sessionTimeout()))
-  }
+object ProvideCorrespondAddressModel {
+  implicit val format = Json.format[ProvideCorrespondAddressModel]
+  implicit val writes = Json.writes[ProvideCorrespondAddressModel]
 }

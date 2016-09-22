@@ -14,20 +14,13 @@
  * limitations under the License.
  */
 
-package controllers
+package common
 
-import views.html.warnings._
-import play.api.mvc.{Action, AnyContent}
-import uk.gov.hmrc.play.frontend.controller.FrontendController
-import uk.gov.hmrc.play.http.{HeaderCarrier, SessionKeys}
+import java.net.URLEncoder
 
-import scala.concurrent.Future
+object Encoder {
 
-object TimeoutController extends TimeoutController
+ val encodeType = "UTF-8"
+ val encode = (s: String) => URLEncoder.encode(s, encodeType)
 
-trait TimeoutController extends FrontendController {
-
-  def timeout:Action[AnyContent] = Action.async { implicit request =>
-    Future.successful(Ok(sessionTimeout()))
-  }
 }

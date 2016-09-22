@@ -1,0 +1,79 @@
+@import models.ContactDetailsSubscriptionModel
+@import uk.gov.hmrc.play.views.html.helpers.form
+@import views.html.helpers.{backButtonWithProgress, input, errorSummary}
+
+@(contactDetailsSubscriptionForm: Form[ContactDetailsSubscriptionModel])(implicit request: Request[_])
+
+@main_template(Messages("page.registrationInformation.ContactDetailsSubscription.title")) {
+
+@backButtonWithProgress(controllers.routes.ConfirmCorrespondAddressController.show().url, Messages("common.section.progress.registration"))
+
+<div class="grid-row">
+    <div class="column-two-thirds">
+
+        @errorSummary(contactDetailsSubscriptionForm, "provide-correspondence-address")
+
+        <h1 id="main-heading" class="form-title heading-xlarge">@Messages("page.registrationInformation.ContactDetailsSubscription.heading")</h1>
+
+        @form(action = controllers.routes.ContactDetailsSubscriptionController.submit()) {
+        <div class="form-group">
+
+            @input(
+            contactDetailsSubscriptionForm("firstName"),
+            '_divClass -> "form-label",
+            '_labelId -> "label-firstName",
+            '_label -> Messages("page.registrationInformation.ContactDetailsSubscription.firstName.label"),
+            '_maxlength -> "35",
+            '_inputClass -> "input--medium input--cleared",
+            'id -> "firstName"
+            )
+
+            @input(
+            contactDetailsSubscriptionForm("lastName"),
+            '_divClass -> "form-label",
+            '_labelId -> "label-lastName",
+            '_label -> Messages("page.registrationInformation.ContactDetailsSubscription.lastName.label"),
+            '_maxlength -> "35",
+            '_inputClass -> "input--medium input--cleared",
+            'id -> "lastName"
+            )
+
+            @input(
+            contactDetailsSubscriptionForm("telephoneNumber"),
+            '_divClass -> "form-label",
+            '_labelId -> "label-telephoneNumber",
+            '_label -> Messages("page.registrationInformation.ContactDetailsSubscription.telephoneNumber.label"),
+            '_maxlength -> "24",
+            '_inputClass -> "input--medium input--cleared",
+            'id -> "telephoneNumber"
+            )
+
+            @input(
+            contactDetailsSubscriptionForm("telephoneNumber2"),
+            '_divClass -> "form-label",
+            '_labelId -> "label-telephoneNumber2",
+            '_label -> Messages("page.registrationInformation.ContactDetailsSubscription.telephoneNumber2.label"),
+            '_maxlength -> "24",
+            '_inputClass -> "input--medium input--cleared",
+            'id -> "telephoneNumber2"
+            )
+
+            @input(
+            contactDetailsSubscriptionForm("email"),
+            '_divClass -> "form-label",
+            '_labelId -> "label-email",
+            '_label -> Messages("page.registrationInformation.ContactDetailsSubscription.email.label"),
+            '_maxlength -> "129",
+            '_inputClass -> "input--medium input--cleared",
+            'id -> "email"
+            )
+
+        </div>
+        <div class="form-group">
+            <button class="btn button" id="next">@Messages("common.button.continue")</button>
+        </div>
+        }
+    </div>
+</div>
+
+}

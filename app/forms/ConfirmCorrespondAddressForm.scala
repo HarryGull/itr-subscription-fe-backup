@@ -14,20 +14,16 @@
  * limitations under the License.
  */
 
-package controllers
+package forms
 
-import views.html.warnings._
-import play.api.mvc.{Action, AnyContent}
-import uk.gov.hmrc.play.frontend.controller.FrontendController
-import uk.gov.hmrc.play.http.{HeaderCarrier, SessionKeys}
+import models.ConfirmCorrespondAddressModel
+import play.api.data.Form
+import play.api.data.Forms._
 
-import scala.concurrent.Future
-
-object TimeoutController extends TimeoutController
-
-trait TimeoutController extends FrontendController {
-
-  def timeout:Action[AnyContent] = Action.async { implicit request =>
-    Future.successful(Ok(sessionTimeout()))
-  }
+object ConfirmCorrespondAddressForm {
+  val confirmCorrespondAddressForm = Form(
+    mapping(
+      "contactAddressUse" -> nonEmptyText
+    )(ConfirmCorrespondAddressModel.apply)(ConfirmCorrespondAddressModel.unapply)
+  )
 }
