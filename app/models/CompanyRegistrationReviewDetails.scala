@@ -18,14 +18,15 @@ package models
 
 import play.api.libs.json.Json
 
-case class ProvideCorrespondAddressModel(addressline1 : String,
-                                         addressline2 : String,
-                                         addressline3 : String,
-                                         addressline4 : String,
-                                         postcode : String,
-                                         country : String)
+case class CompanyRegistrationReviewDetailsModel(businessName: String,
+                         businessType: Option[String],
+                         businessAddress: ProvideCorrespondAddressModel,
+                         sapNumber: String,
+                         safeId: String,
+                         agentReferenceNumber: Option[String] = None,
+                         firstName : Option[String] = None,
+                         lastName : Option[String] = None)
 
-object ProvideCorrespondAddressModel {
-  implicit val format = Json.format[ProvideCorrespondAddressModel]
-  implicit val writes = Json.writes[ProvideCorrespondAddressModel]
+object CompanyRegistrationReviewDetailsModel {
+  implicit val formats = Json.format[CompanyRegistrationReviewDetailsModel]
 }
