@@ -17,6 +17,7 @@
 package controllers
 
 import auth.{MockAuthConnector, MockConfig}
+import auth.mockRegisteredBusinessCustomerService
 import common.Constants
 import common.Encoder._
 import config.{FrontendAppConfig, FrontendAuthConnector}
@@ -30,6 +31,7 @@ import org.scalatest.mock.MockitoSugar
 import org.scalatestplus.play.OneServerPerSuite
 import play.api.libs.json.Json
 import play.api.test.Helpers._
+import services.RegisteredBusinessCustomerService
 import uk.gov.hmrc.http.cache.client.CacheMap
 import uk.gov.hmrc.play.http.HeaderCarrier
 import uk.gov.hmrc.play.test.UnitSpec
@@ -45,6 +47,7 @@ class ConfirmCorrespondAddressControllerSpec extends UnitSpec with MockitoSugar 
     override lazy val applicationConfig = FrontendAppConfig
     override lazy val authConnector = MockAuthConnector
     val keyStoreConnector: KeystoreConnector = mockKeyStoreConnector
+    override val registeredBusinessCustomerService: RegisteredBusinessCustomerService = mockRegisteredBusinessCustomerService
   }
 
   val model = ConfirmCorrespondAddressModel(Constants.StandardRadioButtonYesValue)

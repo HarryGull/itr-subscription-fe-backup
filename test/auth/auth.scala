@@ -24,14 +24,18 @@ import uk.gov.hmrc.play.frontend.auth.AuthenticationProviderIds
 import uk.gov.hmrc.play.http.SessionKeys
 import uk.gov.hmrc.time.DateTimeUtils
 import java.util.UUID
-import play.api.mvc.AnyContentAsEmpty
 
-package object auth {
+import play.api.mvc.AnyContentAsEmpty
+import org.scalatest.mock.MockitoSugar
+import services.RegisteredBusinessCustomerService
+
+package object auth extends MockitoSugar {
 
   val mockUsername = "mockuser"
   val mockUserId = "/auth/oid/" + mockUsername
   val mockConfig: AppConfig = MockConfig
   val mockAuthConnector = MockAuthConnector
+  val mockRegisteredBusinessCustomerService = mock[RegisteredBusinessCustomerService]
   lazy val fakeRequest = FakeRequest()
 
   object ggSession {

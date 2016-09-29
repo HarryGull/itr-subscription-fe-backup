@@ -24,6 +24,7 @@ object AuthTestController extends AuthTestController {
 
   override lazy val applicationConfig = mockConfig
   override lazy val authConnector = mockAuthConnector
+  override lazy val registeredBusinessCustomerService = mockRegisteredBusinessCustomerService
 }
 
 trait AuthTestController extends FrontendController with AuthorisedForTAVC {
