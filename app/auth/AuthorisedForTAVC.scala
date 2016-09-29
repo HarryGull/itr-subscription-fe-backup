@@ -17,7 +17,8 @@
 package auth
 
 import play.api.mvc.{Action, AnyContent, Request, Result}
-import config.{FrontendAppConfig, AppConfig}
+import config.{AppConfig, FrontendAppConfig}
+import services.RegisteredBusinessCustomerService
 import uk.gov.hmrc.play.frontend.auth._
 import uk.gov.hmrc.play.frontend.auth.connectors.domain.Accounts
 import uk.gov.hmrc.play.http.HeaderCarrier
@@ -27,18 +28,24 @@ import scala.concurrent.Future
 trait AuthorisedForTAVC extends Actions {
 
   val applicationConfig: AppConfig
+  val registeredBusinessCustomerService: RegisteredBusinessCustomerService
   val postSignInRedirectUrl: String = FrontendAppConfig.introductionUrl
+
+  implicit private def hc(implicit request: Request[_]): HeaderCarrier = HeaderCarrier.fromHeadersAndSession(request.headers, Some(request.session))
+
+  lazy val visibilityPredicate = new TAVCCompositePageVisibilityPredicate(
+    applicationConfig.businessCustomerUrl,
+    registeredBusinessCustomerService
+  )
 
   private type PlayRequest = Request[AnyContent] => Result
   private type UserRequest = TAVCUser => PlayRequest
   private type AsyncPlayRequest = Request[AnyContent] => Future[Result]
   private type AsyncUserRequest = TAVCUser => AsyncPlayRequest
 
-  implicit private def hc(implicit request: Request[_]): HeaderCarrier = HeaderCarrier.fromHeadersAndSession(request.headers, Some(request.session))
-
   class AuthorisedBy(regime: TaxRegime) {
     def async(action: AsyncUserRequest): Action[AnyContent] = {
-      AuthorisedFor(regime, GGConfidence).async {
+      AuthorisedFor(regime, visibilityPredicate).async {
         authContext: AuthContext => implicit request =>
           action(TAVCUser(authContext))(request)
       }

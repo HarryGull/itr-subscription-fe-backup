@@ -17,11 +17,12 @@
 package controllers
 
 import connectors.KeystoreConnector
-import config.{FrontendAuthConnector, FrontendAppConfig}
+import config.{FrontendAppConfig, FrontendAuthConnector}
 import auth.AuthorisedForTAVC
 import uk.gov.hmrc.play.frontend.controller.FrontendController
 import uk.gov.hmrc.play.http.HeaderCarrier
 import play.api.mvc._
+import services.RegisteredBusinessCustomerService
 
 import scala.concurrent.Future
 import views.html.introduction._
@@ -29,6 +30,7 @@ import views.html.introduction._
 object IntroductionController extends IntroductionController{
   override lazy val applicationConfig = FrontendAppConfig
   override lazy val authConnector = FrontendAuthConnector
+  override lazy val registeredBusinessCustomerService = RegisteredBusinessCustomerService
   val keyStoreConnector: KeystoreConnector = KeystoreConnector
 }
 

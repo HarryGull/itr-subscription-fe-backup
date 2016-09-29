@@ -17,7 +17,7 @@
 package services
 
 import connectors.{BusinessCustomerDataCacheConnector, DataCacheConnector}
-import models.{CompanyRegistrationReviewDetailsModel}
+import models.CompanyRegistrationReviewDetailsModel
 import play.api.Logger
 import uk.gov.hmrc.play.http.HeaderCarrier
 import scala.concurrent.ExecutionContext.Implicits.global
@@ -30,14 +30,11 @@ trait RegisteredBusinessCustomerService {
 
   def getReviewBusinessCustomerDetails (implicit hc: HeaderCarrier) : Future[Option[CompanyRegistrationReviewDetailsModel]] = {
     dataCacheConnector.fetchAndGetReviewDetailsForSession map {
-      cachedData =>
-        cachedData match {
-          case Some(data) =>  Some(data)
-          case _ => {
-            Logger.warn(s"[RegisteredBusinessService][getReviewBusinessDetails] - No Review Details Found")
-            None
-          }
-        }
+      case Some(data) => Some(data)
+      case _ => {
+        Logger.warn(s"[RegisteredBusinessService][getReviewBusinessDetails] - No Review Details Found")
+        None
+      }
     }
   }
 }

@@ -23,6 +23,7 @@ import connectors.KeystoreConnector
 import play.api.mvc.Action
 import models.ContactDetailsSubscriptionModel
 import forms.ContactDetailsSubscriptionForm._
+import services.RegisteredBusinessCustomerService
 import uk.gov.hmrc.play.frontend.controller.FrontendController
 import views.html.registrationInformation.ContactDetailsSubscription
 
@@ -32,6 +33,7 @@ object ContactDetailsSubscriptionController extends ContactDetailsSubscriptionCo
 {
   override lazy val applicationConfig = FrontendAppConfig
   override lazy val authConnector = FrontendAuthConnector
+  override lazy val registeredBusinessCustomerService = RegisteredBusinessCustomerService
   val keyStoreConnector: KeystoreConnector = KeystoreConnector
 }
 
