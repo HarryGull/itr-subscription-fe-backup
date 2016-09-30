@@ -23,6 +23,7 @@ import connectors.KeystoreConnector
 import forms.ConfirmCorrespondAddressForm._
 import models.ConfirmCorrespondAddressModel
 import play.api.mvc.Action
+import services.RegisteredBusinessCustomerService
 import uk.gov.hmrc.play.frontend.controller.FrontendController
 import views.html.registrationInformation.ConfirmCorrespondAddress
 
@@ -31,7 +32,8 @@ import scala.concurrent.Future
 object ConfirmCorrespondAddressController extends ConfirmCorrespondAddressController{
   override lazy val applicationConfig = FrontendAppConfig
   override lazy val authConnector = FrontendAuthConnector
-  val keyStoreConnector: KeystoreConnector = KeystoreConnector
+  override lazy val registeredBusinessCustomerService = RegisteredBusinessCustomerService
+  override val keyStoreConnector = KeystoreConnector
 }
 
 trait ConfirmCorrespondAddressController extends FrontendController with AuthorisedForTAVC {

@@ -20,7 +20,8 @@ import auth.{MockAuthConnector, MockConfig}
 import common.Encoder._
 import config.{FrontendAppConfig, FrontendAuthConnector}
 import connectors.KeystoreConnector
-import controllers.helpers.FakeRequestHelper
+import helpers.FakeRequestHelper
+import helpers.AuthHelper._
 import models.ProvideCorrespondAddressModel
 import org.mockito.Matchers
 import org.mockito.Mockito._
@@ -44,6 +45,7 @@ class ProvideCorrespondAddressControllerSpec extends UnitSpec with MockitoSugar 
     override lazy val applicationConfig = FrontendAppConfig
     override lazy val authConnector = MockAuthConnector
     val keyStoreConnector: KeystoreConnector = mockKeyStoreConnector
+    override lazy val registeredBusinessCustomerService = mockRegisteredBusinessCustomerService
   }
 
   val model = ProvideCorrespondAddressModel("Akina Speed Stars","Mt. Akina","","","","Japan")
@@ -70,6 +72,7 @@ class ProvideCorrespondAddressControllerSpec extends UnitSpec with MockitoSugar 
 
   "Sending a GET request to ProvideCorrespondAddressController" should {
     "return a 200 when something is fetched from keystore" in {
+      withRegDetails()
       when(mockKeyStoreConnector.saveFormData(Matchers.any(), Matchers.any())(Matchers.any(), Matchers.any())).thenReturn(cacheMap)
       when(mockKeyStoreConnector.fetchAndGetFormData[ProvideCorrespondAddressModel](Matchers.any())(Matchers.any(), Matchers.any()))
         .thenReturn(Future.successful(Option(keyStoreSavedProvideCorrespondAddress)))
@@ -79,11 +82,28 @@ class ProvideCorrespondAddressControllerSpec extends UnitSpec with MockitoSugar 
     }
 
     "provide an empty model and return a 200 when nothing is fetched using keystore" in {
+      withRegDetails()
       when(mockKeyStoreConnector.saveFormData(Matchers.any(), Matchers.any())(Matchers.any(), Matchers.any())).thenReturn(cacheMap)
       when(mockKeyStoreConnector.fetchAndGetFormData[ProvideCorrespondAddressModel](Matchers.any())(Matchers.any(), Matchers.any()))
         .thenReturn(Future.successful(None))
       showWithSessionAndAuth(ProvideCorrespondAddressControllerTest.show)(
         result => status(result) shouldBe OK
+      )
+    }
+  }
+
+  "Sending a GET request to ProvideCorrespondAddressController and business customer details are not in keystore" should {
+    "return a 303" in {
+      noRegDetails()
+      showWithSessionAndAuth(ProvideCorrespondAddressControllerTest.show)(
+        result => status(result) shouldBe SEE_OTHER
+      )
+    }
+
+    "redirect to business customer frontend" in {
+      noRegDetails()
+      showWithSessionAndAuth(ProvideCorrespondAddressControllerTest.show)(
+        result => redirectLocation(result) shouldBe Some(FrontendAppConfig.businessCustomerUrl)
       )
     }
   }
@@ -127,6 +147,7 @@ class ProvideCorrespondAddressControllerSpec extends UnitSpec with MockitoSugar 
 
   "Sending a valid form submit to the ProvideCorrespondAddressController" should {
     "redirect to the Confirm Correspondence Address Controller page" in {
+      withRegDetails()
       val formInput =
         Seq("addressline1" -> "Akina Speed Stars",
         "addressline2" -> "Mt. Akina",
@@ -146,6 +167,7 @@ class ProvideCorrespondAddressControllerSpec extends UnitSpec with MockitoSugar 
 
   "Sending an invalid form submission with validation errors to the ProvideCorrespondAddressController" should {
     "redirect with a bad request" in {
+      withRegDetails()
       val formInput =
         Seq("addressline1" -> "Akina Speed Stars",
         "addressline2" -> "",
@@ -164,12 +186,96 @@ class ProvideCorrespondAddressControllerSpec extends UnitSpec with MockitoSugar 
 
   "Sending an empty invalid form submission with validation errors to the ProvideCorrespondAddressController" should {
     "redirect to itself" in {
-
+      withRegDetails()
       val formInput = "addressline1" -> "Akina Speed Stars"
 
       submitWithSessionAndAuth(ProvideCorrespondAddressControllerTest.submit,formInput)(
         result => {
           status(result) shouldBe BAD_REQUEST
+        }
+      )
+    }
+  }
+
+  "Sending a valid form submit to the ProvideCorrespondAddressController " +
+    "and business customer details are not in keystore" should {
+
+    val formInput =
+      Seq("addressline1" -> "Akina Speed Stars",
+        "addressline2" -> "Mt. Akina",
+        "addressline3" -> "",
+        "addressline4" -> "",
+        "postcode" -> "",
+        "country" -> "Japan")
+
+    "return a 303" in {
+      noRegDetails()
+      submitWithSessionAndAuth(ProvideCorrespondAddressControllerTest.submit,formInput:_*)(
+        result => {
+          status(result) shouldBe SEE_OTHER
+        }
+      )
+    }
+
+    "redirect to business customer frontend" in {
+      noRegDetails()
+      submitWithSessionAndAuth(ProvideCorrespondAddressControllerTest.submit,formInput:_*)(
+        result => {
+          redirectLocation(result) shouldBe Some(FrontendAppConfig.businessCustomerUrl)
+        }
+      )
+    }
+  }
+
+  "Sending an invalid form submission with validation errors to the ProvideCorrespondAddressController " +
+    "and business customer details are not in keystore" should {
+
+    val formInput =
+      Seq("addressline1" -> "Akina Speed Stars",
+        "addressline2" -> "",
+        "addressline3" -> "",
+        "addressline4" -> "",
+        "postcode" -> "",
+        "country" -> "Japan")
+
+    "return a 303" in {
+      noRegDetails()
+      submitWithSessionAndAuth(ProvideCorrespondAddressControllerTest.submit,formInput:_*)(
+        result => {
+          status(result) shouldBe SEE_OTHER
+        }
+      )
+    }
+
+    "redirect to business customer frontend" in {
+      noRegDetails()
+      submitWithSessionAndAuth(ProvideCorrespondAddressControllerTest.submit,formInput:_*)(
+        result => {
+          redirectLocation(result) shouldBe Some(FrontendAppConfig.businessCustomerUrl)
+        }
+      )
+    }
+  }
+
+  "Sending an empty invalid form submission with validation errors to the ProvideCorrespondAddressController " +
+    "and business customer details are not in keystore" should {
+
+    val formInput = "addressline1" -> "Akina Speed Stars"
+
+    "return a 303" in {
+      noRegDetails()
+      submitWithSessionAndAuth(ProvideCorrespondAddressControllerTest.submit,formInput)(
+        result => {
+          status(result) shouldBe SEE_OTHER
+        }
+      )
+    }
+
+    "redirect to business customer frontend" in {
+      noRegDetails()
+      submitWithSessionAndAuth(ProvideCorrespondAddressControllerTest.submit,formInput)(
+        result => {
+          redirectLocation(result) shouldBe Some(FrontendAppConfig.businessCustomerUrl)
         }
       )
     }

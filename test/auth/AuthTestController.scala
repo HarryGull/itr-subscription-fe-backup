@@ -16,14 +16,15 @@
 
 package auth
 
+import helpers.AuthHelper._
 import uk.gov.hmrc.play.frontend.controller.FrontendController
-
 import scala.concurrent.Future
 
 object AuthTestController extends AuthTestController {
 
   override lazy val applicationConfig = mockConfig
   override lazy val authConnector = mockAuthConnector
+  override lazy val registeredBusinessCustomerService = mockRegisteredBusinessCustomerService
 }
 
 trait AuthTestController extends FrontendController with AuthorisedForTAVC {

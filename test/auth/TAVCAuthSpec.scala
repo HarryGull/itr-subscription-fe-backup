@@ -22,6 +22,7 @@ import play.api.http.Status
 import uk.gov.hmrc.play.frontend.auth.AuthenticationProviderIds
 import uk.gov.hmrc.play.test.{UnitSpec, WithFakeApplication}
 import play.api.test.Helpers._
+import helpers.AuthHelper._
 
 class TAVCAuthSpec extends UnitSpec with WithFakeApplication {
 
@@ -72,11 +73,19 @@ class TAVCAuthSpec extends UnitSpec with WithFakeApplication {
     }
   }
 
-  "Calling authenticated async action with a default GG login session" should {
+  "Calling authenticated async action with a default GG login session and business customer details in keystore" should {
     "result in an OK status" in {
-
+      withRegDetails()
       val result = AuthTestController.authorisedAsyncAction(authenticatedFakeRequest(AuthenticationProviderIds.GovernmentGatewayId))
       status(result) shouldBe Status.OK
+    }
+  }
+
+  "Calling authenticated async action with a default GG login session and no business customer details in keystore" should {
+    "result in a SEE_OTHER status" in {
+      noRegDetails()
+      val result = AuthTestController.authorisedAsyncAction(authenticatedFakeRequest(AuthenticationProviderIds.GovernmentGatewayId))
+      status(result) shouldBe Status.SEE_OTHER
     }
   }
 }

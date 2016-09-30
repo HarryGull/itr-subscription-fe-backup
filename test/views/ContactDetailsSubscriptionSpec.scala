@@ -16,7 +16,6 @@
 
 package views
 
-import controllers.helpers.FakeRequestHelper
 import controllers.routes
 import models.ContactDetailsSubscriptionModel
 import org.jsoup.Jsoup
@@ -24,6 +23,7 @@ import org.scalatest.mock.MockitoSugar
 import play.api.i18n.Messages
 import uk.gov.hmrc.play.test.{UnitSpec, WithFakeApplication}
 import forms.ContactDetailsSubscriptionForm._
+import helpers.FakeRequestHelper
 import views.html.registrationInformation.ContactDetailsSubscription
 
 

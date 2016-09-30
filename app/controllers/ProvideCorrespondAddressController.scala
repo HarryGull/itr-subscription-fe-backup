@@ -23,6 +23,7 @@ import connectors.KeystoreConnector
 import play.api.mvc.Action
 import models.ProvideCorrespondAddressModel
 import forms.ProvideCorrespondAddressForm._
+import services.RegisteredBusinessCustomerService
 import uk.gov.hmrc.play.frontend.controller.FrontendController
 import views.html.registrationInformation.ProvideCorrespondAddress
 
@@ -32,7 +33,8 @@ object ProvideCorrespondAddressController extends ProvideCorrespondAddressContro
 {
   override lazy val applicationConfig = FrontendAppConfig
   override lazy val authConnector = FrontendAuthConnector
-  val keyStoreConnector: KeystoreConnector = KeystoreConnector
+  override lazy val registeredBusinessCustomerService = RegisteredBusinessCustomerService
+  override val keyStoreConnector = KeystoreConnector
 }
 
 trait ProvideCorrespondAddressController extends FrontendController with AuthorisedForTAVC {

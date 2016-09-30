@@ -20,9 +20,9 @@ import java.util.UUID
 
 import common.Constants
 import connectors.KeystoreConnector
-import controllers.helpers.FakeRequestHelper
 import controllers.{ConfirmCorrespondAddressController, routes}
 import forms.ConfirmCorrespondAddressForm._
+import helpers.FakeRequestHelper
 import models.ConfirmCorrespondAddressModel
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
@@ -36,7 +36,7 @@ import views.html.registrationInformation.ConfirmCorrespondAddress
 
 import scala.concurrent.Future
 
-class ConfirmCorrespondAddressSpec extends UnitSpec with MockitoSugar with WithFakeApplication with FakeRequestHelper{
+class ConfirmCorrespondAddressSpec extends UnitSpec with MockitoSugar with WithFakeApplication with FakeRequestHelper {
 
   val mockKeystoreConnector = mock[KeystoreConnector]
 

@@ -14,12 +14,12 @@
  * limitations under the License.
  */
 
-package controllers.helpers
+package helpers
 
 import java.util.UUID
 
 import auth._
-import play.api.mvc.{AnyContentAsFormUrlEncoded, Action, AnyContent, Result}
+import play.api.mvc.{Action, AnyContent, AnyContentAsFormUrlEncoded, Result}
 import play.api.test.FakeRequest
 import uk.gov.hmrc.play.http.SessionKeys
 

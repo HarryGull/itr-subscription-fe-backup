@@ -43,3 +43,10 @@ object TavcSessionCache extends SessionCache with AppName with ServicesConfig {
   override lazy val domain = getConfString("cachable.session-cache.domain",
     throw new Exception(s"Could not find config 'cachable.session-cache.domain'"))
 }
+
+object BusinessCustomerSessionCache extends SessionCache with AppName with ServicesConfig {
+  override lazy val http = WSHttp
+  override lazy val defaultSource: String = getConfString("cachable.session-cache.review-details.cache", "business-customer-frontend")
+  override lazy val baseUri = baseUrl("cachable.session-cache")
+  override lazy val domain = getConfString("cachable.session-cache.domain", throw new Exception(s"Could not find config 'cachable.session-cache.domain'"))
+}

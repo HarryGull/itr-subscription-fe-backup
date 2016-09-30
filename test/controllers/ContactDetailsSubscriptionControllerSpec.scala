@@ -20,7 +20,8 @@ import auth.{MockAuthConnector, MockConfig}
 import common.Encoder._
 import config.{FrontendAppConfig, FrontendAuthConnector}
 import connectors.KeystoreConnector
-import controllers.helpers.FakeRequestHelper
+import helpers.FakeRequestHelper
+import helpers.AuthHelper._
 import models.ContactDetailsSubscriptionModel
 import org.mockito.Matchers
 import org.mockito.Mockito._
@@ -44,6 +45,7 @@ class ContactDetailsSubscriptionControllerSpec extends UnitSpec with MockitoSuga
     override lazy val applicationConfig = FrontendAppConfig
     override lazy val authConnector = MockAuthConnector
     val keyStoreConnector: KeystoreConnector = mockKeyStoreConnector
+    override lazy val registeredBusinessCustomerService = mockRegisteredBusinessCustomerService
   }
 
   val model = ContactDetailsSubscriptionModel("Dagumi","Fujiwara","86","86","dagumi.tofuboy@akinaSpeedStars.com")
@@ -70,6 +72,7 @@ class ContactDetailsSubscriptionControllerSpec extends UnitSpec with MockitoSuga
 
   "Sending a GET request to ContactDetailsSubscriptionController" should {
     "return a 200 when something is fetched from keystore" in {
+      withRegDetails()
       when(mockKeyStoreConnector.saveFormData(Matchers.any(), Matchers.any())(Matchers.any(), Matchers.any())).thenReturn(cacheMap)
       when(mockKeyStoreConnector.fetchAndGetFormData[ContactDetailsSubscriptionModel](Matchers.any())(Matchers.any(), Matchers.any()))
         .thenReturn(Future.successful(Option(keyStoreSavedContactDetailsSubscription)))
@@ -79,6 +82,7 @@ class ContactDetailsSubscriptionControllerSpec extends UnitSpec with MockitoSuga
     }
 
     "provide an empty model and return a 200 when nothing is fetched using keystore" in {
+      withRegDetails()
       when(mockKeyStoreConnector.saveFormData(Matchers.any(), Matchers.any())(Matchers.any(), Matchers.any())).thenReturn(cacheMap)
       when(mockKeyStoreConnector.fetchAndGetFormData[ContactDetailsSubscriptionModel](Matchers.any())(Matchers.any(), Matchers.any()))
         .thenReturn(Future.successful(None))
@@ -88,8 +92,24 @@ class ContactDetailsSubscriptionControllerSpec extends UnitSpec with MockitoSuga
     }
   }
 
+  "Sending a GET request to ContactDetailsSubscriptionController and no business customer details are not in keystore" should {
+    "return a 303" in {
+      noRegDetails()
+      showWithSessionAndAuth(ContactDetailsSubscriptionControllerTest.show)(
+        result => status(result) shouldBe SEE_OTHER
+      )
+    }
+
+    "redirect to business customer frontend" in {
+      noRegDetails()
+      showWithSessionAndAuth(ContactDetailsSubscriptionControllerTest.show)(
+        result => redirectLocation(result) shouldBe Some(FrontendAppConfig.businessCustomerUrl)
+      )
+    }
+  }
+
   "Sending an Unauthenticated request with a session to ContactDetailsSubscriptionController" should {
-    "return a 302 and redirect to GG login" in {
+    "return a 303 and redirect to GG login" in {
       showWithSessionWithoutAuth(ContactDetailsSubscriptionControllerTest.show())(
         result => {
           status(result) shouldBe SEE_OTHER
@@ -102,7 +122,7 @@ class ContactDetailsSubscriptionControllerSpec extends UnitSpec with MockitoSuga
   }
 
   "Sending a request with no session to ContactDetailsSubscriptionController" should {
-    "return a 302 and redirect to GG login" in {
+    "return a 303 and redirect to GG login" in {
       showWithoutSession(ContactDetailsSubscriptionControllerTest.show())(
         result => {
           status(result) shouldBe SEE_OTHER
@@ -115,7 +135,7 @@ class ContactDetailsSubscriptionControllerSpec extends UnitSpec with MockitoSuga
   }
 
   "Sending a timed-out request to ContactDetailsSubscriptionController" should {
-    "return a 302 and redirect to the timeout page" in {
+    "return a 303 and redirect to the timeout page" in {
       showWithTimeout(ContactDetailsSubscriptionControllerTest.show())(
         result => {
           status(result) shouldBe SEE_OTHER
@@ -126,17 +146,26 @@ class ContactDetailsSubscriptionControllerSpec extends UnitSpec with MockitoSuga
   }
 
   "Sending a valid form submit to the ContactDetailsSubscriptionController" should {
-    "redirect to the Confirm Correspondence Address Controller page" in {
 
-      val formInput = Seq("firstName" -> "Dagumi",
-        "lastName" -> "Fujiwara",
-        "telephoneNumber" -> "94594594586",
-        "telephoneNumber2" -> "",
-        "email" -> "dagumi.tofuboy@akinaSpeedStars.com")
+    val formInput = Seq("firstName" -> "Dagumi",
+      "lastName" -> "Fujiwara",
+      "telephoneNumber" -> "94594594586",
+      "telephoneNumber2" -> "",
+      "email" -> "dagumi.tofuboy@akinaSpeedStars.com")
 
+    "return a 303" in {
+      withRegDetails()
       submitWithSessionAndAuth(ContactDetailsSubscriptionControllerTest.submit,formInput:_*)(
         result => {
           status(result) shouldBe SEE_OTHER
+        }
+      )
+    }
+
+    "redirect to the Confirm Correspondence Address Controller page" in {
+      withRegDetails()
+      submitWithSessionAndAuth(ContactDetailsSubscriptionControllerTest.submit,formInput:_*)(
+        result => {
           redirectLocation(result) shouldBe Some("/investment-tax-relief-subscription/confirm-correspondence-address")
         }
       )
@@ -145,7 +174,7 @@ class ContactDetailsSubscriptionControllerSpec extends UnitSpec with MockitoSuga
 
   "Sending an invalid form submission with validation errors to the ContactDetailsSubscriptionController" should {
     "redirect with a bad request" in {
-
+      withRegDetails()
       val formInput =
         Seq("firstName" -> "Dagumi",
         "lastName" -> "Fujiwara",
@@ -163,13 +192,88 @@ class ContactDetailsSubscriptionControllerSpec extends UnitSpec with MockitoSuga
 
   "Sending an empty invalid form submission with validation errors to the ContactDetailsSubscriptionController" should {
     "redirect to itself" in {
-
+      withRegDetails()
       val formInput = "addressline1" -> "Akina Speed Stars"
-
-
       submitWithSessionAndAuth(ContactDetailsSubscriptionControllerTest.submit,formInput)(
         result => {
           status(result) shouldBe BAD_REQUEST
+        }
+      )
+    }
+  }
+
+  "Sending a valid form submit to the ContactDetailsSubscriptionController and business customer details are not in keystore" should {
+
+    val formInput = Seq("firstName" -> "Dagumi",
+      "lastName" -> "Fujiwara",
+      "telephoneNumber" -> "94594594586",
+      "telephoneNumber2" -> "",
+      "email" -> "dagumi.tofuboy@akinaSpeedStars.com")
+
+    "return a 303" in {
+      noRegDetails()
+      submitWithSessionAndAuth(ContactDetailsSubscriptionControllerTest.submit,formInput:_*)(
+        result => {
+          status(result) shouldBe SEE_OTHER
+        }
+      )
+    }
+
+    "redirect to business customer frontend" in {
+      submitWithSessionAndAuth(ContactDetailsSubscriptionControllerTest.submit,formInput:_*)(
+        result => {
+          redirectLocation(result) shouldBe Some(FrontendAppConfig.businessCustomerUrl)
+        }
+      )
+    }
+  }
+
+  "Sending an invalid form submission with validation errors to the ContactDetailsSubscriptionController " +
+    "and business customer details are not in keystore" should {
+
+    val formInput =
+      Seq("firstName" -> "Dagumi",
+        "lastName" -> "Fujiwara",
+        "telephoneNumber" -> "94594594586",
+        "telephoneNumber2" -> "",
+        "email" -> "")
+
+    "return a 303" in {
+      submitWithSessionAndAuth(ContactDetailsSubscriptionControllerTest.submit,formInput:_*)(
+        result => {
+          status(result) shouldBe SEE_OTHER
+        }
+      )
+    }
+
+    "redirect to business customer frontend" in {
+      submitWithSessionAndAuth(ContactDetailsSubscriptionControllerTest.submit,formInput:_*)(
+        result => {
+          redirectLocation(result) shouldBe Some(FrontendAppConfig.businessCustomerUrl)
+        }
+      )
+    }
+  }
+
+  "Sending an empty invalid form submission with validation errors to the ContactDetailsSubscriptionController " +
+    "and business customer details are not in keystore" should {
+
+    val formInput = "addressline1" -> "Akina Speed Stars"
+
+    "return a 303" in {
+      noRegDetails()
+      submitWithSessionAndAuth(ContactDetailsSubscriptionControllerTest.submit,formInput)(
+        result => {
+          status(result) shouldBe SEE_OTHER
+        }
+      )
+    }
+
+    "redirect to business customer frontend" in {
+      noRegDetails()
+      submitWithSessionAndAuth(ContactDetailsSubscriptionControllerTest.submit,formInput)(
+        result => {
+          redirectLocation(result) shouldBe Some(FrontendAppConfig.businessCustomerUrl)
         }
       )
     }
