@@ -22,8 +22,8 @@ import common.{KeystoreKeys, Constants}
 import common.Encoder._
 import config.{FrontendAppConfig, FrontendAuthConnector}
 import helpers.FakeRequestHelper
-import connectors.{BusinessCustomerDataCacheConnector, DataCacheConnector, KeystoreConnector}
-import models.{ConfirmCorrespondAddressModel, AddressModel, CompanyRegistrationReviewDetailsModel}
+import connectors.{DataCacheConnector, KeystoreConnector}
+import models.{ConfirmCorrespondAddressModel, CompanyRegistrationReviewDetailsModel}
 import org.mockito.Matchers
 import org.mockito.Mockito._
 import org.scalatest.BeforeAndAfterEach
@@ -56,16 +56,6 @@ class ConfirmCorrespondAddressControllerSpec extends UnitSpec with MockitoSugar 
   val confirmCorrespondAddressCacheMap: CacheMap = CacheMap("", Map("" -> Json.toJson(confirmCorrespondAddressModel)))
   val keyStoreSavedConfirmCorrespondAddress = ConfirmCorrespondAddressModel(Constants.StandardRadioButtonYesValue)
 
-  val companyReviewDetailsModelMax = new CompanyRegistrationReviewDetailsModel("Woodland Mills",Some("Corporate Body"),
-    AddressModel("23 High Street","Park View", Some("Gloucester"),Some("Gloucestershire"),Some("NE98 1ZZ"),"GB"),
-    "1234567890","XE0001234567890", false, false, Some("JARN1234567"))
-
-  val companyReviewDetailsModelMin = new CompanyRegistrationReviewDetailsModel("Woodland Mills",None,
-    AddressModel("23 High Street","Park View", None,None,None,"GB"),
-    "1234567890","XE0001234567890", false, false, None)
-
-  val companyReviewDetailsCacheMap: CacheMap = CacheMap("", Map("" -> Json.toJson(confirmCorrespondAddressModel)))
-  val companyReviewDetailsMinCacheMap: CacheMap = CacheMap("", Map("" -> Json.toJson(confirmCorrespondAddressModel)))
 
   implicit val hc = HeaderCarrier()
 
