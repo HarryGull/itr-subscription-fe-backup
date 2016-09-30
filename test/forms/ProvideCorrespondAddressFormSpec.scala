@@ -32,7 +32,7 @@ class provideCorrespondAddressFormSpec extends UnitSpec {
 
   "Creating a form using a valid model" should {
     "return a form with the data specified in the model" in {
-      val model = ProvideCorrespondAddressModel("Akina Speed Stars","Mt. Akina","","","","Japan")
+      val model = ProvideCorrespondAddressModel("Akina Speed Stars","Mt. Akina","","","","JP")
       val form = provideCorrespondAddressForm.fill(model)
 
       form.data("addressline1") shouldBe "Akina Speed Stars"
@@ -40,7 +40,7 @@ class provideCorrespondAddressFormSpec extends UnitSpec {
       form.data("addressline3") shouldBe ""
       form.data("addressline4") shouldBe ""
       form.data("postcode") shouldBe ""
-      form.data("country") shouldBe "Japan"
+      form.data("countryCode") shouldBe "JP"
       form.errors.length shouldBe 0
     }
   }
@@ -53,13 +53,15 @@ class provideCorrespondAddressFormSpec extends UnitSpec {
         "addressline3" -> "",
         "addressline4" -> "",
         "postcode" -> "",
-        "country" -> "Japan")
+       "countryCode" -> "JP")
       )
       "raise form error" in {
         form.hasErrors shouldBe true
       }
       "raise 1 form error" in {
+
         form.errors.length shouldBe 1
+
         form.errors.head.key shouldBe "addressline1"
       }
       "associate the correct error message to the error" in {
@@ -76,7 +78,7 @@ class provideCorrespondAddressFormSpec extends UnitSpec {
         "addressline3" -> "",
         "addressline4" -> "",
         "postcode" -> "",
-        "country" -> "Japan")
+       "countryCode" -> "JP")
       )
       "raise form error" in {
         form.hasErrors shouldBe true
@@ -99,17 +101,17 @@ class provideCorrespondAddressFormSpec extends UnitSpec {
         "addressline3" -> "",
         "addressline4" -> "",
         "postcode" -> "",
-        "country" -> "")
+        "countryCode" -> "")
       )
       "raise form error" in {
         form.hasErrors shouldBe true
       }
       "raise 1 form error" in {
         form.errors.length shouldBe 1
-        form.errors.head.key shouldBe "country"
+        form.errors.head.key shouldBe "countryCode"
       }
       "associate the correct error message to the error" in {
-        form.error("country").get.message shouldBe Messages("validation.error.country")
+        form.error("countryCode").get.message shouldBe Messages("validation.error.countryCode")
       }
     }
   }
@@ -122,7 +124,7 @@ class provideCorrespondAddressFormSpec extends UnitSpec {
         "addressline3" -> "",
         "addressline4" -> "",
         "postcode" -> "",
-        "country" -> "Japan")
+       "countryCode" -> "JP")
       )
       "raise form error" in {
         form.hasErrors shouldBe true
@@ -147,7 +149,7 @@ class provideCorrespondAddressFormSpec extends UnitSpec {
         "addressline3" -> "",
         "addressline4" -> "",
         "postcode" -> "",
-        "country" -> "")
+        "countryCode" -> "")
       )
       "raise form error" in {
         form.hasErrors shouldBe true
@@ -155,11 +157,11 @@ class provideCorrespondAddressFormSpec extends UnitSpec {
       "raise 2 form errors" in {
         form.errors.length shouldBe 2
         form.errors.head.key shouldBe "addressline2"
-        form.errors(1).key shouldBe "country"
+        form.errors(1).key shouldBe "countryCode"
       }
       "associate the correct error message to the error" in {
         form.error("addressline2").get.message shouldBe Messages("validation.error.mandatoryaddresssline")
-        form.error("country").get.message shouldBe Messages("validation.error.country")
+        form.error("countryCode").get.message shouldBe Messages("validation.error.countryCode")
       }
     }
   }
@@ -172,7 +174,7 @@ class provideCorrespondAddressFormSpec extends UnitSpec {
         "addressline3" -> "",
         "addressline4" -> "",
         "postcode" -> "",
-        "country" -> "")
+        "countryCode" -> "")
       )
       "raise form error" in {
         form.hasErrors shouldBe true
@@ -181,12 +183,12 @@ class provideCorrespondAddressFormSpec extends UnitSpec {
         form.errors.length shouldBe 3
         form.errors.head.key shouldBe "addressline1"
         form.errors(1).key shouldBe "addressline2"
-        form.errors(2).key shouldBe "country"
+        form.errors(2).key shouldBe "countryCode"
       }
       "associate the correct error message to the error" in {
         form.error("addressline1").get.message shouldBe Messages("validation.error.mandatoryaddresssline")
         form.error("addressline2").get.message shouldBe Messages("validation.error.mandatoryaddresssline")
-        form.error("country").get.message shouldBe Messages("validation.error.country")
+        form.error("countryCode").get.message shouldBe Messages("validation.error.countryCode")
       }
     }
   }
@@ -198,7 +200,7 @@ class provideCorrespondAddressFormSpec extends UnitSpec {
       "addressline3" -> "",
       "addressline4" -> "",
       "postcode" -> "",
-      "country" -> "Japan")
+     "countryCode" -> "JP")
     )
     "raise form error" in {
       form.hasErrors shouldBe true
@@ -219,7 +221,7 @@ class provideCorrespondAddressFormSpec extends UnitSpec {
       "addressline3" -> "",
       "addressline4" -> "",
       "postcode" -> "",
-      "country" -> "Japan")
+     "countryCode" -> "JP")
     )
     "raise form error" in {
       form.hasErrors shouldBe true
@@ -240,7 +242,7 @@ class provideCorrespondAddressFormSpec extends UnitSpec {
       "addressline3" -> "   ",
       "addressline4" -> "",
       "postcode" -> "",
-      "country" -> "Japan")
+     "countryCode" -> "JP")
     )
     "raise form error" in {
       form.hasErrors shouldBe true
@@ -261,7 +263,7 @@ class provideCorrespondAddressFormSpec extends UnitSpec {
       "addressline3" -> "",
       "addressline4" -> "   ",
       "postcode" -> "",
-      "country" -> "Japan")
+     "countryCode" -> "JP")
     )
     "raise form error" in {
       form.hasErrors shouldBe true
@@ -282,7 +284,7 @@ class provideCorrespondAddressFormSpec extends UnitSpec {
       "addressline3" -> "",
       "addressline4" -> "",
       "postcode" -> "",
-      "country" -> "   ")
+     "countryCode" -> "   ")
     )
     "raise form error" in {
       form.hasErrors shouldBe true
@@ -291,7 +293,7 @@ class provideCorrespondAddressFormSpec extends UnitSpec {
       form.errors.length shouldBe 1
     }
     "associate the correct error message to the error" in {
-      form.error("country").get.message shouldBe Messages("validation.error.country")
+      form.error("countryCode").get.message shouldBe Messages("validation.error.countryCode")
     }
   }
 
@@ -302,7 +304,7 @@ class provideCorrespondAddressFormSpec extends UnitSpec {
       "addressline3" -> "",
       "addressline4" -> "",
       "postcode" -> "   ",
-      "country" -> "Japan")
+     "countryCode" -> "JP")
     )
     "raise form error" in {
       form.hasErrors shouldBe true
@@ -322,7 +324,7 @@ class provideCorrespondAddressFormSpec extends UnitSpec {
       "addressline3" -> "",
       "addressline4" -> "",
       "postcode" -> "",
-      "country" -> "Japan")
+     "countryCode" -> "JP")
     )
     "raise form error" in {
       form.hasErrors shouldBe false
@@ -339,7 +341,7 @@ class provideCorrespondAddressFormSpec extends UnitSpec {
       "addressline3" -> "",
       "addressline4" -> "",
       "postcode" -> "",
-      "country" -> "Japan")
+     "countryCode" -> "JP")
     )
     "raise form error" in {
       form.hasErrors shouldBe false
@@ -356,7 +358,7 @@ class provideCorrespondAddressFormSpec extends UnitSpec {
       "addressline3" -> "86",
       "addressline4" -> "",
       "postcode" -> "",
-      "country" -> "Japan")
+     "countryCode" -> "JP")
     )
     "raise form error" in {
       form.hasErrors shouldBe false
@@ -373,7 +375,7 @@ class provideCorrespondAddressFormSpec extends UnitSpec {
       "addressline3" -> "",
       "addressline4" -> "86",
       "postcode" -> "",
-      "country" -> "Japan")
+     "countryCode" -> "JP")
     )
     "raise form error" in {
       form.hasErrors shouldBe false
@@ -390,7 +392,7 @@ class provideCorrespondAddressFormSpec extends UnitSpec {
       "addressline3" -> "",
       "addressline4" -> "",
       "postcode" -> "86",
-      "country" -> "Japan")
+     "countryCode" -> "JP")
     )
     "raise form error" in {
       form.hasErrors shouldBe true
@@ -411,17 +413,17 @@ class provideCorrespondAddressFormSpec extends UnitSpec {
       "addressline3" -> "",
       "addressline4" -> "",
       "postcode" -> "",
-      "country" -> "J4pan")
+     "countryCode" -> "J4pan")
     )
     "raise form error" in {
       form.hasErrors shouldBe true
     }
     "raise 1 form error" in {
       form.errors.length shouldBe 1
-      form.errors.head.key shouldBe "country"
+      form.errors.head.key shouldBe "countryCode"
     }
     "associate the correct error message to the error" in {
-      form.error("country").get.message shouldBe Messages("validation.error.country")
+      form.error("countryCode").get.message shouldBe Messages("validation.error.countryCode")
     }
   }
 
@@ -434,7 +436,7 @@ class provideCorrespondAddressFormSpec extends UnitSpec {
       "addressline3" -> "",
       "addressline4" -> "",
       "postcode" -> "",
-      "country" -> "Japan")
+     "countryCode" -> "JP")
     )
     "raise form error" in {
       form.hasErrors shouldBe false
@@ -451,7 +453,7 @@ class provideCorrespondAddressFormSpec extends UnitSpec {
       "addressline3" -> "",
       "addressline4" -> "",
       "postcode" -> "",
-      "country" -> "Japan")
+     "countryCode" -> "JP")
     )
     "raise form error" in {
       form.hasErrors shouldBe false
@@ -468,7 +470,7 @@ class provideCorrespondAddressFormSpec extends UnitSpec {
       "addressline3" -> "A",
       "addressline4" -> "",
       "postcode" -> "",
-      "country" -> "Japan")
+     "countryCode" -> "JP")
     )
     "raise form error" in {
       form.hasErrors shouldBe false
@@ -485,7 +487,7 @@ class provideCorrespondAddressFormSpec extends UnitSpec {
       "addressline3" -> "",
       "addressline4" -> "A",
       "postcode" -> "",
-      "country" -> "Japan")
+     "countryCode" -> "JP")
     )
     "raise form error" in {
       form.hasErrors shouldBe false
@@ -502,7 +504,7 @@ class provideCorrespondAddressFormSpec extends UnitSpec {
       "addressline3" -> "",
       "addressline4" -> "",
       "postcode" -> "",
-      "country" -> "JP")
+     "countryCode" -> "JP")
     )
     "raise form error" in {
       form.hasErrors shouldBe false
@@ -519,7 +521,7 @@ class provideCorrespondAddressFormSpec extends UnitSpec {
       "addressline3" -> "",
       "addressline4" -> "",
       "postcode" -> "",
-      "country" -> "Japan")
+     "countryCode" -> "JP")
     )
     "raise form error" in {
       form.hasErrors shouldBe false
@@ -536,7 +538,7 @@ class provideCorrespondAddressFormSpec extends UnitSpec {
       "addressline3" -> "",
       "addressline4" -> "",
       "postcode" -> "",
-      "country" -> "Japan")
+     "countryCode" -> "JP")
     )
     "raise form error" in {
       form.hasErrors shouldBe false
@@ -553,7 +555,7 @@ class provideCorrespondAddressFormSpec extends UnitSpec {
       "addressline3" -> "A                          ",
       "addressline4" -> "",
       "postcode" -> "",
-      "country" -> "Japan")
+     "countryCode" -> "JP")
     )
     "raise form error" in {
       form.hasErrors shouldBe false
@@ -570,7 +572,7 @@ class provideCorrespondAddressFormSpec extends UnitSpec {
       "addressline3" -> "",
       "addressline4" -> "A                 ",
       "postcode" -> "",
-      "country" -> "Japan")
+     "countryCode" -> "JP")
     )
     "raise form error" in {
       form.hasErrors shouldBe false
@@ -587,7 +589,7 @@ class provideCorrespondAddressFormSpec extends UnitSpec {
       "addressline3" -> "",
       "addressline4" -> "",
       "postcode" -> "BS98 1TL",
-      "country" -> "Japan")
+     "countryCode" -> "JP")
     )
     "raise form error" in {
       form.hasErrors shouldBe false
@@ -604,7 +606,7 @@ class provideCorrespondAddressFormSpec extends UnitSpec {
       "addressline3" -> "",
       "addressline4" -> "",
       "postcode" -> "",
-      "country" -> "Trinidad and Tobago ")
+     "countryCode" -> "TB")
     )
     "raise form error" in {
       form.hasErrors shouldBe false
@@ -621,17 +623,17 @@ class provideCorrespondAddressFormSpec extends UnitSpec {
       "addressline3" -> "",
       "addressline4" -> "",
       "postcode" -> "",
-      "country" -> "Trinidad and Tobagooo")
+     "countryCode" -> "Trinidad and Tobagooo")
     )
     "raise form error" in {
       form.hasErrors shouldBe true
     }
     "raise 1 form error" in {
       form.errors.length shouldBe 1
-      form.errors.head.key shouldBe "country"
+      form.errors.head.key shouldBe "countryCode"
     }
     "associate the correct error message to the error" in {
-      form.error("country").get.message shouldBe Messages("validation.error.country")
+      form.error("countryCode").get.message shouldBe Messages("validation.error.countryCode")
     }
   }
 
@@ -642,7 +644,7 @@ class provideCorrespondAddressFormSpec extends UnitSpec {
       "addressline3" -> "",
       "addressline4" -> "",
       "postcode" -> "",
-      "country" -> "Japan")
+     "countryCode" -> "JP")
     )
     "raise form error" in {
       form.hasErrors shouldBe true
@@ -663,7 +665,7 @@ class provideCorrespondAddressFormSpec extends UnitSpec {
       "addressline3" -> "",
       "addressline4" -> "",
       "postcode" -> "",
-      "country" -> "Japan")
+     "countryCode" -> "JP")
     )
     "raise form error" in {
       form.hasErrors shouldBe true
@@ -684,7 +686,7 @@ class provideCorrespondAddressFormSpec extends UnitSpec {
       "addressline3" -> "A                           ",
       "addressline4" -> "",
       "postcode" -> "",
-      "country" -> "Japan")
+     "countryCode" -> "JP")
     )
     "raise form error" in {
       form.hasErrors shouldBe true
@@ -705,7 +707,7 @@ class provideCorrespondAddressFormSpec extends UnitSpec {
       "addressline3" -> "",
       "addressline4" -> "A                  ",
       "postcode" -> "",
-      "country" -> "Japan")
+     "countryCode" -> "JP")
     )
     "raise form error" in {
       form.hasErrors shouldBe true
@@ -726,7 +728,7 @@ class provideCorrespondAddressFormSpec extends UnitSpec {
       "addressline3" -> "",
       "addressline4" -> "",
       "postcode" -> "BS98 1TL ",
-      "country" -> "Japan")
+     "countryCode" -> "JP")
     )
     "raise form error" in {
       form.hasErrors shouldBe true
@@ -747,17 +749,17 @@ class provideCorrespondAddressFormSpec extends UnitSpec {
       "addressline3" -> "",
       "addressline4" -> "",
       "postcode" -> "",
-      "country" -> "United Republic of Tanzania")
+     "countryCode" -> "United Republic of Tanzania")
     )
     "raise form error" in {
       form.hasErrors shouldBe true
     }
     "raise 1 form error" in {
       form.errors.length shouldBe 1
-      form.errors.head.key shouldBe "country"
+      form.errors.head.key shouldBe "countryCode"
     }
     "associate the correct error message to the error" in {
-      form.error("country").get.message shouldBe Messages("validation.error.country")
+      form.error("countryCode").get.message shouldBe Messages("validation.error.countryCode")
     }
   }
 
@@ -770,7 +772,7 @@ class provideCorrespondAddressFormSpec extends UnitSpec {
       "addressline3" -> "",
       "addressline4" -> "",
       "postcode" -> "BS98  1TL",
-      "country" -> "Japan")
+     "countryCode" -> "JP")
     )
     "raise form error" in {
       form.hasErrors shouldBe true
@@ -791,7 +793,7 @@ class provideCorrespondAddressFormSpec extends UnitSpec {
       "addressline3" -> "",
       "addressline4" -> "",
       "postcode" -> "BS98 (1TL)",
-      "country" -> "Japan")
+     "countryCode" -> "JP")
     )
     "raise form error" in {
       form.hasErrors shouldBe true
@@ -812,7 +814,7 @@ class provideCorrespondAddressFormSpec extends UnitSpec {
       "addressline3" -> "",
       "addressline4" -> "",
       "postcode" -> "BS98/9 1TL",
-      "country" -> "Japan")
+     "countryCode" -> "JP")
     )
     "raise form error" in {
       form.hasErrors shouldBe true
@@ -833,7 +835,7 @@ class provideCorrespondAddressFormSpec extends UnitSpec {
       "addressline3" -> "",
       "addressline4" -> "",
       "postcode" -> "bs98 1tl",
-      "country" -> "Japan")
+     "countryCode" -> "JP")
     )
     "raise form error" in {
       form.hasErrors shouldBe false
@@ -850,7 +852,7 @@ class provideCorrespondAddressFormSpec extends UnitSpec {
       "addressline3" -> "",
       "addressline4" -> "",
       "postcode" -> "BS981TL",
-      "country" -> "Japan")
+     "countryCode" -> "JP")
     )
     "raise form error" in {
       form.hasErrors shouldBe true
@@ -871,17 +873,17 @@ class provideCorrespondAddressFormSpec extends UnitSpec {
       "addressline3" -> "",
       "addressline4" -> "",
       "postcode" -> "",
-      "country" -> "Cote d'Ivoire")
+     "countryCode" -> "Cote d'Ivoire")
     )
     "raise form error" in {
       form.hasErrors shouldBe true
     }
     "raise 1 form error" in {
       form.errors.length shouldBe 1
-      form.errors.head.key shouldBe "country"
+      form.errors.head.key shouldBe "countryCode"
     }
     "associate the correct error message to the error" in {
-      form.error("country").get.message shouldBe Messages("validation.error.country")
+      form.error("countryCode").get.message shouldBe Messages("validation.error.countryCode")
     }
   }
 
@@ -892,17 +894,17 @@ class provideCorrespondAddressFormSpec extends UnitSpec {
       "addressline3" -> "",
       "addressline4" -> "",
       "postcode" -> "",
-      "country" -> "Timor-Leste")
+     "countryCode" -> "Timor-Leste")
     )
     "raise form error" in {
       form.hasErrors shouldBe true
     }
     "raise 1 form error" in {
       form.errors.length shouldBe 1
-      form.errors.head.key shouldBe "country"
+      form.errors.head.key shouldBe "countryCode"
     }
     "associate the correct error message to the error" in {
-      form.error("country").get.message shouldBe Messages("validation.error.country")
+      form.error("countryCode").get.message shouldBe Messages("validation.error.countryCode")
     }
   }
 
@@ -913,17 +915,17 @@ class provideCorrespondAddressFormSpec extends UnitSpec {
       "addressline3" -> "",
       "addressline4" -> "",
       "postcode" -> "",
-      "country" -> "St. Lucia")
+     "countryCode" -> "St. Lucia")
     )
     "raise form error" in {
       form.hasErrors shouldBe true
     }
     "raise 1 form error" in {
       form.errors.length shouldBe 1
-      form.errors.head.key shouldBe "country"
+      form.errors.head.key shouldBe "countryCode"
     }
     "associate the correct error message to the error" in {
-      form.error("country").get.message shouldBe Messages("validation.error.country")
+      form.error("countryCode").get.message shouldBe Messages("validation.error.countryCode")
     }
   }
 
@@ -934,13 +936,13 @@ class provideCorrespondAddressFormSpec extends UnitSpec {
       "addressline3" -> "",
       "addressline4" -> "",
       "postcode" -> "",
-      "country" -> "Saint Lucia ")
+     "countryCode" -> "JP ")
     )
     "raise form error" in {
-      form.hasErrors shouldBe false
+      form.hasErrors shouldBe true
     }
     "raise 0 form errors" in {
-      form.errors.length shouldBe 0
+      form.errors.length shouldBe 1
     }
   }
 
@@ -951,17 +953,17 @@ class provideCorrespondAddressFormSpec extends UnitSpec {
       "addressline3" -> "",
       "addressline4" -> "",
       "postcode" -> "",
-      "country" -> "#Japan")
+     "countryCode" -> "#JP")
     )
     "raise form error" in {
       form.hasErrors shouldBe true
     }
     "raise 1 form error" in {
       form.errors.length shouldBe 1
-      form.errors.head.key shouldBe "country"
+      form.errors.head.key shouldBe "countryCode"
     }
     "associate the correct error message to the error" in {
-      form.error("country").get.message shouldBe Messages("validation.error.country")
+      form.error("countryCode").get.message shouldBe Messages("validation.error.countryCode")
     }
   }
 }

@@ -24,14 +24,12 @@ common.error.help.text=Get help with this page.
 common.error.missingField= This field is required
 
 #validation errors
-validation.error.countrypostcode=Only one of country or postcode should be entered
-validation.error.optionaladdresssline=Address line must be no more than 27 valid characters if entered
-validation.error.mandatoryaddresssline=Address line must be entered and no more than 27 characters
-validation.error.email=Enter a valid email address
-validation.error.telephoneNumber=Please enter a valid telephone number
-validation.error.postcode=Please enter a valid postcode
-validation.error.country=Country must be no more than 20 valid characters if entered
-validation.error.linefouraddresssline=Address line must be no more than 17 valid characters if entered
+validation.error.optionaladdresssline=Use fewer than 28 characters in the address line
+validation.error.mandatoryaddresssline=Address line must be entered
+validation.error.telephoneNumber=Enter a valid telephone number
+validation.error.postcode=Enter a valid postcode
+validation.error.countryCode=Enter a country
+validation.error.linefouraddresssline=Use fewer than 18 characters in the address line
 
 
 #Welcome page
@@ -61,12 +59,14 @@ page.registrationInformation.ConfirmCorrespondAddress.title=Confirm corresponden
 #Provide Correspondence Address
 page.registrationInformation.ProvideCorrespondAddress.heading=Where should we send your correspondence?
 page.registrationInformation.ProvideCorrespondAddress.title=Provide correspondence address
-page.registrationInformation.ProvideCorrespondAddress.addressline1.label=Address
-page.registrationInformation.ProvideCorrespondAddress.addressline2.label=
-page.registrationInformation.ProvideCorrespondAddress.addressline3.label=(optional)
-page.registrationInformation.ProvideCorrespondAddress.addressline4.label=(optional)
+page.registrationInformation.ProvideCorrespondAddress.addressline1.label=Address line 1
+page.registrationInformation.ProvideCorrespondAddress.addressline2.label=Address line 2
+page.registrationInformation.ProvideCorrespondAddress.addressline3.label=Address line 3 (optional)
+page.registrationInformation.ProvideCorrespondAddress.addressline4.label=Address line 4 (optional)
 page.registrationInformation.ProvideCorrespondAddress.postcode.label=Postcode (optional)
 page.registrationInformation.ProvideCorrespondAddress.country.label=Country
+page.address.country.select = Select one country
+#page.address.country.instruction = The ISO country code is internationally recognised and identifies a specific country e.g. United States = ''US''; Germany = ''DE''
 
 #Contact Details Subscription
 page.registrationInformation.ContactDetailsSubscription.heading= Who should we contact?

@@ -28,7 +28,7 @@ object ProvideCorrespondAddressForm {
       "addressline3" -> utils.Validation.optionalAddressLineCheck,
       "addressline4" -> utils.Validation.addressLineFourCheck,
       "postcode" -> utils.Validation.optionalPostcodeCheck,
-      "country" -> utils.Validation.countryCheck
+      "countryCode" -> utils.Validation.countryCodeCheck
     )(ProvideCorrespondAddressModel.apply)(ProvideCorrespondAddressModel.unapply)
   )
 }

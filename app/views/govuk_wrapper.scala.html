@@ -16,6 +16,14 @@
 
 @linksElement = {
     <link rel="stylesheet" type="text/css" href='@routes.Assets.at("stylesheets/itr.css")'>
+    <link rel="stylesheet" href='@controllers.routes.Assets.at("jquery/jquery-ui.min.css")'/>
+    <link rel="stylesheet" href='@controllers.routes.Assets.at("jquery/jquery-ui.structure.min.css")'/>
+}
+
+@scriptElement = {
+
+    <script src='@controllers.routes.Assets.at("jquery/jquery-ui.min.js")'></script>
+    <script src='@controllers.routes.Assets.at("javascript/itr.js")'></script>
 }
 
 @head = {
@@ -47,7 +55,7 @@
       analyticsHost = appConfig.analyticsHost,
       assetsPrefix = appConfig.assetsPrefix,
       ssoUrl = None,
-      scriptElem = scriptElem,
+      scriptElem = Some(scriptElement),
       gaCalls = None)
 }
 
