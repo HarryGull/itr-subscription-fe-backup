@@ -186,3 +186,37 @@ related ul {
 .summaryLink {
     width: 1em;
 }
+
+.custom-combobox {
+    position: relative;
+    display: inline-block;
+}
+
+.custom-combobox-toggle {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    margin-left: -1px;
+    padding: 0;
+}
+
+.custom-combobox-input {
+    margin: 0;
+    padding: 5px 10px;
+    width:20em;
+}
+
+.form-field--error {
+    background-color: #fff;
+    border-left: 3px solid #df3034;
+    padding: 0.75em 1em;
+    box-sizing: border-box;
+    /*padding: 0.63158em 0.84211em 0.63158em 0.84211em;*/
+}
+
+
+.form-control {
+    border: 2px solid #6f777b;
+}
+
+

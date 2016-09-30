@@ -18,7 +18,7 @@ package views
 
 import connectors.KeystoreConnector
 import controllers.helpers.FakeRequestHelper
-import controllers.{ProvideCorrespondAddressController, routes}
+import controllers.routes
 import forms.ProvideCorrespondAddressForm._
 import models.ProvideCorrespondAddressModel
 import org.jsoup.Jsoup
@@ -32,7 +32,7 @@ class ProvideCorrespondAddressSpec extends UnitSpec with MockitoSugar with WithF
 
   val mockKeystoreConnector = mock[KeystoreConnector]
 
-  val provideCorrespondAddressModel = new ProvideCorrespondAddressModel("Akina Speed Stars","Mt. Akina","","","","Japan")
+  val provideCorrespondAddressModel = new ProvideCorrespondAddressModel("Akina Speed Stars","Mt. Akina","","","","JP")
   val emptyProvideCorrespondAddressModel = new ProvideCorrespondAddressModel("","","","","","")
 
   lazy val form = provideCorrespondAddressForm.bind(Map("addressline1" -> "Akina Speed Stars",
@@ -40,25 +40,26 @@ class ProvideCorrespondAddressSpec extends UnitSpec with MockitoSugar with WithF
                                                         "addressline3" -> "",
                                                         "addressline4" -> "",
                                                         "postcode" -> "",
-                                                        "country" -> "Japan"))
+                                                        "countryCode" -> "JP"))
 
   lazy val emptyForm = provideCorrespondAddressForm.bind(Map("addressline1" -> "",
                                                         "addressline2" -> "",
                                                         "addressline3" -> "",
                                                         "addressline4" -> "",
                                                         "postcode" -> "",
-                                                        "country" -> ""))
+                                                        "countryCode" -> ""))
 
   lazy val errorForm = provideCorrespondAddressForm.bind(Map("addressline1" -> "Akina Speed Stars",
     "addressline2" -> "Mt. Akina",
     "addressline3" -> "",
     "addressline4" -> "",
     "postcode" -> "",
-    "country" -> "J"))
+    "countryCode" -> ""))
 
-  lazy val page = ProvideCorrespondAddress(form)(authorisedFakeRequest)
-  lazy val emptyPage = ProvideCorrespondAddress(emptyForm)(authorisedFakeRequest)
-  lazy val errorPage = ProvideCorrespondAddress(errorForm)(authorisedFakeRequest)
+  val countriesList : List[(String, String)] = List(("JP","Japan"),("GB","United Kingdom"))
+  lazy val page = ProvideCorrespondAddress(form, countriesList)(authorisedFakeRequest)
+  lazy val emptyPage = ProvideCorrespondAddress(emptyForm, countriesList)(authorisedFakeRequest)
+  lazy val errorPage = ProvideCorrespondAddress(errorForm, countriesList)(authorisedFakeRequest)
 
   "The Provide Correspondence Address page" should {
 
@@ -78,7 +79,7 @@ class ProvideCorrespondAddressSpec extends UnitSpec with MockitoSugar with WithF
       document.body.getElementById("addressline3").`val`() shouldBe provideCorrespondAddressModel.addressline3
       document.body.getElementById("addressline4").`val`() shouldBe provideCorrespondAddressModel.addressline4
       document.body.getElementById("postcode").`val`() shouldBe provideCorrespondAddressModel.postcode
-      document.body.getElementById("country").`val`() shouldBe provideCorrespondAddressModel.country
+      document.body.select("select[name=countryCode] option[selected]").`val`() shouldBe provideCorrespondAddressModel.countryCode
       document.body.getElementById("get-help-action").text shouldBe Messages("common.error.help.text")
     }
 
@@ -96,7 +97,7 @@ class ProvideCorrespondAddressSpec extends UnitSpec with MockitoSugar with WithF
       document.body.getElementById("progress-section").text shouldBe  Messages("common.section.progress.registration")
       document.body.getElementById("get-help-action").text shouldBe  Messages("common.error.help.text")
       document.getElementById("error-summary-display").hasClass("error-summary--show")
-      document.getElementById("country-error-summary").text should include(Messages("validation.error.country"))
+      document.getElementById("countryCode-error-summary").text should include(Messages("validation.error.countryCode"))
       document.getElementById("addressline1-error-summary").text should include(Messages("validation.error.mandatoryaddresssline"))
       document.getElementById("addressline2-error-summary").text should include(Messages("validation.error.mandatoryaddresssline"))
     }
@@ -114,7 +115,7 @@ class ProvideCorrespondAddressSpec extends UnitSpec with MockitoSugar with WithF
       document.body.getElementById("progress-section").text shouldBe  Messages("common.section.progress.registration")
       document.body.getElementById("get-help-action").text shouldBe  Messages("common.error.help.text")
       document.getElementById("error-summary-display").hasClass("error-summary--show")
-      document.getElementById("country-error-summary").text should include(Messages("validation.error.country"))
+     document.getElementById("countryCode-error-summary").text should include(Messages("validation.error.countryCode"))
     }
   }
 }

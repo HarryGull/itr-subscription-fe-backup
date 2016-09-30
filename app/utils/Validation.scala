@@ -173,6 +173,52 @@ object Validation {
     text().verifying(countryCheckConstraint)
   }
 
+//  def countryCodeCheck: Mapping[String] = {
+//
+//    val validCodes = Seq("GB", "TH", "AF")
+//
+//    val countryCodeCheckConstraint: Constraint[String] =
+//      Constraint("contraints.countryCode")({
+//        text =>
+//          val error = validCodes.contains(text) match {
+//            case false => Seq(ValidationError(Messages("validation.error.country")))
+//            case _ => Nil
+//          }
+//          if (error.isEmpty) Valid else Invalid(error)
+//      })
+//    text().verifying(countryCodeCheckConstraint)
+//  }
+
+//  def countryCodeCheck: Mapping[String] = {
+//
+//    val validCodes = Seq("GB", "TH", "AF")
+//
+//    val countryCodeCheckConstraint: Constraint[String] =
+//      Constraint("contraints.countryCode")({
+//        text =>
+//          val error = text.isEmpty match {
+//            case true => Seq(ValidationError(Messages("validation.error.countryCode")))
+//            case _ => Nil
+//          }
+//          if (error.isEmpty) Valid else Invalid(error)
+//      })
+//    text().verifying(countryCodeCheckConstraint)
+//  }
+
+  def countryCodeCheck: Mapping[String] = {
+    val validEmailLine = """[A-Z]{2}""".r
+    val countryCodeCheckConstraint: Constraint[String] =
+      Constraint("contraints.countryCode")({
+        text =>
+          val error = text match {
+            case validEmailLine() => Nil
+            case _ => Seq(ValidationError(Messages("validation.error.countryCode")))
+          }
+          if (error.isEmpty) Valid else Invalid(error)
+      })
+    text().verifying(countryCodeCheckConstraint)
+  }
+
   def emailCheck: Mapping[String] = {
     val validEmailLine = """[A-Za-z0-9\-​_.]{1,64}@[A-Za-z0-9\-_​.]{1,64}""".r
     val emailCheckConstraint: Constraint[String] =
@@ -219,7 +265,7 @@ object Validation {
   def postcodeCountryCheckConstraint: Constraint[ProvideCorrespondAddressModel] = {
     Constraint("constraints.postcodeCountryCheck")({
       provideCorrespondAddressForm: ProvideCorrespondAddressModel =>
-        if (provideCorrespondAddressForm.country.length > 0 && provideCorrespondAddressForm.postcode.length > 0) {
+        if (provideCorrespondAddressForm.countryCode.length > 0 && provideCorrespondAddressForm.postcode.length > 0) {
           Invalid(Seq(ValidationError(Messages("validation.error.countrypostcode"))))
         } else {
           Valid

@@ -46,9 +46,9 @@ class ProvideCorrespondAddressControllerSpec extends UnitSpec with MockitoSugar 
     val keyStoreConnector: KeystoreConnector = mockKeyStoreConnector
   }
 
-  val model = ProvideCorrespondAddressModel("Akina Speed Stars","Mt. Akina","","","","Japan")
+  val model = ProvideCorrespondAddressModel("Akina Speed Stars","Mt. Akina","","","","JP")
   val cacheMap: CacheMap = CacheMap("", Map("" -> Json.toJson(model)))
-  val keyStoreSavedProvideCorrespondAddress = ProvideCorrespondAddressModel("Akina Speed Stars","Mt. Akina","","","","Japan")
+  val keyStoreSavedProvideCorrespondAddress = ProvideCorrespondAddressModel("Akina Speed Stars","Mt. Akina","","","","JP")
 
   implicit val hc = HeaderCarrier()
 
@@ -133,7 +133,7 @@ class ProvideCorrespondAddressControllerSpec extends UnitSpec with MockitoSugar 
         "addressline3" -> "",
         "addressline4" -> "",
         "postcode" -> "",
-        "country" -> "Japan")
+        "countryCode" -> "JP")
 
       submitWithSessionAndAuth(ProvideCorrespondAddressControllerTest.submit,formInput:_*)(
         result => {
@@ -152,7 +152,7 @@ class ProvideCorrespondAddressControllerSpec extends UnitSpec with MockitoSugar 
         "addressline3" -> "",
         "addressline4" -> "",
         "postcode" -> "",
-        "country" -> "Japan")
+        "countryCode" -> "JP")
 
       submitWithSessionAndAuth(ProvideCorrespondAddressControllerTest.submit,formInput:_*)(
         result => {

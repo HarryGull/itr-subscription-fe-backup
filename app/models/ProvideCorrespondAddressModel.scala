@@ -23,7 +23,7 @@ case class ProvideCorrespondAddressModel(addressline1 : String,
                                          addressline3 : String,
                                          addressline4 : String,
                                          postcode : String,
-                                         country : String)
+                                         countryCode : String)
 
 object ProvideCorrespondAddressModel {
   implicit val format = Json.format[ProvideCorrespondAddressModel]

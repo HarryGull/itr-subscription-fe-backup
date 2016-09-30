@@ -25,6 +25,7 @@ import models.ProvideCorrespondAddressModel
 import forms.ProvideCorrespondAddressForm._
 import uk.gov.hmrc.play.frontend.controller.FrontendController
 import views.html.registrationInformation.ProvideCorrespondAddress
+import utils._
 
 import scala.concurrent.Future
 
@@ -39,17 +40,19 @@ trait ProvideCorrespondAddressController extends FrontendController with Authori
 
   val keyStoreConnector: KeystoreConnector
 
+  lazy val countriesList = CountriesHelper.getIsoCodeTupleList
+
   val show = Authorised.async { implicit user => implicit request =>
     keyStoreConnector.fetchAndGetFormData[ProvideCorrespondAddressModel](KeystoreKeys.provideCorrespondAddress).map {
-      case Some(data) => Ok(ProvideCorrespondAddress(provideCorrespondAddressForm.fill(data)))
-      case None => Ok(ProvideCorrespondAddress(provideCorrespondAddressForm))
+      case Some(data) => Ok(ProvideCorrespondAddress(provideCorrespondAddressForm.fill(data), countriesList))
+      case None => Ok(ProvideCorrespondAddress(provideCorrespondAddressForm, countriesList))
     }
   }
 
   val submit = Authorised.async { implicit user => implicit request =>
     provideCorrespondAddressForm.bindFromRequest().fold(
       formWithErrors => {
-        Future.successful(BadRequest(ProvideCorrespondAddress(formWithErrors)))
+        Future.successful(BadRequest(ProvideCorrespondAddress(formWithErrors, countriesList)))
       },
       validFormData => {
         keyStoreConnector.saveFormData(KeystoreKeys.provideCorrespondAddress, validFormData)
