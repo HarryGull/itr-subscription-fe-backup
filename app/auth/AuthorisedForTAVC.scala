@@ -31,8 +31,9 @@ trait AuthorisedForTAVC extends Actions {
   val registeredBusinessCustomerService: RegisteredBusinessCustomerService
   val postSignInRedirectUrl: String = FrontendAppConfig.introductionUrl
 
+  // $COVERAGE-OFF$
   implicit private def hc(implicit request: Request[_]): HeaderCarrier = HeaderCarrier.fromHeadersAndSession(request.headers, Some(request.session))
-
+  // $COVERAGE-ON$
   lazy val visibilityPredicate = new TAVCCompositePageVisibilityPredicate(
     applicationConfig.businessCustomerUrl,
     registeredBusinessCustomerService
@@ -50,8 +51,9 @@ trait AuthorisedForTAVC extends Actions {
           action(TAVCUser(authContext))(request)
       }
     }
-
+    // $COVERAGE-OFF$
     def apply(action: UserRequest): Action[AnyContent] = async(user => request => Future.successful(action(user)(request)))
+    // $COVERAGE-ON$
   }
 
   object Authorised extends AuthorisedBy(TAVCRegime)

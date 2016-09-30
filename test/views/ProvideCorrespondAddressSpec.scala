@@ -17,9 +17,9 @@
 package views
 
 import connectors.KeystoreConnector
-import controllers.helpers.FakeRequestHelper
 import controllers.{ProvideCorrespondAddressController, routes}
 import forms.ProvideCorrespondAddressForm._
+import helpers.FakeRequestHelper
 import models.ProvideCorrespondAddressModel
 import org.jsoup.Jsoup
 import org.scalatest.mock.MockitoSugar

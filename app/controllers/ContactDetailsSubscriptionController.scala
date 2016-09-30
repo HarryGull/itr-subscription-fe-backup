@@ -34,7 +34,7 @@ object ContactDetailsSubscriptionController extends ContactDetailsSubscriptionCo
   override lazy val applicationConfig = FrontendAppConfig
   override lazy val authConnector = FrontendAuthConnector
   override lazy val registeredBusinessCustomerService = RegisteredBusinessCustomerService
-  val keyStoreConnector: KeystoreConnector = KeystoreConnector
+  override val keyStoreConnector = KeystoreConnector
 }
 
 trait ContactDetailsSubscriptionController extends FrontendController with AuthorisedForTAVC {

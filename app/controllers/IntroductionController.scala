@@ -31,13 +31,12 @@ object IntroductionController extends IntroductionController{
   override lazy val applicationConfig = FrontendAppConfig
   override lazy val authConnector = FrontendAuthConnector
   override lazy val registeredBusinessCustomerService = RegisteredBusinessCustomerService
-  val keyStoreConnector: KeystoreConnector = KeystoreConnector
+  override val keystoreConnector = KeystoreConnector
 }
 
 trait IntroductionController extends FrontendController with AuthorisedForTAVC{
 
-  implicit val hc = new HeaderCarrier()
-  val keystoreConnector: KeystoreConnector = KeystoreConnector
+  val keystoreConnector: KeystoreConnector
 
   val show = Authorised.async { implicit user => implicit request =>
     Future.successful(Ok(Introduction()))

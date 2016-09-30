@@ -28,7 +28,7 @@ trait RegisteredBusinessCustomerService {
 
   val dataCacheConnector: DataCacheConnector
 
-  def getReviewBusinessCustomerDetails (implicit hc: HeaderCarrier) : Future[Option[CompanyRegistrationReviewDetailsModel]] = {
+  def getReviewBusinessCustomerDetails(implicit hc: HeaderCarrier) : Future[Option[CompanyRegistrationReviewDetailsModel]] = {
     dataCacheConnector.fetchAndGetReviewDetailsForSession map {
       case Some(data) => Some(data)
       case _ => {

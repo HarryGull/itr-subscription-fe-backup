@@ -34,7 +34,7 @@ object ProvideCorrespondAddressController extends ProvideCorrespondAddressContro
   override lazy val applicationConfig = FrontendAppConfig
   override lazy val authConnector = FrontendAuthConnector
   override lazy val registeredBusinessCustomerService = RegisteredBusinessCustomerService
-  val keyStoreConnector: KeystoreConnector = KeystoreConnector
+  override val keyStoreConnector = KeystoreConnector
 }
 
 trait ProvideCorrespondAddressController extends FrontendController with AuthorisedForTAVC {

@@ -40,6 +40,3 @@ object BusinessCustomerDataCacheConnector extends DataCacheConnector {
   val sessionCache: SessionCache = BusinessCustomerSessionCache
 }
 
-object TavcSubscriptionDataCacheConnector extends DataCacheConnector {
-  val sessionCache: SessionCache = TavcSessionCache
-}

@@ -23,11 +23,13 @@ import uk.gov.hmrc.play.http.{HeaderCarrier, HttpResponse}
 
 import scala.concurrent.Future
 
-object KeystoreConnector extends KeystoreConnector
+object KeystoreConnector extends KeystoreConnector {
+  override val sessionCache = TavcSessionCache
+}
 
 trait KeystoreConnector {
 
-  val sessionCache : SessionCache = TavcSessionCache
+  val sessionCache : SessionCache
 
   def saveFormData[T](key: String, data : T)(implicit hc: HeaderCarrier, format: Format[T]): Future[CacheMap] = {
     sessionCache.cache[T](key, data)
@@ -39,9 +41,5 @@ trait KeystoreConnector {
 
   def clearKeystore()(implicit hc : HeaderCarrier) : Future[HttpResponse] = {
     sessionCache.remove()
-  }
-
-  def fetch()(implicit hc : HeaderCarrier) : Future[Option[CacheMap]] = {
-    sessionCache.fetch()
   }
 }

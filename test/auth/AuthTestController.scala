@@ -16,8 +16,8 @@
 
 package auth
 
+import helpers.AuthHelper._
 import uk.gov.hmrc.play.frontend.controller.FrontendController
-
 import scala.concurrent.Future
 
 object AuthTestController extends AuthTestController {

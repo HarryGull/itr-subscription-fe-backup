@@ -16,10 +16,24 @@
 
 package helpers
 
+import auth._
+import config.AppConfig
 import models.{AddressModel, CompanyRegistrationReviewDetailsModel}
+import org.mockito.Matchers
+import org.scalatest.mock.MockitoSugar
+import org.mockito.stubbing.OngoingStubbing
+import org.mockito.Mockito._
 import play.api.libs.json.Json
+import services.RegisteredBusinessCustomerService
+import uk.gov.hmrc.play.http.HeaderCarrier
 
-object AuthHelper {
+import scala.concurrent.Future
+
+object AuthHelper extends MockitoSugar {
+
+  val mockConfig: AppConfig = MockConfig
+  val mockAuthConnector = MockAuthConnector
+  val mockRegisteredBusinessCustomerService = mock[RegisteredBusinessCustomerService]
 
   val validJson = Json.parse(
     """{
@@ -58,4 +72,11 @@ object AuthHelper {
     Some("JARN1234567")
   )
 
+  def withRegDetails(): Unit = {
+    when(mockRegisteredBusinessCustomerService.getReviewBusinessCustomerDetails(Matchers.any[HeaderCarrier]())).thenReturn(Future.successful(Some(validModel)))
+  }
+
+  def noRegDetails(): Unit = {
+    when(mockRegisteredBusinessCustomerService.getReviewBusinessCustomerDetails(Matchers.any[HeaderCarrier]())).thenReturn(Future.successful(None))
+  }
 }

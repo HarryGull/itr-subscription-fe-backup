@@ -16,15 +16,25 @@
 
 package controllers
 
-import uk.gov.hmrc.play.frontend.controller.FrontendController
-import play.api.mvc._
-import scala.concurrent.Future
-//import views.html._
+import helpers.FakeRequestHelper
+import uk.gov.hmrc.play.test.{UnitSpec, WithFakeApplication}
+import play.api.test.Helpers._
 
-object HelloWorld extends HelloWorld
+class TimeoutControllerSpec extends UnitSpec with FakeRequestHelper with WithFakeApplication {
 
-trait HelloWorld extends FrontendController {
-  val helloWorld = Action.async { implicit request =>
-    Future.successful(Ok(views.html.helloworld.hello_world()))
+  "timeout" should {
+
+    lazy val result = TimeoutController.timeout(fakeRequest)
+
+    "return a 200" in {
+      status(result) shouldBe OK
+    }
+
+    "return HTML" in {
+      contentType(result) shouldBe Some("text/html")
+      charset(result) shouldBe Some("utf-8")
+    }
+
   }
+
 }

@@ -17,12 +17,12 @@
 package controllers
 
 import auth.{MockAuthConnector, MockConfig}
-import auth.mockRegisteredBusinessCustomerService
+import helpers.AuthHelper._
 import common.Constants
 import common.Encoder._
 import config.{FrontendAppConfig, FrontendAuthConnector}
 import connectors.KeystoreConnector
-import controllers.helpers.FakeRequestHelper
+import helpers.FakeRequestHelper
 import models.ConfirmCorrespondAddressModel
 import org.mockito.Matchers
 import org.mockito.Mockito._
@@ -47,7 +47,7 @@ class ConfirmCorrespondAddressControllerSpec extends UnitSpec with MockitoSugar 
     override lazy val applicationConfig = FrontendAppConfig
     override lazy val authConnector = MockAuthConnector
     val keyStoreConnector: KeystoreConnector = mockKeyStoreConnector
-    override val registeredBusinessCustomerService: RegisteredBusinessCustomerService = mockRegisteredBusinessCustomerService
+    override lazy val registeredBusinessCustomerService: RegisteredBusinessCustomerService = mockRegisteredBusinessCustomerService
   }
 
   val model = ConfirmCorrespondAddressModel(Constants.StandardRadioButtonYesValue)
@@ -76,6 +76,7 @@ class ConfirmCorrespondAddressControllerSpec extends UnitSpec with MockitoSugar 
 
   "Sending a GET request to ConfirmCorrespondAddressController" should {
     "return a 200 when something is fetched from keystore" in {
+      withRegDetails()
       when(mockKeyStoreConnector.saveFormData(Matchers.any(), Matchers.any())(Matchers.any(), Matchers.any())).thenReturn(cacheMap)
       when(mockKeyStoreConnector.fetchAndGetFormData[ConfirmCorrespondAddressModel](Matchers.any())(Matchers.any(), Matchers.any()))
         .thenReturn(Future.successful(Option(keyStoreSavedConfirmCorrespondAddress)))
@@ -85,17 +86,28 @@ class ConfirmCorrespondAddressControllerSpec extends UnitSpec with MockitoSugar 
     }
 
     "provide an empty model and return a 200 when nothing is fetched using keystore" in {
+      withRegDetails()
       when(mockKeyStoreConnector.saveFormData(Matchers.any(), Matchers.any())(Matchers.any(), Matchers.any())).thenReturn(cacheMap)
       when(mockKeyStoreConnector.fetchAndGetFormData[ConfirmCorrespondAddressModel](Matchers.any())(Matchers.any(), Matchers.any()))
         .thenReturn(Future.successful(None))
       showWithSessionAndAuth(ConfirmCorrespondAddressControllerTest.show)(
         result => status(result) shouldBe OK
-//        result => {
-//          status(result) shouldBe SEE_OTHER
-//          redirectLocation(result) shouldBe Some(s"${FrontendAppConfig.ggSignInUrl}?continue=${
-//           encode(MockConfig.introductionUrl)
-//          }&origin=investment-tax-relief-subscription-frontend&accountType=organisation")
-//        }
+      )
+    }
+  }
+
+  "Sending a GET request to ConfirmCorrespondAddressController and business customer details are not in keystore" should {
+    "return a 303" in {
+      noRegDetails()
+      showWithSessionAndAuth(ConfirmCorrespondAddressControllerTest.show)(
+        result => status(result) shouldBe SEE_OTHER
+      )
+    }
+
+    "should redirect to business customer frontend" in {
+      noRegDetails()
+      showWithSessionAndAuth(ConfirmCorrespondAddressControllerTest.show)(
+        result => redirectLocation(result) shouldBe Some(FrontendAppConfig.businessCustomerUrl)
       )
     }
   }
@@ -140,7 +152,7 @@ class ConfirmCorrespondAddressControllerSpec extends UnitSpec with MockitoSugar 
 
   "Sending a valid form submission with Yes option to the ConfirmCorrespondAddressController" should {
     "redirect Contact Details Subscription page" in {
-
+      withRegDetails()
       val formInput = "contactAddressUse" -> Constants.StandardRadioButtonYesValue
 
       submitWithSessionAndAuth(ConfirmCorrespondAddressControllerTest.submit,formInput)(
@@ -154,7 +166,7 @@ class ConfirmCorrespondAddressControllerSpec extends UnitSpec with MockitoSugar 
 
   "Sending a valid form submission with No option to the ConfirmCorrespondAddressController when authenticated" should {
     "redirect to provide Correspondence Address page" in {
-
+      withRegDetails()
       val formInput = "contactAddressUse" -> Constants.StandardRadioButtonNoValue
 
       submitWithSessionAndAuth(ConfirmCorrespondAddressControllerTest.submit,formInput)(
@@ -168,12 +180,84 @@ class ConfirmCorrespondAddressControllerSpec extends UnitSpec with MockitoSugar 
 
   "Sending an empty invalid form submission with validation errors to the ConfirmCorrespondAddressController" should {
     "redirect to itself" in {
-
+      withRegDetails()
       val formInput = "contactAddressUse" -> ""
 
       submitWithSessionAndAuth(ConfirmCorrespondAddressControllerTest.submit,formInput)(
         result => {
           status(result) shouldBe BAD_REQUEST
+        }
+      )
+    }
+  }
+
+  "Sending a valid form submission with Yes option to the ConfirmCorrespondAddressController " +
+    "and business customer details are not in keystore" should {
+
+    val formInput = "contactAddressUse" -> Constants.StandardRadioButtonYesValue
+
+    "return a 303" in {
+      noRegDetails()
+      submitWithSessionAndAuth(ConfirmCorrespondAddressControllerTest.submit,formInput)(
+        result => {
+          status(result) shouldBe SEE_OTHER
+        }
+      )
+    }
+
+    "redirect to business customer frontend" in {
+      noRegDetails()
+      submitWithSessionAndAuth(ConfirmCorrespondAddressControllerTest.submit,formInput)(
+        result => {
+          redirectLocation(result) shouldBe Some(FrontendAppConfig.businessCustomerUrl)
+        }
+      )
+    }
+  }
+
+  "Sending a valid form submission with No option to the ConfirmCorrespondAddressController when authenticated " +
+    "and business customer details are not in keystore" should {
+
+    val formInput = "contactAddressUse" -> Constants.StandardRadioButtonNoValue
+
+    "return a 303" in {
+      noRegDetails()
+      submitWithSessionAndAuth(ConfirmCorrespondAddressControllerTest.submit,formInput)(
+        result => {
+          status(result) shouldBe SEE_OTHER
+        }
+      )
+    }
+
+    "redirect to business customer frontend" in {
+      noRegDetails()
+      submitWithSessionAndAuth(ConfirmCorrespondAddressControllerTest.submit,formInput)(
+        result => {
+          redirectLocation(result) shouldBe Some(FrontendAppConfig.businessCustomerUrl)
+        }
+      )
+    }
+  }
+
+  "Sending an empty invalid form submission with validation errors to the ConfirmCorrespondAddressController " +
+    "and business customer details are not in keystore" should {
+
+    val formInput = "contactAddressUse" -> ""
+
+    "return a 303" in {
+      noRegDetails()
+      submitWithSessionAndAuth(ConfirmCorrespondAddressControllerTest.submit,formInput)(
+        result => {
+          status(result) shouldBe SEE_OTHER
+        }
+      )
+    }
+
+    "redirect to business customer frontend" in {
+      noRegDetails()
+      submitWithSessionAndAuth(ConfirmCorrespondAddressControllerTest.submit,formInput)(
+        result => {
+          redirectLocation(result) shouldBe Some(FrontendAppConfig.businessCustomerUrl)
         }
       )
     }

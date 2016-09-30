@@ -21,20 +21,29 @@ import auth.MockAuthConnector
 import common.Encoder._
 import config.{FrontendAppConfig, FrontendAuthConnector}
 import connectors.KeystoreConnector
-import controllers.helpers.FakeRequestHelper
+import helpers.FakeRequestHelper
+import helpers.AuthHelper._
+import org.mockito.Matchers
+import org.scalatest.mock.MockitoSugar
+import org.mockito.Mockito._
 import play.api.test.Helpers._
+import uk.gov.hmrc.play.http.{HeaderCarrier, HttpResponse}
 import uk.gov.hmrc.play.test.{UnitSpec, WithFakeApplication}
 
-class IntroductionControllerSpec extends UnitSpec with WithFakeApplication with FakeRequestHelper{
+import scala.concurrent.Future
+
+class IntroductionControllerSpec extends UnitSpec with WithFakeApplication with FakeRequestHelper with MockitoSugar {
 
   object TestIntroductionController extends IntroductionController {
     override lazy val applicationConfig = FrontendAppConfig
     override lazy val authConnector = MockAuthConnector
+    override val keystoreConnector = mock[KeystoreConnector]
+    override lazy val registeredBusinessCustomerService = mockRegisteredBusinessCustomerService
   }
 
   "IntroductionController" should {
     "use the correct keystore connector" in {
-      IntroductionController.keyStoreConnector shouldBe KeystoreConnector
+      IntroductionController.keystoreConnector shouldBe KeystoreConnector
     }
   }
 
@@ -44,58 +53,153 @@ class IntroductionControllerSpec extends UnitSpec with WithFakeApplication with 
     }
   }
 
-  "IntroductionController.introduction" should {
+  "show" when {
 
-    "when called with no session" should {
+    "called with a session that's authenticated and business customer details are in keystore" should {
+      lazy val result = TestIntroductionController.show(authorisedFakeRequest)
 
+      "return a 200" in {
+        withRegDetails()
+        status(result) shouldBe OK
+      }
+    }
+
+    "called with a session that's authenticated and business customer details are not in keystore" should {
+      lazy val result = TestIntroductionController.show(authorisedFakeRequest)
+
+      "return a 303" in {
+        noRegDetails()
+        status(result) shouldBe SEE_OTHER
+      }
+
+      "should redirect to business customer frontend" in {
+        noRegDetails()
+        redirectLocation(result) shouldBe Some(FrontendAppConfig.businessCustomerUrl)
+      }
+    }
+
+    "called with no session" should {
       lazy val result = TestIntroductionController.show(fakeRequest)
 
       "return a 303" in {
         status(result) shouldBe SEE_OTHER
       }
 
-      s"should redirect to GG login" in {
+      "should redirect to GG login" in {
         redirectLocation(result) shouldBe Some(s"${FrontendAppConfig.ggSignInUrl}?continue=${encode(MockConfig.introductionUrl)}&origin=investment-tax-relief-subscription-frontend&accountType=organisation")
       }
     }
 
-    "when called with a session that's not authenticated" should {
-
+    "called with a session that's not authenticated" should {
       lazy val result = TestIntroductionController.show(fakeRequestWithSession)
 
       "return a 303" in {
         status(result) shouldBe SEE_OTHER
       }
 
-      s"should redirect to GG login" in {
+      "should redirect to GG login" in {
         redirectLocation(result) shouldBe Some(s"${FrontendAppConfig.ggSignInUrl}?continue=${encode(MockConfig.introductionUrl)}&origin=investment-tax-relief-subscription-frontend&accountType=organisation")
       }
     }
 
-    "when called with a session that's authenticated" should {
-
-      lazy val result = TestIntroductionController.show(authorisedFakeRequest)
-
-      "return a 200 in" in {
-        status(result) shouldBe OK
-      }
-    }
-
-    "when called with a session that's timed out" should {
-
+    "called with a session that's timed out" should {
       lazy val result = TestIntroductionController.show(timedOutFakeRequest)
 
       "return a 303 in" in {
         status(result) shouldBe SEE_OTHER
       }
 
-      s"should redirect to timeout page" in {
+      "should redirect to timeout page" in {
         redirectLocation(result) shouldBe Some(routes.TimeoutController.timeout().url)
       }
     }
+  }
 
+  "submit" when {
 
+    "called with a session that's authenticated and business customer details are in keystore" should {
+      lazy val result = TestIntroductionController.submit(authorisedFakeRequest)
 
+      "return a 303" in {
+        withRegDetails()
+        status(result) shouldBe SEE_OTHER
+      }
+
+      "redirect to confirm correspondence address page" in {
+        withRegDetails()
+        redirectLocation(result) shouldBe Some(routes.ConfirmCorrespondAddressController.show().url)
+      }
+    }
+
+    "called with a session that's authenticated and business customer details are not in keystore" should {
+      lazy val result = TestIntroductionController.submit(authorisedFakeRequest)
+
+      "return a 303" in {
+        noRegDetails()
+        status(result) shouldBe SEE_OTHER
+      }
+
+      "should redirect to business customer frontend" in {
+        noRegDetails()
+        redirectLocation(result) shouldBe Some(FrontendAppConfig.businessCustomerUrl)
+      }
+    }
+
+    "called with no session" should {
+      lazy val result = TestIntroductionController.submit(fakeRequest)
+
+      "return a 303" in {
+        status(result) shouldBe SEE_OTHER
+      }
+
+      "should redirect to GG login" in {
+        redirectLocation(result) shouldBe Some(s"${FrontendAppConfig.ggSignInUrl}?continue=${encode(MockConfig.introductionUrl)}&origin=investment-tax-relief-subscription-frontend&accountType=organisation")
+      }
+    }
+
+    "called with a session that's not authenticated" should {
+      lazy val result = TestIntroductionController.submit(fakeRequestWithSession)
+
+      "return a 303" in {
+        status(result) shouldBe SEE_OTHER
+      }
+
+      "should redirect to GG login" in {
+        redirectLocation(result) shouldBe Some(s"${FrontendAppConfig.ggSignInUrl}?continue=${encode(MockConfig.introductionUrl)}&origin=investment-tax-relief-subscription-frontend&accountType=organisation")
+      }
+    }
+
+    "called with a session that's timed out" should {
+      lazy val result = TestIntroductionController.submit(timedOutFakeRequest)
+
+      "return a 303 in" in {
+        status(result) shouldBe SEE_OTHER
+      }
+
+      "should redirect to timeout page" in {
+        redirectLocation(result) shouldBe Some(routes.TimeoutController.timeout().url)
+      }
+
+    }
+  }
+
+  "restart" should {
+
+    lazy val result = TestIntroductionController.restart()(authorisedFakeRequest)
+
+    "return a 303" in {
+      withRegDetails()
+      when(TestIntroductionController.keystoreConnector.clearKeystore()(Matchers.any[HeaderCarrier]()))
+        .thenReturn(Future.successful(HttpResponse(OK)))
+      status(result) shouldBe SEE_OTHER
+    }
+
+    "redirect to confirm correspondence address page" in {
+      withRegDetails()
+      when(TestIntroductionController.keystoreConnector.clearKeystore()(Matchers.any[HeaderCarrier]()))
+        .thenReturn(Future.successful(HttpResponse(OK)))
+      redirectLocation(result) shouldBe Some(routes.StartController.start().url)
+    }
   }
 }
 

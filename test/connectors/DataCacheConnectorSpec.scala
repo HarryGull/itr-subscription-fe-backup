@@ -16,16 +16,18 @@
 
 package connectors
 
+import config.{BusinessCustomerSessionCache, TavcSessionCache}
 import models.CompanyRegistrationReviewDetailsModel
-
+import helpers.AuthHelper._
 import org.mockito.Matchers
 import org.mockito.Mockito._
 import org.scalatest.mock.MockitoSugar
-import play.api.libs.json.Json
 import uk.gov.hmrc.http.cache.client.SessionCache
 import uk.gov.hmrc.play.http.HeaderCarrier
 import uk.gov.hmrc.play.http.logging.SessionId
 import uk.gov.hmrc.play.test.UnitSpec
+
+import scala.concurrent.Future
 
 class DataCacheConnectorSpec extends UnitSpec with MockitoSugar {
 
@@ -36,19 +38,23 @@ class DataCacheConnectorSpec extends UnitSpec with MockitoSugar {
     override val sessionCache: SessionCache = mock[SessionCache]
   }
 
-  "BusinessCustomerSessionCache" when {
+  "BusinessCustomerDataCacheConnector" should {
 
-    "DataCacheConnectorSpec.fetchAndGetReviewDetailsForSession" should {
+    "use BusinessCustomerSessionCache as the session cache" in {
+      BusinessCustomerDataCacheConnector.sessionCache shouldBe BusinessCustomerSessionCache
+    }
 
+  }
+
+  "DataCacheConnectorSpec.fetchAndGetReviewDetailsForSession" should {
+
+    "convert review details json to CompanyRegistrationReviewDetailsModel" in {
       implicit val hc: HeaderCarrier = validHeaderCarrier
-      when(TestConnector.sessionCache.fetchAndGetEntry[CompanyRegistrationReviewDetailsModel](TestConnector.bcSourceId)(Matchers.any(),Matchers.any()))
-        .thenReturn(Json.fromJson[CompanyRegistrationReviewDetailsModel](validJson).asOpt)
+      when(TestConnector.sessionCache.fetchAndGetEntry[CompanyRegistrationReviewDetailsModel]
+        (Matchers.anyString())(Matchers.any[HeaderCarrier](),Matchers.any()))
+        .thenReturn(Future.successful(Some(validModel)))
       val result = TestConnector.fetchAndGetReviewDetailsForSession
-
-      "convert review details json to CompanyRegistrationReviewDetailsModel" in {
-        result shouldBe Some(validModel)
-      }
-
+      await(result) shouldBe Some(validModel)
     }
   }
 

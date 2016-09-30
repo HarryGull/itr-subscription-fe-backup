@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-import config.AppConfig
 import org.joda.time.{DateTime, DateTimeZone}
 import play.api.test.FakeRequest
 import uk.gov.hmrc.play.frontend.auth.AuthContext
@@ -27,15 +26,11 @@ import java.util.UUID
 
 import play.api.mvc.AnyContentAsEmpty
 import org.scalatest.mock.MockitoSugar
-import services.RegisteredBusinessCustomerService
 
 package object auth extends MockitoSugar {
 
   val mockUsername = "mockuser"
   val mockUserId = "/auth/oid/" + mockUsername
-  val mockConfig: AppConfig = MockConfig
-  val mockAuthConnector = MockAuthConnector
-  val mockRegisteredBusinessCustomerService = mock[RegisteredBusinessCustomerService]
   lazy val fakeRequest = FakeRequest()
 
   object ggSession {

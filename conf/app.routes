@@ -8,7 +8,6 @@ GET         /                        controllers.StartController.start
 ########################################################
 GET         /timeout                                controllers.TimeoutController.timeout
 
-GET        /hello-world                             controllers.HelloWorld.helloWorld
 GET        /                                        controllers.StartController.start
 GET        /introduction                            controllers.IntroductionController.show
 POST       /introduction                            controllers.IntroductionController.submit

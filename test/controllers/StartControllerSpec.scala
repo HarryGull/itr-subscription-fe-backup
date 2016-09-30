@@ -16,7 +16,7 @@
 
 package controllers
 
-import controllers.helpers.FakeRequestHelper
+import helpers.FakeRequestHelper
 import uk.gov.hmrc.play.test.{UnitSpec, WithFakeApplication}
 import play.api.http.Status
 
