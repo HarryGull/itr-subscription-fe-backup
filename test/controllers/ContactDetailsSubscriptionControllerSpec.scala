@@ -16,12 +16,12 @@
 
 package controllers
 
-import auth.{MockAuthConnector, MockConfig}
+import auth._
 import common.Encoder._
 import config.{FrontendAppConfig, FrontendAuthConnector}
-import connectors.KeystoreConnector
 import helpers.FakeRequestHelper
 import helpers.AuthHelper._
+import connectors.{KeystoreConnector}
 import models.ContactDetailsSubscriptionModel
 import org.mockito.Matchers
 import org.mockito.Mockito._
@@ -30,6 +30,7 @@ import org.scalatest.mock.MockitoSugar
 import org.scalatestplus.play.OneServerPerSuite
 import play.api.libs.json.Json
 import play.api.test.Helpers._
+import services.RegisteredBusinessCustomerService
 import uk.gov.hmrc.http.cache.client.CacheMap
 import uk.gov.hmrc.play.http.HeaderCarrier
 import uk.gov.hmrc.play.test.UnitSpec
@@ -39,7 +40,6 @@ import scala.concurrent.Future
 class ContactDetailsSubscriptionControllerSpec extends UnitSpec with MockitoSugar with BeforeAndAfterEach with OneServerPerSuite with FakeRequestHelper{
 
   val mockKeyStoreConnector = mock[KeystoreConnector]
-
 
   object ContactDetailsSubscriptionControllerTest extends ContactDetailsSubscriptionController {
     override lazy val applicationConfig = FrontendAppConfig

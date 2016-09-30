@@ -16,7 +16,7 @@
 
 package controllers
 
-import auth.{MockAuthConnector, MockConfig}
+import auth._
 import common.Encoder._
 import config.{FrontendAppConfig, FrontendAuthConnector}
 import connectors.KeystoreConnector
@@ -25,11 +25,13 @@ import helpers.AuthHelper._
 import models.ProvideCorrespondAddressModel
 import org.mockito.Matchers
 import org.mockito.Mockito._
+import org.mockito.Mockito.mock
 import org.scalatest.BeforeAndAfterEach
 import org.scalatest.mock.MockitoSugar
 import org.scalatestplus.play.OneServerPerSuite
 import play.api.libs.json.Json
 import play.api.test.Helpers._
+import services.RegisteredBusinessCustomerService
 import uk.gov.hmrc.http.cache.client.CacheMap
 import uk.gov.hmrc.play.http.HeaderCarrier
 import uk.gov.hmrc.play.test.UnitSpec

@@ -20,6 +20,7 @@ object KeystoreKeys extends KeystoreKeys
 trait KeystoreKeys {
   // form keys
 
+  val companyDetails: String = "registrationInformation:companyDetails"
   val confirmContactAddress: String = "registrationInformation:confirmCorrespondAddress"
   val provideCorrespondAddress: String = "registrationInformation:provideCorrespondAddress"
   val contactDetailsSubscription: String = "registrationInformation:contactDetailsSubscription"

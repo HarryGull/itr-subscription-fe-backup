@@ -16,8 +16,7 @@
 
 package controllers
 
-import auth.MockConfig
-import auth.MockAuthConnector
+import auth._
 import common.Encoder._
 import config.{FrontendAppConfig, FrontendAuthConnector}
 import connectors.KeystoreConnector
@@ -28,6 +27,7 @@ import org.scalatest.mock.MockitoSugar
 import org.mockito.Mockito._
 import play.api.test.Helpers._
 import uk.gov.hmrc.play.http.{HeaderCarrier, HttpResponse}
+import services.RegisteredBusinessCustomerService
 import uk.gov.hmrc.play.test.{UnitSpec, WithFakeApplication}
 
 import scala.concurrent.Future

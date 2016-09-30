@@ -19,12 +19,13 @@ package controllers
 import auth.AuthorisedForTAVC
 import common.{Constants, KeystoreKeys}
 import config.{FrontendAppConfig, FrontendAuthConnector}
-import connectors.KeystoreConnector
+import connectors.{BusinessCustomerDataCacheConnector, DataCacheConnector, KeystoreConnector}
 import forms.ConfirmCorrespondAddressForm._
-import models.ConfirmCorrespondAddressModel
-import play.api.mvc.Action
+import models.{CompanyRegistrationReviewDetailsModel, ConfirmCorrespondAddressModel}
+import play.api.libs.json.Json
 import services.RegisteredBusinessCustomerService
 import uk.gov.hmrc.play.frontend.controller.FrontendController
+import uk.gov.hmrc.play.http.HeaderCarrier
 import views.html.registrationInformation.ConfirmCorrespondAddress
 
 import scala.concurrent.Future
@@ -40,17 +41,33 @@ trait ConfirmCorrespondAddressController extends FrontendController with Authori
 
   val keyStoreConnector: KeystoreConnector
 
+  private def getConfirmCorrespondenceModels(implicit headerCarrier: HeaderCarrier) : Future[(Option[ConfirmCorrespondAddressModel],
+    CompanyRegistrationReviewDetailsModel)] = {
+    for {
+      confirmCorrespondAddress <- keyStoreConnector.fetchAndGetFormData[ConfirmCorrespondAddressModel](KeystoreKeys.confirmContactAddress)
+      companyDetails <- keyStoreConnector.fetchAndGetFormData[CompanyRegistrationReviewDetailsModel](KeystoreKeys.companyDetails)
+    } yield (confirmCorrespondAddress, companyDetails.get)
+  }
+
+
   val show = Authorised.async { implicit user => implicit request =>
-    keyStoreConnector.fetchAndGetFormData[ConfirmCorrespondAddressModel](KeystoreKeys.confirmContactAddress).map {
-      case Some(data) => Ok(ConfirmCorrespondAddress(confirmCorrespondAddressForm.fill(data)))
-      case None => Ok(ConfirmCorrespondAddress(confirmCorrespondAddressForm))
+
+    registeredBusinessCustomerService.getReviewBusinessCustomerDetails.map(companyDetails =>
+      keyStoreConnector.saveFormData(KeystoreKeys.companyDetails, companyDetails))
+
+    getConfirmCorrespondenceModels.map {
+      case (Some(confirmCorrespondAddress),companyDetails) =>
+        Ok(ConfirmCorrespondAddress(confirmCorrespondAddressForm.fill(confirmCorrespondAddress),companyDetails))
+      case (None,companyDetails) => Ok(ConfirmCorrespondAddress(confirmCorrespondAddressForm,companyDetails))
     }
   }
 
   val submit = Authorised.async { implicit user => implicit request =>
     confirmCorrespondAddressForm.bindFromRequest().fold(
       formWithErrors => {
-        Future.successful(BadRequest(ConfirmCorrespondAddress(formWithErrors)))
+        getConfirmCorrespondenceModels.map {
+          case (_,companyDetails) => BadRequest(ConfirmCorrespondAddress(formWithErrors,companyDetails))
+        }
       },
       validFormData => {
         keyStoreConnector.saveFormData(KeystoreKeys.confirmContactAddress, validFormData)
