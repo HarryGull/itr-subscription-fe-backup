@@ -23,7 +23,7 @@ import common.Encoder._
 import config.{FrontendAppConfig, FrontendAuthConnector}
 import helpers.FakeRequestHelper
 import connectors.{DataCacheConnector, KeystoreConnector}
-import models.{ConfirmCorrespondAddressModel, CompanyRegistrationReviewDetailsModel}
+import models.{ProvideCorrespondAddressModel, ConfirmCorrespondAddressModel, CompanyRegistrationReviewDetailsModel}
 import org.mockito.Matchers
 import org.mockito.Mockito._
 import org.scalatest.BeforeAndAfterEach
@@ -54,6 +54,8 @@ class ConfirmCorrespondAddressControllerSpec extends UnitSpec with MockitoSugar 
 
   val confirmCorrespondAddressModel = ConfirmCorrespondAddressModel(Constants.StandardRadioButtonYesValue)
   val confirmCorrespondAddressCacheMap: CacheMap = CacheMap("", Map("" -> Json.toJson(confirmCorrespondAddressModel)))
+  val provideCorrespondAddressModelBeforeWrites = validModel.businessAddress
+  val provideCorrespondAddressModelCacheMap: CacheMap = CacheMap("", Map("" -> Json.toJson(provideCorrespondAddressModelBeforeWrites)))
   val keyStoreSavedConfirmCorrespondAddress = ConfirmCorrespondAddressModel(Constants.StandardRadioButtonYesValue)
 
 
@@ -152,8 +154,11 @@ class ConfirmCorrespondAddressControllerSpec extends UnitSpec with MockitoSugar 
 
 
   "Sending a valid form submission with Yes option to the ConfirmCorrespondAddressController" should {
-    "redirect Contact Details Subscription page" in {
+    "redirect Contact Details Subscription page and save the ProvideCorrespondAddressModel" in {
       withRegDetails()
+      when(mockKeyStoreConnector.saveFormData(Matchers.any(), Matchers.any())(Matchers.any(),
+        Matchers.any())).thenReturn(provideCorrespondAddressModelCacheMap)
+      when(mockKeyStoreConnector.saveFormData(Matchers.any(), Matchers.any())(Matchers.any(), Matchers.any())).thenReturn(confirmCorrespondAddressCacheMap)
       val formInput = "contactAddressUse" -> Constants.StandardRadioButtonYesValue
 
       submitWithSessionAndAuth(ConfirmCorrespondAddressControllerTest.submit,formInput)(
