@@ -16,7 +16,8 @@
 
 package models
 
-import play.api.libs.json.Json
+import play.api.libs.json._
+import play.api.libs.functional.syntax._
 
 case class AddressModel(line_1 : String,
                         line_2 : String,
@@ -26,8 +27,16 @@ case class AddressModel(line_1 : String,
                         country : String)
 
 object AddressModel {
-  implicit val format = Json.format[AddressModel]
-  implicit val writes = Json.writes[AddressModel]
+  implicit val reads = Json.reads[AddressModel]
+  implicit val writes = (
+    (__ \ "addressline1").write[String] and
+      (__ \ "addressline2").write[String] and
+      (__ \ "addressline3").writeNullable[String] and
+      (__ \ "addressline4").writeNullable[String] and
+      (__ \ "postcode").writeNullable[String] and
+      (__ \ "country").write[String]
+    )(unlift(AddressModel.unapply))
+
 }
 
 case class CompanyRegistrationReviewDetailsModel(businessName: String,
