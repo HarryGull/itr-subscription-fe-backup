@@ -118,10 +118,11 @@ $(function() {
     $("#countryCode").combobox();
     var classOfSelect = $('#country_').attr('class');
     $("#countryCode").addClass(classOfSelect);
-    var labelText = $("#country_field").text();
-    var divId = "country_div"
-    var fieldId = "country_"
+    var labelText = "selected country field";
+    var divId = "countryCode_div"
+    var fieldId = "countryCode_"
     createLabelForHiddenSelect(divId, fieldId, labelText);
 });
 
 }
+
