@@ -16,13 +16,13 @@
 
 package views
 
-import _root_.helpers.FakeRequestHelper
+import helpers.FakeRequestHelper
 import common.Constants
 import helpers.AuthHelper._
 import connectors.KeystoreConnector
-import controllers.{routes}
+import controllers.routes
 import forms.ConfirmCorrespondAddressForm._
-import models.{ConfirmCorrespondAddressModel}
+import models.ConfirmCorrespondAddressModel
 import org.jsoup.Jsoup
 import org.scalatest.mock.MockitoSugar
 import play.api.i18n.Messages

@@ -77,3 +77,9 @@ page.registrationInformation.ContactDetailsSubscription.telephoneNumber.label= T
 page.registrationInformation.ContactDetailsSubscription.telephoneNumber2.label= Telephone Number 2 (optional)
 page.registrationInformation.ContactDetailsSubscription.email.label= Email
 
+# Review Company Details
+page.registrationInformation.ReviewCompanyDetails.heading= Confirm the contact details for
+page.registrationInformation.ReviewCompanyDetails.title= Review company details
+page.registrationInformation.ReviewCompanyDetails.button.continue= Confirm and register
+page.registrationInformation.ReviewCompanyDetails.correspondenceAddress= Correspondence address
+page.registrationInformation.ReviewCompanyDetails.companyContact= Company contact

@@ -55,7 +55,7 @@ trait ContactDetailsSubscriptionController extends FrontendController with Autho
       },
       validFormData => {
         keyStoreConnector.saveFormData(KeystoreKeys.contactDetailsSubscription, validFormData)
-        Future.successful(Redirect(routes.ConfirmCorrespondAddressController.show()))
+        Future.successful(Redirect(routes.ReviewCompanyDetailsController.show()))
       }
     )
   }

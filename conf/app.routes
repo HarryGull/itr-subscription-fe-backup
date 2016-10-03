@@ -21,6 +21,8 @@ POST       /provide-correspondence-address          controllers.ProvideCorrespon
 GET        /contact-details-subscription            controllers.ContactDetailsSubscriptionController.show
 POST       /contact-details-subscription            controllers.ContactDetailsSubscriptionController.submit
 
+GET        /review-company-details                  controllers.ReviewCompanyDetailsController.show
+
 #Session Timeout route
 #####################################################################################################################
 GET         /session-timeout         controllers.TimeoutController.timeout

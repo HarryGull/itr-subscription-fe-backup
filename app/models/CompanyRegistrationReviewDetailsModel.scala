@@ -34,7 +34,7 @@ object AddressModel {
       (__ \ "addressline3").writeNullable[String] and
       (__ \ "addressline4").writeNullable[String] and
       (__ \ "postcode").writeNullable[String] and
-      (__ \ "country").write[String]
+      (__ \ "countryCode").write[String]
     )(unlift(AddressModel.unapply))
 
 }

@@ -68,9 +68,6 @@ trait ConfirmCorrespondAddressController extends FrontendController with Authori
       },
       validFormData => {
         keyStoreConnector.saveFormData(KeystoreKeys.confirmContactAddress, validFormData)
-        registeredBusinessCustomerService.getReviewBusinessCustomerDetails.map(companyDetails => {
-          keyStoreConnector.saveFormData(KeystoreKeys.companyRegistrationReviewDetails, companyDetails)
-        })
 
         validFormData.contactAddressUse match {
           case Constants.StandardRadioButtonYesValue => {
