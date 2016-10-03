@@ -21,7 +21,8 @@ import common.{Constants, KeystoreKeys}
 import config.{FrontendAppConfig, FrontendAuthConnector}
 import connectors.KeystoreConnector
 import forms.ConfirmCorrespondAddressForm._
-import models.{CompanyRegistrationReviewDetailsModel, ConfirmCorrespondAddressModel}
+import models.{AddressModel, ProvideCorrespondAddressModel, CompanyRegistrationReviewDetailsModel, ConfirmCorrespondAddressModel}
+import play.api.libs.json.Json
 import services.RegisteredBusinessCustomerService
 import uk.gov.hmrc.play.frontend.controller.FrontendController
 import uk.gov.hmrc.play.http.HeaderCarrier
@@ -67,11 +68,16 @@ trait ConfirmCorrespondAddressController extends FrontendController with Authori
       },
       validFormData => {
         keyStoreConnector.saveFormData(KeystoreKeys.confirmContactAddress, validFormData)
+        registeredBusinessCustomerService.getReviewBusinessCustomerDetails.map(companyDetails => {
+          keyStoreConnector.saveFormData(KeystoreKeys.companyRegistrationReviewDetails, companyDetails)
+        })
 
         validFormData.contactAddressUse match {
           case Constants.StandardRadioButtonYesValue => {
-            registeredBusinessCustomerService.getReviewBusinessCustomerDetails.map(companyDetails =>
-              keyStoreConnector.saveFormData(KeystoreKeys.companyReviewRegistrationDetails, companyDetails))
+            registeredBusinessCustomerService.getReviewBusinessCustomerDetails.map(companyDetails => {
+              keyStoreConnector.saveFormData(KeystoreKeys.provideCorrespondAddress,
+                Json.toJson(companyDetails.get.businessAddress).as[ProvideCorrespondAddressModel])
+            })
             keyStoreConnector.saveFormData(KeystoreKeys.backLinkConfirmCorrespondAddress,
               routes.ConfirmCorrespondAddressController.show().url)
             Future.successful(Redirect(routes.ContactDetailsSubscriptionController.show()))

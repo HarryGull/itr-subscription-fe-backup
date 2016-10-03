@@ -81,7 +81,7 @@ class ConfirmCorrespondAddressControllerSpec extends UnitSpec with MockitoSugar 
       when(mockKeyStoreConnector.saveFormData(Matchers.any(), Matchers.any())(Matchers.any(), Matchers.any())).thenReturn(confirmCorrespondAddressCacheMap)
       when(mockKeyStoreConnector.fetchAndGetFormData[ConfirmCorrespondAddressModel](Matchers.eq(KeystoreKeys.confirmContactAddress))
         (Matchers.any(), Matchers.any())).thenReturn(Future.successful(Option(keyStoreSavedConfirmCorrespondAddress)))
-      when(mockKeyStoreConnector.fetchAndGetFormData[CompanyRegistrationReviewDetailsModel](Matchers.eq(KeystoreKeys.companyReviewRegistrationDetails))
+      when(mockKeyStoreConnector.fetchAndGetFormData[CompanyRegistrationReviewDetailsModel](Matchers.eq(KeystoreKeys.companyRegistrationReviewDetails))
         (Matchers.any(), Matchers.any())).thenReturn(Future.successful(Option(validModel)))
       showWithSessionAndAuth(ConfirmCorrespondAddressControllerTest.show)(
         result => status(result) shouldBe OK
@@ -93,7 +93,7 @@ class ConfirmCorrespondAddressControllerSpec extends UnitSpec with MockitoSugar 
       when(mockKeyStoreConnector.saveFormData(Matchers.any(), Matchers.any())(Matchers.any(), Matchers.any())).thenReturn(confirmCorrespondAddressCacheMap)
       when(mockKeyStoreConnector.fetchAndGetFormData[ConfirmCorrespondAddressModel](Matchers.any())(Matchers.any(), Matchers.any()))
         .thenReturn(Future.successful(None))
-      when(mockKeyStoreConnector.fetchAndGetFormData[CompanyRegistrationReviewDetailsModel](Matchers.eq(KeystoreKeys.companyReviewRegistrationDetails))
+      when(mockKeyStoreConnector.fetchAndGetFormData[CompanyRegistrationReviewDetailsModel](Matchers.eq(KeystoreKeys.companyRegistrationReviewDetails))
         (Matchers.any(), Matchers.any())).thenReturn(Future.successful(Option(validModel)))
       showWithSessionAndAuth(ConfirmCorrespondAddressControllerTest.show)(
         result => status(result) shouldBe OK
@@ -188,7 +188,7 @@ class ConfirmCorrespondAddressControllerSpec extends UnitSpec with MockitoSugar 
       withRegDetails()
       when(mockKeyStoreConnector.fetchAndGetFormData[ConfirmCorrespondAddressModel](Matchers.eq(KeystoreKeys.confirmContactAddress))
         (Matchers.any(), Matchers.any())).thenReturn(Future.successful(Option(keyStoreSavedConfirmCorrespondAddress)))
-      when(mockKeyStoreConnector.fetchAndGetFormData[CompanyRegistrationReviewDetailsModel](Matchers.eq(KeystoreKeys.companyReviewRegistrationDetails))
+      when(mockKeyStoreConnector.fetchAndGetFormData[CompanyRegistrationReviewDetailsModel](Matchers.eq(KeystoreKeys.companyRegistrationReviewDetails))
         (Matchers.any(), Matchers.any())).thenReturn(Future.successful(Option(validModel)))
       val formInput = "contactAddressUse" -> ""
 
