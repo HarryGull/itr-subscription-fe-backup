@@ -21,7 +21,5 @@ object Constants extends Constants
 trait Constants {
   val StandardRadioButtonYesValue = "Yes"
   val StandardRadioButtonNoValue = "No"
-  val taxYearFormattedAnswer = (value: String, taxYear: String) => s"£$value in $taxYear tax year"
-  val amountFormattedAnswer = (value: String) => s"£$value"
   val SuggestedTextMaxLength: Int = 2048
 }
