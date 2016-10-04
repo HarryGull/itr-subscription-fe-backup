@@ -1,0 +1,68 @@
+@import uk.gov.hmrc.play.views.html.helpers.form
+@import models.ReviewCompanyDetailsModel
+@import views.html.helpers.{errorSummary, formInputRadioGroup, textWithConstErrors, backButtonWithProgress}
+
+@(reviewCompanyDetails: ReviewCompanyDetailsModel)(implicit request: Request[_])
+
+@main_template(Messages("page.registrationInformation.ReviewCompanyDetails.title")){
+
+@backButtonWithProgress(controllers.routes.ContactDetailsSubscriptionController.show().url, Messages("common.section.progress.registration"))
+
+<div class="grid-row">
+    <div class="column-two-thirds">
+
+        <h1 id="main-heading" class="form-title heading-xlarge">@Messages("page.registrationInformation.ReviewCompanyDetails.heading")
+            @reviewCompanyDetails.registrationReviewDetails.businessName</h1>
+
+        <div class="form-group">
+            <table>
+                <tbody>
+                <tr>
+                    <td><span class="form-title heading-small" id="correspondenceAddress-question">
+                        @Messages("page.registrationInformation.ReviewCompanyDetails.correspondenceAddress")
+                    </span></td>
+                    <td id="correspondenceAddress-answer">
+                        <p id="addressline1">@reviewCompanyDetails.correspondenceAddress.addressline1</p>
+                        <p id="addressline2">@reviewCompanyDetails.correspondenceAddress.addressline2</p>
+                        @if(!reviewCompanyDetails.correspondenceAddress.addressline3.isEmpty()) {
+                        <p id="addressline3">@reviewCompanyDetails.correspondenceAddress.addressline3</p>
+                        }
+                        @if(!reviewCompanyDetails.correspondenceAddress.addressline4.isEmpty()) {
+                        <p id="addressline4">@reviewCompanyDetails.correspondenceAddress.addressline4</p>
+                        }
+                        @if(!reviewCompanyDetails.correspondenceAddress.postcode.isEmpty()) {
+                        <p id="postcode">@reviewCompanyDetails.correspondenceAddress.postcode</p>
+                        }
+                        @if(!reviewCompanyDetails.correspondenceAddress.countryCode.isEmpty()) {
+                        <p id="countrycode">@reviewCompanyDetails.correspondenceAddress.countryCode</p>
+                        }
+                    </td>
+                    <td><a href="@controllers.routes.ProvideCorrespondAddressController.show().url" id="correspondenceAddress-link">Change</a></td>
+                </tr>
+                <tr>
+                    <td><span class="form-title heading-small" id="companyContact-question">
+                        @Messages("page.registrationInformation.ReviewCompanyDetails.companyContact")
+                    </span></td>
+                    <td id="companyContact-answer">
+                        <p id="name">@reviewCompanyDetails.contactDetails.firstName @reviewCompanyDetails.contactDetails.lastName</p>
+                        <p id="telephonenumber">@reviewCompanyDetails.contactDetails.telephoneNumber</p>
+                        @if(!reviewCompanyDetails.contactDetails.telephoneNumber2.isEmpty()) {
+                        <p id="telephonenumber2">@reviewCompanyDetails.contactDetails.telephoneNumber2</p>
+                        }
+                        <p id="email">@reviewCompanyDetails.contactDetails.email</p>
+                    </td>
+                    <td><a href="@controllers.routes.ContactDetailsSubscriptionController.show().url" id="companyContact-link">Change</a></td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+        <div class="form-group" id="reviewDetailsButtonDiv">
+            <button class="btn button" id="submit" type="submit">
+                @Messages("page.registrationInformation.ReviewCompanyDetails.button.continue")
+            </button>
+        </div>
+
+    </div>
+</div>
+
+}

@@ -146,7 +146,7 @@ class ProvideCorrespondAddressControllerSpec extends UnitSpec with MockitoSugar 
   }
 
   "Sending a valid form submit to the ProvideCorrespondAddressController" should {
-    "redirect to the Confirm Correspondence Address Controller page" in {
+    "redirect to the Contact Details Subscription Controller page" in {
       withRegDetails()
       val formInput =
         Seq("addressline1" -> "Akina Speed Stars",
@@ -159,7 +159,7 @@ class ProvideCorrespondAddressControllerSpec extends UnitSpec with MockitoSugar 
       submitWithSessionAndAuth(ProvideCorrespondAddressControllerTest.submit,formInput:_*)(
         result => {
           status(result) shouldBe SEE_OTHER
-          redirectLocation(result) shouldBe Some("/investment-tax-relief-subscription/confirm-correspondence-address")
+          redirectLocation(result) shouldBe Some(routes.ContactDetailsSubscriptionController.show().url)
         }
       )
     }

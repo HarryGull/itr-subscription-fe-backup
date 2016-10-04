@@ -72,6 +72,24 @@ object AuthHelper extends MockitoSugar {
     Some("JARN1234567")
   )
 
+  val validModelMin = new CompanyRegistrationReviewDetailsModel(
+    "Company",
+    None,
+    new AddressModel(
+      "23 High Street",
+      "Park View",
+      None,
+      None,
+      None,
+      "GB"
+    ),
+    "1234567890",
+    "XE0001234567890",
+    false,
+    false,
+    None
+  )
+
   def withRegDetails(): Unit = {
     when(mockRegisteredBusinessCustomerService.getReviewBusinessCustomerDetails(Matchers.any[HeaderCarrier]())).thenReturn(Future.successful(Some(validModel)))
   }

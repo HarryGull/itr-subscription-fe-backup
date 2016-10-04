@@ -1,9 +1,9 @@
-@import models.ConfirmCorrespondAddressModel
+@import models.{ConfirmCorrespondAddressModel,CompanyRegistrationReviewDetailsModel}
 @import common.Constants
 @import uk.gov.hmrc.play.views.html.helpers.form
 @import views.html.helpers.{errorSummary, formInputRadioGroup, textWithConstErrors, backButtonWithProgress}
 
-@(confirmCorrespondAddressForm: Form[ConfirmCorrespondAddressModel])(implicit request: Request[_])
+@(confirmCorrespondAddressForm: Form[ConfirmCorrespondAddressModel], companyDetails: CompanyRegistrationReviewDetailsModel)(implicit request: Request[_])
 
 @main_template(Messages("page.registrationInformation.ConfirmCorrespondAddress.title")){
 
@@ -17,11 +17,19 @@
         <h1 id="main-heading" class="form-title heading-xlarge">@Messages("page.registrationInformation.ConfirmCorrespondAddress.heading")</h1>
 
         <div id="storedAddressDiv" class="form-group">
-            <p class="heading-small">Company Name Ltd.</p>
-            <span class="form-hint">2 Telford Plaza,</span>
-            <span class="form-hint">Lawn Central</span>
-            <span class="form-hint">Telford</span>
-            <span class="form-hint">TF3 4NT</span>
+            <p id="businessName" class="heading-small">@companyDetails.businessName</p>
+            <span id="businessAddress1" class="form-hint">@companyDetails.businessAddress.line_1</span>
+            <span id="businessAddress2" class="form-hint">@companyDetails.businessAddress.line_2</span>
+            @if(companyDetails.businessAddress.line_3.isDefined){
+            <span id="businessAddress3" class="form-hint">@companyDetails.businessAddress.line_3</span>
+            }
+            @if(companyDetails.businessAddress.line_4.isDefined){
+            <span id="businessAddress4" class="form-hint">@companyDetails.businessAddress.line_4</span>
+            }
+            @if(companyDetails.businessAddress.postcode.isDefined){
+            <span id="postcode" class="form-hint">@companyDetails.businessAddress.postcode</span>
+            }
+            <span id="country" class="form-hint">@companyDetails.businessAddress.country</span>
         </div>
 
         @form(action = controllers.routes.ConfirmCorrespondAddressController.submit()) {

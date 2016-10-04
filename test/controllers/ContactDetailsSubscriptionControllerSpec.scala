@@ -162,11 +162,11 @@ class ContactDetailsSubscriptionControllerSpec extends UnitSpec with MockitoSuga
       )
     }
 
-    "redirect to the Confirm Correspondence Address Controller page" in {
+    "redirect to the Review Company Details Controller page" in {
       withRegDetails()
       submitWithSessionAndAuth(ContactDetailsSubscriptionControllerTest.submit,formInput:_*)(
         result => {
-          redirectLocation(result) shouldBe Some("/investment-tax-relief-subscription/confirm-correspondence-address")
+          redirectLocation(result) shouldBe Some(routes.ReviewCompanyDetailsController.show().url)
         }
       )
     }

@@ -14,12 +14,8 @@
  * limitations under the License.
  */
 
-package common
+package models
 
-object Constants extends Constants
-
-trait Constants {
-  val StandardRadioButtonYesValue = "Yes"
-  val StandardRadioButtonNoValue = "No"
-  val SuggestedTextMaxLength: Int = 2048
-}
+case class ReviewCompanyDetailsModel(registrationReviewDetails: CompanyRegistrationReviewDetailsModel,
+                                     correspondenceAddress: ProvideCorrespondAddressModel,
+                                     contactDetails: ContactDetailsSubscriptionModel)

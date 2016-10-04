@@ -58,7 +58,7 @@ trait ProvideCorrespondAddressController extends FrontendController with Authori
       },
       validFormData => {
         keyStoreConnector.saveFormData(KeystoreKeys.provideCorrespondAddress, validFormData)
-        Future.successful(Redirect(routes.ConfirmCorrespondAddressController.show()))
+        Future.successful(Redirect(routes.ContactDetailsSubscriptionController.show()))
       }
     )
   }
