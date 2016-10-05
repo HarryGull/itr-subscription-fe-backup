@@ -21,7 +21,7 @@ import models.ProvideCorrespondAddressModel
 import play.api.i18n.Messages
 import uk.gov.hmrc.play.test.UnitSpec
 
-class provideCorrespondAddressFormSpec extends UnitSpec {
+class ProvideCorrespondAddressFormSpec extends UnitSpec {
 
   "Creating a form using an empty model" should {
     lazy val form = provideCorrespondAddressForm
@@ -32,16 +32,14 @@ class provideCorrespondAddressFormSpec extends UnitSpec {
 
   "Creating a form using a valid model" should {
     "return a form with the data specified in the model" in {
-      val model = ProvideCorrespondAddressModel("Akina Speed Stars","Mt. Akina","","","","JP")
+      val model = ProvideCorrespondAddressModel("Akina Speed Stars","Mt. Akina",None,None,None,"JP")
       val form = provideCorrespondAddressForm.fill(model)
 
       form.data("addressline1") shouldBe "Akina Speed Stars"
       form.data("addressline2") shouldBe "Mt. Akina"
-      form.data("addressline3") shouldBe ""
-      form.data("addressline4") shouldBe ""
-      form.data("postcode") shouldBe ""
       form.data("countryCode") shouldBe "JP"
       form.errors.length shouldBe 0
+      form.data.size shouldBe 3
     }
   }
 

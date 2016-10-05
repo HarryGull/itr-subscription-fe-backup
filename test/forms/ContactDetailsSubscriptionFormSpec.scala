@@ -32,7 +32,7 @@ class ContactDetailsSubscriptionFormSpec extends UnitSpec {
 
   "Creating a form using a valid model (with telelphone2)" should {
     "return a form with the data specified in the model" in {
-      val model = ContactDetailsSubscriptionModel("Percy", "Montague", "06472 778833", "06472 123998", "harry@wishingwell.com")
+      val model = ContactDetailsSubscriptionModel("Percy", "Montague", "06472 778833", Some("06472 123998"), "harry@wishingwell.com")
       val form = contactDetailsSubscriptionForm.fill(model)
       form.data("firstName") shouldBe "Percy"
       form.data("lastName") shouldBe "Montague"
@@ -45,13 +45,13 @@ class ContactDetailsSubscriptionFormSpec extends UnitSpec {
 
   "Creating a form using a valid model (no telelphone2)" should {
     "return a form with the data specified in the model" in {
-      val model = ContactDetailsSubscriptionModel("Percy", "Montague", "06472 778833", "", "harry@wishingwell.com")
+      val model = ContactDetailsSubscriptionModel("Percy", "Montague", "06472 778833", None, "harry@wishingwell.com")
       val form = contactDetailsSubscriptionForm.fill(model)
       form.data("firstName") shouldBe "Percy"
       form.data("lastName") shouldBe "Montague"
       form.data("telephoneNumber") shouldBe "06472 778833"
-      form.data("telephoneNumber2") shouldBe ""
       form.data("email") shouldBe "harry@wishingwell.com"
+      form.data.size shouldBe 4
       form.errors.length shouldBe 0
     }
   }

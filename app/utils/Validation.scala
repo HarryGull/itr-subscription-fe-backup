@@ -265,7 +265,7 @@ object Validation {
   def postcodeCountryCheckConstraint: Constraint[ProvideCorrespondAddressModel] = {
     Constraint("constraints.postcodeCountryCheck")({
       provideCorrespondAddressForm: ProvideCorrespondAddressModel =>
-        if (provideCorrespondAddressForm.countryCode.length > 0 && provideCorrespondAddressForm.postcode.length > 0) {
+        if (provideCorrespondAddressForm.countryCode.length > 0 && provideCorrespondAddressForm.postcode.isDefined) {
           Invalid(Seq(ValidationError(Messages("validation.error.countrypostcode"))))
         } else {
           Valid

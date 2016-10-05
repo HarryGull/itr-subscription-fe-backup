@@ -44,17 +44,17 @@ class ReviewCompanyDetailsControllerSpec extends UnitSpec with FakeRequestHelper
     withRegDetails()
     when(TestController.keystoreConnector.fetchAndGetFormData[ProvideCorrespondAddressModel]
       (Matchers.contains(KeystoreKeys.provideCorrespondAddress))(Matchers.any(),Matchers.any()))
-      .thenReturn(Some(ProvideCorrespondAddressModel("test1","test2","test3","test4","test5","test6")))
+      .thenReturn(Some(ProvideCorrespondAddressModel("test1","test2",Some("test3"),Some("test4"),Some("test5"),"test6")))
     when(TestController.keystoreConnector.fetchAndGetFormData[ContactDetailsSubscriptionModel]
       (Matchers.contains(KeystoreKeys.contactDetailsSubscription))(Matchers.any(),Matchers.any()))
-      .thenReturn(Some(ContactDetailsSubscriptionModel("test1","test2","test3","test4","test5")))
+      .thenReturn(Some(ContactDetailsSubscriptionModel("test1","test2","test3",Some("test4"),"test5")))
   }
 
   def notAllDetails(): Unit = {
     withRegDetails()
     when(TestController.keystoreConnector.fetchAndGetFormData[ProvideCorrespondAddressModel]
       (Matchers.contains(KeystoreKeys.provideCorrespondAddress))(Matchers.any(),Matchers.any()))
-      .thenReturn(Some(ProvideCorrespondAddressModel("test1","test2","test3","test4","test5","test6")))
+      .thenReturn(Some(ProvideCorrespondAddressModel("test1","test2",Some("test3"),Some("test4"),Some("test5"),"test6")))
     when(TestController.keystoreConnector.fetchAndGetFormData[ContactDetailsSubscriptionModel]
       (Matchers.contains(KeystoreKeys.contactDetailsSubscription))(Matchers.any(),Matchers.any()))
       .thenReturn(None)
