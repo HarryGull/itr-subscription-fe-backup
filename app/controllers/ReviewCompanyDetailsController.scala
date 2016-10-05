@@ -24,6 +24,7 @@ import models.{CompanyRegistrationReviewDetailsModel, ContactDetailsSubscription
 import play.api.mvc.{AnyContent, Request, Result}
 import services.RegisteredBusinessCustomerService
 import uk.gov.hmrc.play.frontend.controller.FrontendController
+import utils.CountriesHelper
 import views.html.registrationInformation.ReviewCompanyDetails
 
 import scala.concurrent.Future
@@ -56,10 +57,13 @@ trait ReviewCompanyDetailsController extends FrontendController with AuthorisedF
                                               correspondenceAddress: Option[ProvideCorrespondAddressModel],
                                               contactDetails: Option[ContactDetailsSubscriptionModel])
                                              (implicit request: Request[AnyContent]): Future[Result] = {
-    if (registrationReviewDetails.isDefined && correspondenceAddress.isDefined && contactDetails.isDefined) {
-      Future.successful(Ok(ReviewCompanyDetails(
-        ReviewCompanyDetailsModel(registrationReviewDetails.get,correspondenceAddress.get,contactDetails.get))))
-    } else Future.successful(Redirect(routes.ConfirmCorrespondAddressController.show()))
+    (registrationReviewDetails, correspondenceAddress, contactDetails) match {
+      case (Some(regDetails), Some(corrAddress), Some(contact)) => {
+        val address = corrAddress.copy(countryCode = CountriesHelper.getSelectedCountry(corrAddress.countryCode))
+        Future.successful(Ok(ReviewCompanyDetails(ReviewCompanyDetailsModel(regDetails, address, contact))))
+      }
+      case (_, _, _) => Future.successful(Redirect(routes.ConfirmCorrespondAddressController.show()))
+    }
   }
 
 }
