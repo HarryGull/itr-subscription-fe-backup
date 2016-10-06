@@ -30,6 +30,7 @@ trait AppConfig {
   val ggSignInUrl: String
   val introductionUrl: String
   val businessCustomerUrl: String
+  val submissionUrl: String
 }
 
 object FrontendAppConfig extends AppConfig with ServicesConfig {
@@ -50,4 +51,5 @@ object FrontendAppConfig extends AppConfig with ServicesConfig {
   override lazy val twoFactorUrl = configuration.getString("two-factor.host").getOrElse("")
   override lazy val introductionUrl = configuration.getString("introduction.url").getOrElse("")
   override lazy val businessCustomerUrl = configuration.getString("business-customer.url").getOrElse("")
+  override lazy val submissionUrl = configuration.getString("submission.url").getOrElse("")
 }

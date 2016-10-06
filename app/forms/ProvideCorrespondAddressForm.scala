@@ -25,9 +25,9 @@ object ProvideCorrespondAddressForm {
     mapping(
       "addressline1" -> utils.Validation.mandatoryAddressLineCheck,
       "addressline2" -> utils.Validation.mandatoryAddressLineCheck,
-      "addressline3" -> utils.Validation.optionalAddressLineCheck,
-      "addressline4" -> utils.Validation.addressLineFourCheck,
-      "postcode" -> utils.Validation.optionalPostcodeCheck,
+      "addressline3" -> optional(utils.Validation.optionalAddressLineCheck),
+      "addressline4" -> optional(utils.Validation.addressLineFourCheck),
+      "postcode" -> optional(utils.Validation.optionalPostcodeCheck),
       "countryCode" -> utils.Validation.countryCodeCheck
     )(ProvideCorrespondAddressModel.apply)(ProvideCorrespondAddressModel.unapply)
   )

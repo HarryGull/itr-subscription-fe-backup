@@ -32,8 +32,8 @@ class ProvideCorrespondAddressSpec extends UnitSpec with MockitoSugar with WithF
 
   val mockKeystoreConnector = mock[KeystoreConnector]
 
-  val provideCorrespondAddressModel = new ProvideCorrespondAddressModel("Akina Speed Stars","Mt. Akina","","","","JP")
-  val emptyProvideCorrespondAddressModel = new ProvideCorrespondAddressModel("","","","","","")
+  val provideCorrespondAddressModel = new ProvideCorrespondAddressModel("Akina Speed Stars","Mt. Akina",None,None,None,"JP")
+  val emptyProvideCorrespondAddressModel = new ProvideCorrespondAddressModel("","",None,None,None,"")
 
   lazy val form = provideCorrespondAddressForm.bind(Map("addressline1" -> "Akina Speed Stars",
                                                         "addressline2" -> "Mt. Akina",
@@ -76,9 +76,9 @@ class ProvideCorrespondAddressSpec extends UnitSpec with MockitoSugar with WithF
       document.body.getElementById("progress-section").text shouldBe Messages("common.section.progress.registration")
       document.body.getElementById("addressline1").`val`() shouldBe provideCorrespondAddressModel.addressline1
       document.body.getElementById("addressline2").`val`() shouldBe provideCorrespondAddressModel.addressline2
-      document.body.getElementById("addressline3").`val`() shouldBe provideCorrespondAddressModel.addressline3
-      document.body.getElementById("addressline4").`val`() shouldBe provideCorrespondAddressModel.addressline4
-      document.body.getElementById("postcode").`val`() shouldBe provideCorrespondAddressModel.postcode
+      document.body.getElementById("addressline3").`val`() shouldBe ""
+      document.body.getElementById("addressline4").`val`() shouldBe ""
+      document.body.getElementById("postcode").`val`() shouldBe ""
       document.body.select("select[name=countryCode] option[selected]").`val`() shouldBe provideCorrespondAddressModel.countryCode
       document.body.getElementById("get-help-action").text shouldBe Messages("common.error.help.text")
     }

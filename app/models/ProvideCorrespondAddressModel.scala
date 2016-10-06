@@ -20,9 +20,9 @@ import play.api.libs.json.Json
 
 case class ProvideCorrespondAddressModel(addressline1 : String,
                                          addressline2 : String,
-                                         addressline3 : String,
-                                         addressline4 : String,
-                                         postcode : String,
+                                         addressline3 : Option[String],
+                                         addressline4 : Option[String],
+                                         postcode : Option[String],
                                          countryCode : String)
 
 object ProvideCorrespondAddressModel {

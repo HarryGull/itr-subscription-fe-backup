@@ -33,7 +33,9 @@ class ContactDetailsSubscriptionSpec extends UnitSpec with WithFakeApplication w
 
     "Verify that the contact details page contains the correct elements when a valid ContactDetailsSubscriptionModel is passed" in {
 
-      val contactDetailsSubscriptionModel = new ContactDetailsSubscriptionModel("Jeff","Stelling","01384 555678", "01783432876", "Jeff.Stelling@HMRC.gov.uk")
+      val contactDetailsSubscriptionModel = new ContactDetailsSubscriptionModel(
+        "Jeff","Stelling","01384 555678", Some("01783432876"), "Jeff.Stelling@HMRC.gov.uk"
+      )
       lazy val form = contactDetailsSubscriptionForm.fill(contactDetailsSubscriptionModel)
       lazy val page = ContactDetailsSubscription(form)(authorisedFakeRequest)
       lazy val document = Jsoup.parse(page.body)
@@ -53,7 +55,7 @@ class ContactDetailsSubscriptionSpec extends UnitSpec with WithFakeApplication w
 
     "Verify that the contact details page contains the correct elements when a valid (empty) ContactDetailsSubscriptionModel is passed" in {
 
-      val emptyForm = contactDetailsSubscriptionForm.fill(new ContactDetailsSubscriptionModel("", "" , "", "", ""))
+      val emptyForm = contactDetailsSubscriptionForm.fill(new ContactDetailsSubscriptionModel("", "" , "", None, ""))
       lazy val page = ContactDetailsSubscription(emptyForm)(authorisedFakeRequest)
       lazy val document = Jsoup.parse(page.body)
 

@@ -48,9 +48,9 @@ class ProvideCorrespondAddressControllerSpec extends UnitSpec with MockitoSugar 
     override lazy val registeredBusinessCustomerService = mockRegisteredBusinessCustomerService
   }
 
-  val model = ProvideCorrespondAddressModel("Akina Speed Stars","Mt. Akina","","","","JP")
+  val model = ProvideCorrespondAddressModel("Akina Speed Stars","Mt. Akina",None,None,None,"JP")
   val cacheMap: CacheMap = CacheMap("", Map("" -> Json.toJson(model)))
-  val keyStoreSavedProvideCorrespondAddress = ProvideCorrespondAddressModel("Akina Speed Stars","Mt. Akina","","","","JP")
+  val keyStoreSavedProvideCorrespondAddress = ProvideCorrespondAddressModel("Akina Speed Stars","Mt. Akina",None,None,None,"JP")
 
   implicit val hc = HeaderCarrier()
 

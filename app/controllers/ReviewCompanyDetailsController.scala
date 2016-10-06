@@ -22,8 +22,9 @@ import config.{FrontendAppConfig, FrontendAuthConnector}
 import connectors.KeystoreConnector
 import models.{CompanyRegistrationReviewDetailsModel, ContactDetailsSubscriptionModel, ProvideCorrespondAddressModel, ReviewCompanyDetailsModel}
 import play.api.mvc.{AnyContent, Request, Result}
-import services.RegisteredBusinessCustomerService
+import services.{RegisteredBusinessCustomerService, SubscriptionService}
 import uk.gov.hmrc.play.frontend.controller.FrontendController
+import utils.CountriesHelper
 import views.html.registrationInformation.ReviewCompanyDetails
 
 import scala.concurrent.Future
@@ -33,11 +34,13 @@ object ReviewCompanyDetailsController extends ReviewCompanyDetailsController {
   override lazy val authConnector = FrontendAuthConnector
   override lazy val registeredBusinessCustomerService = RegisteredBusinessCustomerService
   override lazy val keystoreConnector = KeystoreConnector
+  override lazy val subscriptionService = SubscriptionService
 }
 
 trait ReviewCompanyDetailsController extends FrontendController with AuthorisedForTAVC {
 
   val keystoreConnector: KeystoreConnector
+  val subscriptionService: SubscriptionService
 
   val show = Authorised.async { implicit user => implicit request =>
     for {
@@ -49,17 +52,25 @@ trait ReviewCompanyDetailsController extends FrontendController with AuthorisedF
   }
 
   val submit = Authorised.async { implicit user => implicit request =>
-    Future.successful(Redirect(routes.ReviewCompanyDetailsController.show()))
+    subscriptionService.subscribe.map {
+      response => response.status match {
+        case OK => Redirect(FrontendAppConfig.submissionUrl)
+        case _ => InternalServerError
+      }
+    }
   }
 
   private def createReviewCompanyDetailsModel(registrationReviewDetails: Option[CompanyRegistrationReviewDetailsModel],
                                               correspondenceAddress: Option[ProvideCorrespondAddressModel],
                                               contactDetails: Option[ContactDetailsSubscriptionModel])
                                              (implicit request: Request[AnyContent]): Future[Result] = {
-    if (registrationReviewDetails.isDefined && correspondenceAddress.isDefined && contactDetails.isDefined) {
-      Future.successful(Ok(ReviewCompanyDetails(
-        ReviewCompanyDetailsModel(registrationReviewDetails.get,correspondenceAddress.get,contactDetails.get))))
-    } else Future.successful(Redirect(routes.ConfirmCorrespondAddressController.show()))
+    (registrationReviewDetails, correspondenceAddress, contactDetails) match {
+      case (Some(regDetails), Some(corrAddress), Some(contact)) => {
+        val address = corrAddress.copy(countryCode = CountriesHelper.getSelectedCountry(corrAddress.countryCode))
+        Future.successful(Ok(ReviewCompanyDetails(ReviewCompanyDetailsModel(regDetails, address, contact))))
+      }
+      case (_, _, _) => Future.successful(Redirect(routes.ConfirmCorrespondAddressController.show()))
+    }
   }
 
 }

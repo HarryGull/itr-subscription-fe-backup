@@ -21,43 +21,28 @@ import config.{FrontendAppConfig, FrontendAuthConnector}
 import helpers.FakeRequestHelper
 import connectors.KeystoreConnector
 import helpers.AuthHelper._
+import helpers.KeystoreHelper._
 import play.api.test.Helpers._
 import common.Encoder._
-import common.KeystoreKeys
-import org.mockito.Mockito._
-import models.{ContactDetailsSubscriptionModel, ProvideCorrespondAddressModel}
 import org.mockito.Matchers
+import org.mockito.Mockito._
 import org.scalatest.mock.MockitoSugar
-import services.RegisteredBusinessCustomerService
+import services.{RegisteredBusinessCustomerService, SubscriptionService}
+import uk.gov.hmrc.play.http.HttpResponse
 import uk.gov.hmrc.play.test.{UnitSpec, WithFakeApplication}
 
+import scala.concurrent.Future
+
 class ReviewCompanyDetailsControllerSpec extends UnitSpec with FakeRequestHelper with MockitoSugar with WithFakeApplication {
+
+  lazy val mockSubscriptionService = mock[SubscriptionService]
 
   object TestController extends ReviewCompanyDetailsController {
     override lazy val applicationConfig = FrontendAppConfig
     override lazy val authConnector = MockAuthConnector
-    override val keystoreConnector = mock[KeystoreConnector]
+    override val keystoreConnector = mockKeystoreConnector
     override lazy val registeredBusinessCustomerService = mockRegisteredBusinessCustomerService
-  }
-
-  def allDetails(): Unit = {
-    withRegDetails()
-    when(TestController.keystoreConnector.fetchAndGetFormData[ProvideCorrespondAddressModel]
-      (Matchers.contains(KeystoreKeys.provideCorrespondAddress))(Matchers.any(),Matchers.any()))
-      .thenReturn(Some(ProvideCorrespondAddressModel("test1","test2","test3","test4","test5","test6")))
-    when(TestController.keystoreConnector.fetchAndGetFormData[ContactDetailsSubscriptionModel]
-      (Matchers.contains(KeystoreKeys.contactDetailsSubscription))(Matchers.any(),Matchers.any()))
-      .thenReturn(Some(ContactDetailsSubscriptionModel("test1","test2","test3","test4","test5")))
-  }
-
-  def notAllDetails(): Unit = {
-    withRegDetails()
-    when(TestController.keystoreConnector.fetchAndGetFormData[ProvideCorrespondAddressModel]
-      (Matchers.contains(KeystoreKeys.provideCorrespondAddress))(Matchers.any(),Matchers.any()))
-      .thenReturn(Some(ProvideCorrespondAddressModel("test1","test2","test3","test4","test5","test6")))
-    when(TestController.keystoreConnector.fetchAndGetFormData[ContactDetailsSubscriptionModel]
-      (Matchers.contains(KeystoreKeys.contactDetailsSubscription))(Matchers.any(),Matchers.any()))
-      .thenReturn(None)
+    override lazy val subscriptionService = mockSubscriptionService
   }
 
   "ReviewCompanyDetailsController" should {
@@ -75,6 +60,12 @@ class ReviewCompanyDetailsControllerSpec extends UnitSpec with FakeRequestHelper
   "ReviewCompanyDetailsController" should {
     "use the correct registered business customer service" in {
       ReviewCompanyDetailsController.registeredBusinessCustomerService shouldBe RegisteredBusinessCustomerService
+    }
+  }
+
+  "ReviewCompanyDetailsController" should {
+    "use the correct subscription service" in {
+      ReviewCompanyDetailsController.subscriptionService shouldBe SubscriptionService
     }
   }
 
@@ -167,19 +158,33 @@ class ReviewCompanyDetailsControllerSpec extends UnitSpec with FakeRequestHelper
 
   "ReviewCompanyDetailsController.submit" when {
 
-    "Sending a POST request to ReviewCompanyDetailsController" should {
+    "Sending a POST request to ReviewCompanyDetailsController and SubscriptionService returns OK" should {
 
       "return a 303" in {
         withRegDetails()
+        when(mockSubscriptionService.subscribe(Matchers.any())).thenReturn(Future.successful(HttpResponse(OK)))
         submitWithSessionAndAuth(TestController.submit)(
           result => status(result) shouldBe SEE_OTHER
         )
       }
 
-      "redirect to ReviewCompanyDetailsController" in {
+      "redirect to submission frontend" in {
         withRegDetails()
+        when(mockSubscriptionService.subscribe(Matchers.any())).thenReturn(Future.successful(HttpResponse(OK)))
         submitWithSessionAndAuth(TestController.submit)(
-          result => redirectLocation(result) shouldBe Some(routes.ReviewCompanyDetailsController.show().url)
+          result => redirectLocation(result) shouldBe Some(FrontendAppConfig.submissionUrl)
+        )
+      }
+
+    }
+
+    "Sending a POST request to ReviewCompanyDetailsController and SubscriptionService returns a non-OK response" should {
+
+      "return an INTERNAL_SERVER_ERROR" in {
+        withRegDetails()
+        when(mockSubscriptionService.subscribe(Matchers.any())).thenReturn(Future.successful(HttpResponse(INTERNAL_SERVER_ERROR)))
+        submitWithSessionAndAuth(TestController.submit)(
+          result => status(result) shouldBe INTERNAL_SERVER_ERROR
         )
       }
 
