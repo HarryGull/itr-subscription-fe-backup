@@ -63,24 +63,17 @@ trait SubscriptionService {
     }
   }
 
-  private def getSafeID(registrationReviewDetails: Option[CompanyRegistrationReviewDetailsModel]): String = {
-    if(registrationReviewDetails.isDefined) registrationReviewDetails.get.safeId
-    else ""
-  }
+  private def getSafeID(registrationReviewDetails: Option[CompanyRegistrationReviewDetailsModel]): String =
+    registrationReviewDetails.fold("")(_.safeId)
 
-  private def getPostcode(registrationReviewDetails: Option[CompanyRegistrationReviewDetailsModel]): String = {
-    if(registrationReviewDetails.isDefined) {
-      val postcode = registrationReviewDetails.get.businessAddress.postcode.getOrElse("").replace(" ","")
-      postcode
-    }
-    else ""
-  }
+  private def getPostcode(registrationReviewDetails: Option[CompanyRegistrationReviewDetailsModel]): String =
+    registrationReviewDetails.fold("")(_.businessAddress.postcode.getOrElse("").replace(" ",""))
 
   private def sendSubscriptionRequest(safeID: String,
                                       postcode: String,
                                       subscriptionTypeModel: Option[IntermediateSubscriptionTypeModel])
                                      (implicit hc: HeaderCarrier): Future[HttpResponse] = {
-    (!safeID.isEmpty,!postcode.isEmpty,subscriptionTypeModel.isDefined) match {
+    (safeID.nonEmpty,postcode.nonEmpty,subscriptionTypeModel.isDefined) match {
       case (true,true,true) => {
         val json = Json.toJson(subscriptionTypeModel.get)
         val targetSubmissionModel = Json.parse(json.toString()).as[SubscriptionTypeModel]
