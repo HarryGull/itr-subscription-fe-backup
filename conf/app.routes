@@ -22,6 +22,7 @@ GET        /contact-details-subscription            controllers.ContactDetailsSu
 POST       /contact-details-subscription            controllers.ContactDetailsSubscriptionController.submit
 
 GET        /review-company-details                  controllers.ReviewCompanyDetailsController.show
+POST       /review-company-details                  controllers.ReviewCompanyDetailsController.submit
 
 #Session Timeout route
 #####################################################################################################################
