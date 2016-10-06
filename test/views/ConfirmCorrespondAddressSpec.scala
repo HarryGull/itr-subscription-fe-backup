@@ -28,6 +28,7 @@ import org.scalatest.mock.MockitoSugar
 import play.api.i18n.Messages
 import play.api.test.Helpers._
 import uk.gov.hmrc.play.test.{UnitSpec, WithFakeApplication}
+import utils.CountriesHelper
 import views.html.registrationInformation.ConfirmCorrespondAddress
 
 
@@ -67,7 +68,7 @@ class ConfirmCorrespondAddressSpec extends UnitSpec with MockitoSugar with WithF
       document.body.getElementById("businessAddress3").text shouldBe validModel.businessAddress.line_3.get
       document.body.getElementById("businessAddress4").text shouldBe validModel.businessAddress.line_4.get
       document.body.getElementById("postcode").text shouldBe validModel.businessAddress.postcode.get
-      document.body.getElementById("country").text shouldBe validModel.businessAddress.country
+      document.body.getElementById("country").text shouldBe CountriesHelper.getSelectedCountry(validModel.businessAddress.country)
       document.body.getElementById("storedAddressDiv").children().size() shouldBe 7
       document.body.getElementById("get-help-action").text shouldBe Messages("common.error.help.text")
     }
@@ -88,7 +89,7 @@ class ConfirmCorrespondAddressSpec extends UnitSpec with MockitoSugar with WithF
       document.body.select("#contactAddressUse-yes").size() shouldBe 1
       document.body.select("#contactAddressUse-no").size() shouldBe 1
       document.body.getElementById("storedAddressDiv").children().size() shouldBe 4
-      document.body.getElementById("country").text shouldBe validModelMin.businessAddress.country
+      document.body.getElementById("country").text shouldBe CountriesHelper.getSelectedCountry(validModelMin.businessAddress.country)
       document.body.getElementById("get-help-action").text shouldBe Messages("common.error.help.text")
     }
 
@@ -113,7 +114,7 @@ class ConfirmCorrespondAddressSpec extends UnitSpec with MockitoSugar with WithF
       document.body.getElementById("businessAddress3").text shouldBe validModel.businessAddress.line_3.get
       document.body.getElementById("businessAddress4").text shouldBe validModel.businessAddress.line_4.get
       document.body.getElementById("postcode").text shouldBe validModel.businessAddress.postcode.get
-      document.body.getElementById("country").text shouldBe validModel.businessAddress.country
+      document.body.getElementById("country").text shouldBe CountriesHelper.getSelectedCountry(validModel.businessAddress.country)
       document.body.getElementById("get-help-action").text shouldBe  Messages("common.error.help.text")
       document.getElementById("error-summary-display").hasClass("error-summary--show")
     }

@@ -22,7 +22,7 @@ import config.{FrontendAppConfig, FrontendAuthConnector}
 import connectors.KeystoreConnector
 import models.{CompanyRegistrationReviewDetailsModel, ContactDetailsSubscriptionModel, ProvideCorrespondAddressModel, ReviewCompanyDetailsModel}
 import play.api.mvc.{AnyContent, Request, Result}
-import services.RegisteredBusinessCustomerService
+import services.{RegisteredBusinessCustomerService, SubscriptionService}
 import uk.gov.hmrc.play.frontend.controller.FrontendController
 import utils.CountriesHelper
 import views.html.registrationInformation.ReviewCompanyDetails
@@ -34,11 +34,13 @@ object ReviewCompanyDetailsController extends ReviewCompanyDetailsController {
   override lazy val authConnector = FrontendAuthConnector
   override lazy val registeredBusinessCustomerService = RegisteredBusinessCustomerService
   override lazy val keystoreConnector = KeystoreConnector
+  override lazy val subscriptionService = SubscriptionService
 }
 
 trait ReviewCompanyDetailsController extends FrontendController with AuthorisedForTAVC {
 
   val keystoreConnector: KeystoreConnector
+  val subscriptionService: SubscriptionService
 
   val show = Authorised.async { implicit user => implicit request =>
     for {
@@ -50,7 +52,12 @@ trait ReviewCompanyDetailsController extends FrontendController with AuthorisedF
   }
 
   val submit = Authorised.async { implicit user => implicit request =>
-    Future.successful(Redirect(routes.ReviewCompanyDetailsController.show()))
+    subscriptionService.subscribe.map {
+      response => response.status match {
+        case OK => Redirect(FrontendAppConfig.submissionUrl)
+        case _ => InternalServerError
+      }
+    }
   }
 
   private def createReviewCompanyDetailsModel(registrationReviewDetails: Option[CompanyRegistrationReviewDetailsModel],

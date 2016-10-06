@@ -26,7 +26,7 @@ import scala.concurrent.Future
 
 object SubscriptionConnector extends SubscriptionConnector with ServicesConfig {
   override val http = WSHttp
-  override val serviceUrl = baseUrl("investment-tax-relief-submission")
+  override val serviceUrl = baseUrl("investment-tax-relief-subscription")
 }
 
 trait SubscriptionConnector {

@@ -40,9 +40,23 @@ case class ContactAddressModel (addressLine1 : String,
                                 countryCode : String,
                                 postalCode: Option[String])
 
-object ContactAddressModel {
+case class ContactDetailsModel (phoneNumber : Option[String],
+                                mobileNumber: Option[String],
+                                faxNumber : Option[String],
+                                emailAddress: Option[String])
 
-  implicit val reads: Reads[ContactAddressModel] = (
+case class ContactNameModel (name1 : String,
+                             name2: Option[String])
+
+case class CorrespondenceDetailsModel (contactName: Option[ContactNameModel],
+                                       contactDetails: Option[ContactDetailsModel],
+                                       contactAddress: Option[ContactAddressModel])
+
+case class SubscriptionTypeModel (correspondenceDetails: CorrespondenceDetailsModel)
+
+object SubscriptionTypeModel {
+
+  implicit val careads: Reads[ContactAddressModel] = (
     (__ \"addressline1").read[String] and
       (__ \"addressline2").read[String] and
       (__ \"addressline3").readNullable[String] and
@@ -51,58 +65,31 @@ object ContactAddressModel {
       (__ \"postcode").readNullable[String]
     )(ContactAddressModel.apply _)
 
-  implicit val writes = Json.writes[ContactAddressModel]
-}
+  implicit val cawrites = Json.writes[ContactAddressModel]
 
-case class ContactDetailsModel (phoneNumber : Option[String],
-                                mobileNumber: Option[String],
-                                faxNumber : Option[String],
-                                emailAddress: Option[String])
-
-object ContactDetailsModel {
-
-  implicit val reads: Reads[ContactDetailsModel] = (
+  implicit val cdreads: Reads[ContactDetailsModel] = (
     (__ \"telephoneNumber").readNullable[String] and
       (__ \"telephoneNumber2").readNullable[String] and
       (__ \"faxNumber").readNullable[String] and
       (__ \"email").readNullable[String]
     )(ContactDetailsModel.apply _)
 
-  implicit val writes = Json.writes[ContactDetailsModel]
-}
+  implicit val cdwrites = Json.writes[ContactDetailsModel]
 
-case class ContactNameModel (name1 : String,
-                             name2: Option[String])
-
-object ContactNameModel {
-
-  implicit val reads: Reads[ContactNameModel] = (
+  implicit val cnreads: Reads[ContactNameModel] = (
     (__ \"firstName").read[String] and
       (__ \"lastName").readNullable[String]
     )(ContactNameModel.apply _)
 
-  implicit val writes = Json.writes[ContactNameModel]
-}
+  implicit val cnwrites = Json.writes[ContactNameModel]
 
-case class CorrespondenceDetailsModel (contactName: Option[ContactNameModel],
-                                       contactDetails: Option[ContactDetailsModel],
-                                       contactAddress: Option[ContactAddressModel])
-
-object CorrespondenceDetailsModel {
-
-  implicit val reads: Reads[CorrespondenceDetailsModel] = (
+  implicit val cdmreads: Reads[CorrespondenceDetailsModel] = (
     (__ \"contactDetails").readNullable[ContactNameModel] and
       (__ \"contactDetails").readNullable[ContactDetailsModel] and
       (__ \"correspondenceAddress").readNullable[ContactAddressModel]
     )(CorrespondenceDetailsModel.apply _)
 
-  implicit val writes = Json.writes[CorrespondenceDetailsModel]
-
-}
-
-case class SubscriptionTypeModel (correspondenceDetails: CorrespondenceDetailsModel)
-
-object SubscriptionTypeModel {
+  implicit val cdmwrites = Json.writes[CorrespondenceDetailsModel]
 
   implicit val formats = Json.format[SubscriptionTypeModel]
 }

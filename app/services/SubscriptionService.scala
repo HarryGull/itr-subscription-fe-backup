@@ -20,12 +20,12 @@ import common.KeystoreKeys
 import connectors.{KeystoreConnector, SubscriptionConnector}
 import models.etmp._
 import models.{CompanyRegistrationReviewDetailsModel, ContactDetailsSubscriptionModel, ProvideCorrespondAddressModel}
+import play.api.Logger
 import play.api.libs.json.Json
-import play.api.mvc.{Result, Results}
 import play.api.http.Status._
-import uk.gov.hmrc.play.http.HeaderCarrier
-import scala.concurrent.ExecutionContext.Implicits.global
+import uk.gov.hmrc.play.http.{HeaderCarrier, HttpResponse}
 
+import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
 object SubscriptionService extends SubscriptionService {
@@ -40,7 +40,7 @@ trait SubscriptionService {
   val keystoreConnector: KeystoreConnector
   val registeredBusinessCustomerService: RegisteredBusinessCustomerService
 
-  def subscribe()(implicit hc: HeaderCarrier): Future[Result] = {
+  def subscribe(implicit hc: HeaderCarrier): Future[HttpResponse] = {
     for {
       registrationReviewDetails <- registeredBusinessCustomerService.getReviewBusinessCustomerDetails
       correspondenceAddress <- keystoreConnector.fetchAndGetFormData[ProvideCorrespondAddressModel](KeystoreKeys.provideCorrespondAddress)
@@ -79,19 +79,18 @@ trait SubscriptionService {
   private def sendSubscriptionRequest(safeID: String,
                                       postcode: String,
                                       subscriptionTypeModel: Option[IntermediateSubscriptionTypeModel])
-                                     (implicit hc: HeaderCarrier): Future[Result] = {
-    (!safeID.isEmpty,subscriptionTypeModel.isDefined) match {
-      case (true,true) => {
+                                     (implicit hc: HeaderCarrier): Future[HttpResponse] = {
+    (!safeID.isEmpty,!postcode.isEmpty,subscriptionTypeModel.isDefined) match {
+      case (true,true,true) => {
         val json = Json.toJson(subscriptionTypeModel.get)
         val targetSubmissionModel = Json.parse(json.toString()).as[SubscriptionTypeModel]
-        subscriptionConnector.subscribe(targetSubmissionModel,safeID,postcode).map {
-          response => response.status match {
-            case OK => Results.Ok
-            case _ => Results.InternalServerError
-          }
-        }
+        subscriptionConnector.subscribe(targetSubmissionModel,safeID,postcode)
       }
-      case (_,_) => Future.successful(Results.InternalServerError)
+      case (_,_,_) => {
+        Logger.warn(s"[SubscriptionService][sendSubscriptionRequest] - Safe ID: ${safeID.isEmpty} " +
+          s"Postcode: ${postcode.isEmpty} Subscription model: ${subscriptionTypeModel.isDefined}")
+        Future.successful(HttpResponse(INTERNAL_SERVER_ERROR))
+      }
     }
   }
 

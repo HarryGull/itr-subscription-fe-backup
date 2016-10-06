@@ -40,47 +40,6 @@ class SubscriptionModelSpec extends UnitSpec {
   val minContactDetails = ContactDetailsModel(Some("01234567890"),None,None,Some("email@email.com"))
   val minContactName = ContactNameModel("first",Some("last"))
 
-  "CorrespondenceDetailsModel" when {
-
-    "Converting from IntermediateCorrespondenceDetailsModel to CorrespondenceDetailsModel with all optional values" should {
-
-      lazy val old = Json.toJson(maxIntermediateCorrespondenceDetailsModel)
-      lazy val result = Json.parse(old.toString).as[CorrespondenceDetailsModel]
-
-      "Convert the contact address correctly" in {
-        await(result).contactAddress.get shouldBe maxContactAddress
-      }
-
-      "Convert the contact details correctly" in {
-        await(result).contactDetails.get shouldBe maxContactDetails
-      }
-
-      "Convert the contact name correctly" in {
-        await(result).contactName.get shouldBe maxContactName
-      }
-
-    }
-
-    "Converting from IntermediateCorrespondenceDetailsModel to CorrespondenceDetailsModel with no optional values" should {
-
-      lazy val old = Json.toJson(minIntermediateCorrespondenceDetailsModel)
-      lazy val result = Json.parse(old.toString).as[CorrespondenceDetailsModel]
-
-      "Convert the contact address correctly" in {
-        await(result).contactAddress.get shouldBe minContactAddress
-      }
-
-      "Convert the contact details correctly" in {
-        await(result).contactDetails.get shouldBe minContactDetails
-      }
-
-      "Convert the contact name correctly" in {
-        await(result).contactName.get shouldBe minContactName
-      }
-
-    }
-  }
-
   "SubscriptionTypeModel" when {
 
     "Converting from IntermediateSubscriptionTypeModel to SubscriptionTypeModel with all optional values" should {
