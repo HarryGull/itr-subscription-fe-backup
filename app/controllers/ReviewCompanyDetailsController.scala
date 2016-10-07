@@ -54,7 +54,7 @@ trait ReviewCompanyDetailsController extends FrontendController with AuthorisedF
   val submit = Authorised.async { implicit user => implicit request =>
     subscriptionService.subscribe.map {
       response => response.status match {
-        case OK => Redirect(FrontendAppConfig.submissionUrl)
+        case NO_CONTENT => Redirect(FrontendAppConfig.submissionUrl)
         case _ => InternalServerError
       }
     }

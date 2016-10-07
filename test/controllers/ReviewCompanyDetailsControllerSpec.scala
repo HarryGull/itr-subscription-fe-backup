@@ -162,7 +162,7 @@ class ReviewCompanyDetailsControllerSpec extends UnitSpec with FakeRequestHelper
 
       "return a 303" in {
         withRegDetails()
-        when(mockSubscriptionService.subscribe(Matchers.any())).thenReturn(Future.successful(HttpResponse(OK)))
+        when(mockSubscriptionService.subscribe(Matchers.any())).thenReturn(Future.successful(HttpResponse(NO_CONTENT)))
         submitWithSessionAndAuth(TestController.submit)(
           result => status(result) shouldBe SEE_OTHER
         )
@@ -170,7 +170,7 @@ class ReviewCompanyDetailsControllerSpec extends UnitSpec with FakeRequestHelper
 
       "redirect to submission frontend" in {
         withRegDetails()
-        when(mockSubscriptionService.subscribe(Matchers.any())).thenReturn(Future.successful(HttpResponse(OK)))
+        when(mockSubscriptionService.subscribe(Matchers.any())).thenReturn(Future.successful(HttpResponse(NO_CONTENT)))
         submitWithSessionAndAuth(TestController.submit)(
           result => redirectLocation(result) shouldBe Some(FrontendAppConfig.submissionUrl)
         )
