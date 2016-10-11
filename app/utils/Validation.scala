@@ -31,35 +31,6 @@ import scala.util.{Failure, Success, Try}
 
 object Validation {
 
-  // use new Date() to get the date now
-  lazy val sf = new SimpleDateFormat("dd/MM/yyyy")
-  lazy val datePageFormat = new SimpleDateFormat("dd MMMM yyyy")
-  lazy val datePageFormatNoZero = new SimpleDateFormat("d MMMM yyyy")
-
-  def anyEmpty(day:Option[Int], month:Option[Int], year:Option[Int]) : Boolean = {
-    if(day.isEmpty || month.isEmpty || year.isEmpty){
-      true
-    } else {
-      false
-    }
-  }
-
-  def allDatesEmpty(day:Option[Int], month:Option[Int], year:Option[Int]) : Boolean = {
-    if(day.isEmpty & month.isEmpty & year.isEmpty){
-      true
-    } else {
-      false
-    }
-  }
-
-  def validateNonEmptyDateOptions(day:Option[Int], month:Option[Int], year:Option[Int]) : Boolean = {
-    if(day.isEmpty || month.isEmpty || year.isEmpty){
-      false
-    } else {
-      true
-    }
-  }
-
   def mandatoryAddressLineCheck: Mapping[String] = {
     val validAddressLine = """[a-zA-Z0-9,.\(\)/&'"\-]{1}[a-zA-Z0-9, .\(\)/&'"\-]{0,26}""".r
     val addresssLineCheckConstraint: Constraint[String] =
@@ -72,34 +43,6 @@ object Validation {
           if (error.isEmpty) Valid else Invalid(error)
       })
     text.verifying(addresssLineCheckConstraint)
-  }
-
-  def mandatoryMaxTenNumberValidation(message: String) : Mapping[String] = {
-    val validNum = """[0-9]{1,9}""".r
-    val numCharCheckConstraint: Constraint[String] =
-      Constraint("contraints.mandatoryNumberCheck")({
-        text =>
-          val error = text match {
-            case validNum() => Nil
-            case _ => Seq(ValidationError(Messages(message)))
-          }
-          if (error.isEmpty) Valid else Invalid(error)
-      })
-    text.verifying(numCharCheckConstraint)
-  }
-
-  def mandatoryMaxTenNumberNonZeroValidation(message: String) : Mapping[String] = {
-    val validNum = """^[1-9][0-9]{0,8}$""".r
-    val numCharCheckConstraint: Constraint[String] =
-      Constraint("contraints.mandatoryNumberCheck")({
-        text =>
-          val error = text match {
-            case validNum() => Nil
-            case _ => Seq(ValidationError(Messages(message)))
-          }
-          if (error.isEmpty) Valid else Invalid(error)
-      })
-    text.verifying(numCharCheckConstraint)
   }
 
   def optionalAddressLineCheck: Mapping[String] = {
@@ -130,19 +73,6 @@ object Validation {
     text().verifying(addressLineFourCheckConstraint)
   }
 
-  def postcodeCheck: Mapping[String] = {
-    val validPostcodeLine = "^$|[A-Z]{1,2}[0-9][0-9A-Z]? [0-9][A-Z]{2}".r
-    val postcodeCheckConstraint: Constraint[String] =
-      Constraint("contraints.postcode")({
-        text =>
-          val error = text.toUpperCase match {
-            case validPostcodeLine() => Nil
-            case _ => Seq(ValidationError(Messages("validation.error.postcode")))
-          }
-          if (error.isEmpty) Valid else Invalid(error)
-      })
-    text().verifying(postcodeCheckConstraint)
-  }
   def optionalPostcodeCheck: Mapping[String] = {
     val validPostcodeLine = "^$|[A-Z]{1,2}[0-9][0-9A-Z]? [0-9][A-Z]{2}".r
     val postcodeCheckConstraint: Constraint[String] =
@@ -156,54 +86,6 @@ object Validation {
       })
     text().verifying(postcodeCheckConstraint)
   }
-
-  def countryCheck: Mapping[String] = {
-    val validCountryLine = "^$|[A-Za-z]{2}[A-Za-z ]{0,18}".r
-
-    val countryCheckConstraint: Constraint[String] =
-      Constraint("contraints.country")({
-        text =>
-          val error = text match {
-            case "" => Seq(ValidationError(Messages("validation.error.country")))
-            case validCountryLine() => Nil
-            case _ => Seq(ValidationError(Messages("validation.error.country")))
-          }
-          if (error.isEmpty) Valid else Invalid(error)
-      })
-    text().verifying(countryCheckConstraint)
-  }
-
-//  def countryCodeCheck: Mapping[String] = {
-//
-//    val validCodes = Seq("GB", "TH", "AF")
-//
-//    val countryCodeCheckConstraint: Constraint[String] =
-//      Constraint("contraints.countryCode")({
-//        text =>
-//          val error = validCodes.contains(text) match {
-//            case false => Seq(ValidationError(Messages("validation.error.country")))
-//            case _ => Nil
-//          }
-//          if (error.isEmpty) Valid else Invalid(error)
-//      })
-//    text().verifying(countryCodeCheckConstraint)
-//  }
-
-//  def countryCodeCheck: Mapping[String] = {
-//
-//    val validCodes = Seq("GB", "TH", "AF")
-//
-//    val countryCodeCheckConstraint: Constraint[String] =
-//      Constraint("contraints.countryCode")({
-//        text =>
-//          val error = text.isEmpty match {
-//            case true => Seq(ValidationError(Messages("validation.error.countryCode")))
-//            case _ => Nil
-//          }
-//          if (error.isEmpty) Valid else Invalid(error)
-//      })
-//    text().verifying(countryCodeCheckConstraint)
-//  }
 
   def countryCodeCheck: Mapping[String] = {
     val validEmailLine = """[A-Z]{2}""".r
@@ -254,7 +136,6 @@ object Validation {
         text =>
           val error = text match {
             case validTelephoneNumberLine() => Nil
-            case "" => Nil
             case _ => Seq(ValidationError(Messages("validation.error.telephoneNumber")))
           }
           if (error.isEmpty) Valid else Invalid(error)
@@ -262,136 +143,4 @@ object Validation {
     text().verifying(telephoneNumberCheckConstraint)
   }
 
-  def postcodeCountryCheckConstraint: Constraint[ProvideCorrespondAddressModel] = {
-    Constraint("constraints.postcodeCountryCheck")({
-      provideCorrespondAddressForm: ProvideCorrespondAddressModel =>
-        if (provideCorrespondAddressForm.countryCode.length > 0 && provideCorrespondAddressForm.postcode.isDefined) { //TODO: Is this correct?
-          Invalid(Seq(ValidationError(Messages("validation.error.countrypostcode"))))
-        } else {
-          Valid
-        }
-    })
-  }
-
-  val integerCheck: String => Boolean = (input) => {
-    Try(input.trim.toInt) match {
-      case Success(_) => true
-      case Failure(_) if input.trim == "" => true
-      case Failure(_) => false
-    }
-  }
-
-  val mandatoryCheck: String => Boolean = (input) => input.trim != ""
-
-  val decimalPlacesCheck: BigDecimal => Boolean = (input) => input.scale < 3
-
-  val decimalPlacesCheckNoDecimal: BigDecimal => Boolean = (input) => input.scale < 1
-
-  def maxIntCheck (maxInteger: Int) : Int => Boolean = (input) => input <= maxInteger
-  def minIntCheck (minInteger: Int) : Int => Boolean = (input) => input >= minInteger
-
-  val yesNoCheck: String =>  Boolean = {
-    case Constants.StandardRadioButtonYesValue => true
-    case Constants.StandardRadioButtonNoValue => true
-    case "" => true
-    case _ => false
-  }
-
-  def isValidDateOptions(day:Option[Int], month:Option[Int], year:Option[Int]) : Boolean = {
-    validateNonEmptyDateOptions(day, month, year) match {
-      case  false => true
-      case _ => isValidDate(day.get, month.get, year.get)
-    }
-  }
-
-  def isValidDate(day: Int, month: Int, year: Int): Boolean = {
-    Try {
-      val fmt = new SimpleDateFormat("dd/MM/yyyy")
-      fmt.setLenient(false)
-      fmt.parse(s"$day/$month/$year")
-      year match {
-        case year if year < 1000 => false
-        case _ => true
-      }
-    } match {
-      case Success(result) => result
-      case Failure(_) => false
-    }
-  }
-
-  def constructDate (day: Int, month: Int, year: Int): Date = {
-    sf.parse(s"$day/$month/$year")
-  }
-
-  def dateInFuture (date: Date): Boolean = {
-    date.after(DateTime.now.toDate)
-  }
-
-  def dateNotInFuture (day: Int, month: Int, year: Int): Boolean = {
-    !constructDate(day, month, year).after(DateTime.now.toDate)
-  }
-
-  def dateIsFuture (day: Int, month: Int, year: Int): Boolean = {
-    constructDate(day, month, year).after(DateTime.now.toDate)
-  }
-
-  def dateNotInFutureOptions(day:Option[Int], month:Option[Int], year:Option[Int]) : Boolean = {
-    // if empty elements return as valid to prevent chaining of multiple errors (other validators should handle this)
-    validateNonEmptyDateOptions(day, month, year) match {
-      case  false => true
-      case _ => dateNotInFuture(day.get, month.get, year.get)
-    }
-  }
-
-  def dateInFutureOptions(day:Option[Int], month:Option[Int], year:Option[Int]) : Boolean = {
-    // if empty elements return as valid to prevent chaining of multiple errors (other validators should handle this)
-    validateNonEmptyDateOptions(day, month, year) match {
-      case  false => true
-      case _ => dateIsFuture(day.get, month.get, year.get)
-    }
-  }
-
-  def dateMinusMonths(date: Option[Date], months: Int): String = {
-    date match {
-      case Some(date) =>
-        val cal = Calendar.getInstance()
-        cal.setTime(date)
-        cal.add(Calendar.MONTH, months * -1)
-        new SimpleDateFormat("dd/MM/yyyy").format(cal.getTime)
-      case _ => ""
-    }
-  }
-
-  def dateMinusYears(date: Option[Date], years: Int): String = {
-    date match {
-      case Some(date) =>
-        val cal = Calendar.getInstance()
-        cal.setTime(date)
-        cal.add(Calendar.YEAR, years * -1)
-        new SimpleDateFormat("dd/MM/yyyy").format(cal.getTime)
-      case _ => ""
-    }
-  }
-
-  def dateAddMonths(date: Option[Date], months: Int): String = {
-    date match {
-      case Some(date) =>
-        val cal = Calendar.getInstance()
-        cal.setTime(date)
-        cal.add(Calendar.MONTH, months)
-        new SimpleDateFormat("dd/MM/yyyy").format(cal.getTime)
-      case _ => ""
-    }
-  }
-
-  def dateAddYears(date: Option[Date], years: Int): String = {
-    date match {
-      case Some(date) =>
-        val cal = Calendar.getInstance()
-        cal.setTime(date)
-        cal.add(Calendar.YEAR, years)
-        new SimpleDateFormat("dd/MM/yyyy").format(cal.getTime)
-      case _ => ""
-    }
-  }
 }
