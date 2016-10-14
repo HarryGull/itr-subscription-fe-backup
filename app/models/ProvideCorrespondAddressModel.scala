@@ -20,10 +20,10 @@ import play.api.libs.json.Json
 
 case class ProvideCorrespondAddressModel(addressline1 : String,
                                          addressline2 : String,
-                                         addressline3 : Option[String],
-                                         addressline4 : Option[String],
-                                         postcode : Option[String],
-                                         countryCode : String)
+                                         addressline3 : Option[String] = None,
+                                         addressline4 : Option[String] = None,
+                                         postcode : Option[String] = None,
+                                         countryCode : String = "GB")
 
 object ProvideCorrespondAddressModel {
   implicit val format = Json.format[ProvideCorrespondAddressModel]

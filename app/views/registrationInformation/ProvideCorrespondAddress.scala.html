@@ -26,7 +26,6 @@
 
         @form(action = controllers.routes.ProvideCorrespondAddressController.submit()) {
         <div class="form-group">
-
             @input(
             provideCorrespondAddressForm("addressline1"),
             '_divClass -> "form-label",
@@ -36,7 +35,8 @@
             '_inputClass -> "input--medium input--cleared",
             'id -> "addressline1"
             )
-
+        </div>
+        <div class="form-group">
             @input(
             provideCorrespondAddressForm("addressline2"),
             '_divClass -> "form-label",
@@ -46,7 +46,8 @@
             '_inputClass -> "input--medium input--cleared",
             'id -> "addressline2"
             )
-
+        </div>
+        <div class="form-group">
             @input(
             provideCorrespondAddressForm("addressline3"),
             '_divClass -> "form-label",
@@ -56,7 +57,8 @@
             '_inputClass -> "input--medium input--cleared",
             'id -> "addressline3"
             )
-
+        </div>
+        <div class="form-group">
             @input(
             provideCorrespondAddressForm("addressline4"),
             '_divClass -> "form-label",
@@ -66,7 +68,8 @@
             '_inputClass -> "input--medium input--cleared",
             'id -> "addressline4"
             )
-
+        </div>
+        <div class="form-group">
             @input(
             provideCorrespondAddressForm("postcode"),
             '_divClass -> "form-label",
@@ -76,7 +79,8 @@
             '_inputClass -> "input--small input--cleared",
             'id -> "postcode"
             )
-
+        </div>
+        <div class="form-group">
             @dropdown(provideCorrespondAddressForm("countryCode"),
             elementOptions = listOfIsoCode,
             displayEmptyValue = true,
@@ -85,7 +89,6 @@
             '_id -> "countryCode",
             '_inputClass -> "input--medium input--cleared",
             '_label -> Html(Messages("page.registrationInformation.ProvideCorrespondAddress.country.label")))
-
         </div>
         <div class="form-group">
             <button class="btn button" id="next">@Messages("common.button.continue")</button>
