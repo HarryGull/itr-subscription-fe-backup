@@ -32,8 +32,8 @@ class ProvideCorrespondAddressSpec extends UnitSpec with MockitoSugar with WithF
 
   val mockKeystoreConnector = mock[KeystoreConnector]
 
-  val provideCorrespondAddressModel = new ProvideCorrespondAddressModel("Akina Speed Stars","Mt. Akina",None,None,None,"JP")
-  val emptyProvideCorrespondAddressModel = new ProvideCorrespondAddressModel("","",None,None,None,"")
+  val provideCorrespondAddressModel = new ProvideCorrespondAddressModel("Akina Speed Stars","Mt. Akina",countryCode = "JP")
+  val emptyProvideCorrespondAddressModel = new ProvideCorrespondAddressModel("","",countryCode = "")
 
   lazy val form = provideCorrespondAddressForm.bind(Map("addressline1" -> "Akina Speed Stars",
                                                         "addressline2" -> "Mt. Akina",

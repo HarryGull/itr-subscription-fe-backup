@@ -47,7 +47,7 @@ trait ProvideCorrespondAddressController extends FrontendController with Authori
   val show = Authorised.async { implicit user => implicit request =>
     keyStoreConnector.fetchAndGetFormData[ProvideCorrespondAddressModel](KeystoreKeys.provideCorrespondAddress).map {
       case Some(data) => Ok(ProvideCorrespondAddress(provideCorrespondAddressForm.fill(data), countriesList))
-      case None => Ok(ProvideCorrespondAddress(provideCorrespondAddressForm, countriesList))
+      case None => Ok(ProvideCorrespondAddress(provideCorrespondAddressForm.fill(ProvideCorrespondAddressModel("","")), countriesList))
     }
   }
 
