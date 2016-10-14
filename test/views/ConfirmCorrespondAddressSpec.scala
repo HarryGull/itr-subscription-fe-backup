@@ -56,8 +56,6 @@ class ConfirmCorrespondAddressSpec extends UnitSpec with MockitoSugar with WithF
       document.title() shouldBe Messages("page.registrationInformation.ConfirmCorrespondAddress.title")
       document.getElementById("main-heading").text() shouldBe Messages("page.registrationInformation.ConfirmCorrespondAddress.heading")
       document.getElementById("next").text() shouldBe Messages("common.button.continue")
-      document.body.getElementById("back-link").attr("href") shouldEqual routes.IntroductionController.show().url
-      document.body.getElementById("progress-section").text shouldBe Messages("common.section.progress.registration")
       document.body.getElementById("contactAddressUse-yesLabel").text shouldBe  Messages("common.radioYesLabel")
       document.body.getElementById("contactAddressUse-noLabel").text shouldBe  Messages("common.radioNoLabel")
       document.body.select("#contactAddressUse-yes").size() shouldBe 1
@@ -82,8 +80,6 @@ class ConfirmCorrespondAddressSpec extends UnitSpec with MockitoSugar with WithF
       document.title() shouldBe Messages("page.registrationInformation.ConfirmCorrespondAddress.title")
       document.getElementById("main-heading").text() shouldBe Messages("page.registrationInformation.ConfirmCorrespondAddress.heading")
       document.getElementById("next").text() shouldBe Messages("common.button.continue")
-      document.body.getElementById("back-link").attr("href") shouldEqual routes.IntroductionController.show().url
-      document.body.getElementById("progress-section").text shouldBe Messages("common.section.progress.registration")
       document.body.getElementById("contactAddressUse-yesLabel").text shouldBe  Messages("common.radioYesLabel")
       document.body.getElementById("contactAddressUse-noLabel").text shouldBe  Messages("common.radioNoLabel")
       document.body.select("#contactAddressUse-yes").size() shouldBe 1
@@ -102,8 +98,6 @@ class ConfirmCorrespondAddressSpec extends UnitSpec with MockitoSugar with WithF
       document.title() shouldBe Messages("page.registrationInformation.ConfirmCorrespondAddress.title")
       document.getElementById("main-heading").text() shouldBe Messages("page.registrationInformation.ConfirmCorrespondAddress.heading")
       document.getElementById("next").text() shouldBe Messages("common.button.continue")
-      document.body.getElementById("back-link").attr("href") shouldEqual routes.IntroductionController.show().url
-      document.body.getElementById("progress-section").text shouldBe  Messages("common.section.progress.registration")
       document.body.getElementById("contactAddressUse-yesLabel").text shouldBe  Messages("common.radioYesLabel")
       document.body.getElementById("contactAddressUse-noLabel").text shouldBe  Messages("common.radioNoLabel")
       document.body.select("#contactAddressUse-yes").size() shouldBe 1

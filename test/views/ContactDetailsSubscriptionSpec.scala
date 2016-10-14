@@ -49,8 +49,6 @@ class ContactDetailsSubscriptionSpec extends UnitSpec with WithFakeApplication w
         Messages("page.registrationInformation.ContactDetailsSubscription.telephoneNumber2.label")
       document.getElementById("label-email").text() shouldBe Messages("page.registrationInformation.ContactDetailsSubscription.email.label")
       document.getElementById("next").text() shouldBe Messages("common.button.continue")
-      document.body.getElementById("back-link").attr("href") shouldEqual routes.ConfirmCorrespondAddressController.show().url
-      document.body.getElementById("progress-section").text shouldBe  Messages("common.section.progress.registration")
     }
 
     "Verify that the contact details page contains the correct elements when a valid (empty) ContactDetailsSubscriptionModel is passed" in {
@@ -68,8 +66,6 @@ class ContactDetailsSubscriptionSpec extends UnitSpec with WithFakeApplication w
         Messages("page.registrationInformation.ContactDetailsSubscription.telephoneNumber2.label")
       document.getElementById("label-email").text() shouldBe Messages("page.registrationInformation.ContactDetailsSubscription.email.label")
       document.getElementById("next").text() shouldBe Messages("common.button.continue")
-      document.body.getElementById("back-link").attr("href") shouldEqual routes.ConfirmCorrespondAddressController.show().url
-      document.body.getElementById("progress-section").text shouldBe  Messages("common.section.progress.registration")
     }
 
     "Verify that the proposed investment page contains the correct elements (error elements) when an invalid ContactDetailsSubscriptionModel is submitted" in {
@@ -87,8 +83,6 @@ class ContactDetailsSubscriptionSpec extends UnitSpec with WithFakeApplication w
         Messages("page.registrationInformation.ContactDetailsSubscription.telephoneNumber2.label")
       document.getElementById("label-email").text() contains Messages("page.registrationInformation.ContactDetailsSubscription.email.label")
       document.getElementById("next").text() shouldBe Messages("common.button.continue")
-      document.body.getElementById("back-link").attr("href") shouldEqual routes.ConfirmCorrespondAddressController.show().url
-      document.body.getElementById("progress-section").text shouldBe  Messages("common.section.progress.registration")
 //      document.getElementById("error-summary-display").hasClass("error-summary--show")
 
       document.getElementById("firstName-error-summary").text should include(Messages("common.error.missingField"))
