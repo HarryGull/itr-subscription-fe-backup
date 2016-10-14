@@ -302,7 +302,7 @@ class ProvideCorrespondAddressFormSpec extends UnitSpec {
       "addressline3" -> "",
       "addressline4" -> "",
       "postcode" -> "   ",
-     "countryCode" -> "JP")
+     "countryCode" -> "GB")
     )
     "raise form error" in {
       form.hasErrors shouldBe true
@@ -390,7 +390,7 @@ class ProvideCorrespondAddressFormSpec extends UnitSpec {
       "addressline3" -> "",
       "addressline4" -> "",
       "postcode" -> "86",
-     "countryCode" -> "JP")
+     "countryCode" -> "GB")
     )
     "raise form error" in {
       form.hasErrors shouldBe true
@@ -587,7 +587,7 @@ class ProvideCorrespondAddressFormSpec extends UnitSpec {
       "addressline3" -> "",
       "addressline4" -> "",
       "postcode" -> "BS98 1TL",
-     "countryCode" -> "JP")
+     "countryCode" -> "GB")
     )
     "raise form error" in {
       form.hasErrors shouldBe false
@@ -726,7 +726,7 @@ class ProvideCorrespondAddressFormSpec extends UnitSpec {
       "addressline3" -> "",
       "addressline4" -> "",
       "postcode" -> "BS98 1TL ",
-     "countryCode" -> "JP")
+     "countryCode" -> "GB")
     )
     "raise form error" in {
       form.hasErrors shouldBe true
@@ -770,7 +770,7 @@ class ProvideCorrespondAddressFormSpec extends UnitSpec {
       "addressline3" -> "",
       "addressline4" -> "",
       "postcode" -> "BS98  1TL",
-     "countryCode" -> "JP")
+     "countryCode" -> "GB")
     )
     "raise form error" in {
       form.hasErrors shouldBe true
@@ -791,7 +791,7 @@ class ProvideCorrespondAddressFormSpec extends UnitSpec {
       "addressline3" -> "",
       "addressline4" -> "",
       "postcode" -> "BS98 (1TL)",
-     "countryCode" -> "JP")
+     "countryCode" -> "GB")
     )
     "raise form error" in {
       form.hasErrors shouldBe true
@@ -812,7 +812,7 @@ class ProvideCorrespondAddressFormSpec extends UnitSpec {
       "addressline3" -> "",
       "addressline4" -> "",
       "postcode" -> "BS98/9 1TL",
-     "countryCode" -> "JP")
+     "countryCode" -> "GB")
     )
     "raise form error" in {
       form.hasErrors shouldBe true
@@ -833,9 +833,9 @@ class ProvideCorrespondAddressFormSpec extends UnitSpec {
       "addressline3" -> "",
       "addressline4" -> "",
       "postcode" -> "bs98 1tl",
-     "countryCode" -> "JP")
+     "countryCode" -> "GB")
     )
-    "raise form error" in {
+    "raise no form error" in {
       form.hasErrors shouldBe false
     }
     "raise 0 form errors" in {
@@ -850,7 +850,7 @@ class ProvideCorrespondAddressFormSpec extends UnitSpec {
       "addressline3" -> "",
       "addressline4" -> "",
       "postcode" -> "BS981TL",
-     "countryCode" -> "JP")
+     "countryCode" -> "GB")
     )
     "raise form error" in {
       form.hasErrors shouldBe true

@@ -34,7 +34,7 @@ object Validation {
   def mandatoryAddressLineCheck: Mapping[String] = {
     val validAddressLine = """[a-zA-Z0-9,.\(\)/&'"\-]{1}[a-zA-Z0-9, .\(\)/&'"\-]{0,26}""".r
     val addresssLineCheckConstraint: Constraint[String] =
-      Constraint("contraints.mandatoryAddressLine")({
+      Constraint("constraints.mandatoryAddressLine")({
         text =>
           val error = text match {
             case validAddressLine() => Nil
@@ -48,7 +48,7 @@ object Validation {
   def optionalAddressLineCheck: Mapping[String] = {
     val validAddressLine = """^$|[a-zA-Z0-9,.\(\)/&'"\-]{1}[a-zA-Z0-9, .\(\)/&'"\-]{0,26}""".r
     val addresssLineCheckConstraint: Constraint[String] =
-      Constraint("contraints.optionalAddressLine")({
+      Constraint("constraints.optionalAddressLine")({
         text =>
           val error = text match {
             case validAddressLine() => Nil
@@ -62,7 +62,7 @@ object Validation {
   def addressLineFourCheck: Mapping[String] = {
     val validAddressLine = """^$|[a-zA-Z0-9,.\(\)/&'"\-]{1}[a-zA-Z0-9, .\(\)/&'"\-]{0,17}""".r
     val addressLineFourCheckConstraint: Constraint[String] =
-      Constraint("contraints.addressLineFour")({
+      Constraint("constraints.addressLineFour")({
         text =>
           val error = text match {
             case validAddressLine() => Nil
@@ -73,10 +73,10 @@ object Validation {
     text().verifying(addressLineFourCheckConstraint)
   }
 
-  def optionalPostcodeCheck: Mapping[String] = {
-    val validPostcodeLine = "^$|[A-Z]{1,2}[0-9][0-9A-Z]? [0-9][A-Z]{2}".r
+  def postcodeCheck: Mapping[String] = {
+    val validPostcodeLine = "^[A-Z]{1,2}[0-9][0-9A-Z]? [0-9][A-Z]{2}$".r
     val postcodeCheckConstraint: Constraint[String] =
-      Constraint("contraints.postcode")({
+      Constraint("constraints.postcode")({
         text =>
           val error = text.toUpperCase match {
             case validPostcodeLine() => Nil
@@ -90,7 +90,7 @@ object Validation {
   def countryCodeCheck: Mapping[String] = {
     val validEmailLine = """[A-Z]{2}""".r
     val countryCodeCheckConstraint: Constraint[String] =
-      Constraint("contraints.countryCode")({
+      Constraint("constraints.countryCode")({
         text =>
           val error = text match {
             case validEmailLine() => Nil
@@ -104,7 +104,7 @@ object Validation {
   def emailCheck: Mapping[String] = {
     val validEmailLine = """[A-Za-z0-9\-​_.]{1,64}@[A-Za-z0-9\-_​.]{1,64}""".r
     val emailCheckConstraint: Constraint[String] =
-      Constraint("contraints.email")({
+      Constraint("constraints.email")({
         text =>
           val error = text match {
             case validEmailLine() => Nil
@@ -118,7 +118,7 @@ object Validation {
   def telephoneNumberCheck: Mapping[String] = {
     val validTelephoneNumberLine = """^[0-9\(\)\+ ]{0,23}\S$""".r
     val telephoneNumberCheckConstraint: Constraint[String] =
-      Constraint("contraints.telephoneNumber")({
+      Constraint("constraints.telephoneNumber")({
         text =>
           val error = text match {
             case validTelephoneNumberLine() => Nil
@@ -132,7 +132,7 @@ object Validation {
   def optionalTelephoneNumberCheck: Mapping[String] = {
     val validTelephoneNumberLine = """^[0-9\(\)\+ ]{0,23}\S$""".r
     val telephoneNumberCheckConstraint: Constraint[String] =
-      Constraint("contraints.telephoneNumber")({
+      Constraint("constraints.telephoneNumber")({
         text =>
           val error = text match {
             case validTelephoneNumberLine() => Nil
