@@ -49,7 +49,6 @@ class ReviewCompanyDetailsSpec extends UnitSpec with MockitoSugar with WithFakeA
         document.title() shouldBe Messages("page.registrationInformation.ReviewCompanyDetails.title")
         document.getElementById("main-heading").text() shouldBe
           s"${Messages("page.registrationInformation.ReviewCompanyDetails.heading")} ${validModel.businessName}"
-        document.body.getElementById("back-link").attr("href") shouldEqual routes.ContactDetailsSubscriptionController.show().url
         document.body.getElementById("correspondenceAddress-question").text shouldBe
           Messages("page.registrationInformation.ReviewCompanyDetails.correspondenceAddress")
         document.body.getElementById("correspondenceAddress-answer").children().size() shouldBe 6
@@ -67,7 +66,6 @@ class ReviewCompanyDetailsSpec extends UnitSpec with MockitoSugar with WithFakeA
         document.body.getElementById("telephonenumber2").text shouldBe maxContact.telephoneNumber2.get
         document.body.getElementById("email").text shouldBe maxContact.email
         document.getElementById("submit").text() shouldBe Messages("page.registrationInformation.ReviewCompanyDetails.button.continue")
-        document.body.getElementById("progress-section").text shouldBe Messages("common.section.progress.registration")
         document.body.getElementById("get-help-action").text shouldBe Messages("common.error.help.text")
       }
 
@@ -82,7 +80,6 @@ class ReviewCompanyDetailsSpec extends UnitSpec with MockitoSugar with WithFakeA
         document.title() shouldBe Messages("page.registrationInformation.ReviewCompanyDetails.title")
         document.getElementById("main-heading").text() shouldBe
           s"${Messages("page.registrationInformation.ReviewCompanyDetails.heading")} ${validModel.businessName}"
-        document.body.getElementById("back-link").attr("href") shouldEqual routes.ContactDetailsSubscriptionController.show().url
         document.body.getElementById("correspondenceAddress-question").text shouldBe
           Messages("page.registrationInformation.ReviewCompanyDetails.correspondenceAddress")
         document.body.getElementById("correspondenceAddress-answer").children().size() shouldBe 3
@@ -96,7 +93,6 @@ class ReviewCompanyDetailsSpec extends UnitSpec with MockitoSugar with WithFakeA
         document.body.getElementById("telephonenumber").text shouldBe minContact.telephoneNumber
         document.body.getElementById("email").text shouldBe minContact.email
         document.getElementById("submit").text() shouldBe Messages("page.registrationInformation.ReviewCompanyDetails.button.continue")
-        document.body.getElementById("progress-section").text shouldBe Messages("common.section.progress.registration")
         document.body.getElementById("get-help-action").text shouldBe Messages("common.error.help.text")
       }
 
