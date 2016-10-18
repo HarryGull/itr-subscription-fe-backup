@@ -101,6 +101,17 @@ object Validation {
     text().verifying(countryCodeCheckConstraint)
   }
 
+  def postcodeCountryCheckConstraint: Constraint[ProvideCorrespondAddressModel] = {
+    Constraint("constraints.postcodeCountryCheck")({
+      addressForm: ProvideCorrespondAddressModel =>
+        if (addressForm.countryCode == "GB" && addressForm.postcode.fold(true)( _.isEmpty)) {
+          Invalid(Seq(ValidationError(Messages("validation.error.countrypostcode"))))
+        } else {
+          Valid
+        }
+    })
+  }
+
   def emailCheck: Mapping[String] = {
     val validEmailLine = """[A-Za-z0-9\-​_.]{1,64}@[A-Za-z0-9\-_​.]{1,64}""".r
     val emailCheckConstraint: Constraint[String] =

@@ -23,6 +23,7 @@ import connectors.KeystoreConnector
 import play.api.mvc.Action
 import models.ProvideCorrespondAddressModel
 import forms.ProvideCorrespondAddressForm._
+import play.api.i18n.Messages
 import services.RegisteredBusinessCustomerService
 import uk.gov.hmrc.play.frontend.controller.FrontendController
 import views.html.registrationInformation.ProvideCorrespondAddress
@@ -54,7 +55,10 @@ trait ProvideCorrespondAddressController extends FrontendController with Authori
   val submit = Authorised.async { implicit user => implicit request =>
     provideCorrespondAddressForm.bindFromRequest().fold(
       formWithErrors => {
-        Future.successful(BadRequest(ProvideCorrespondAddress(formWithErrors, countriesList)))
+        Future.successful(BadRequest(ProvideCorrespondAddress(if(formWithErrors.hasGlobalErrors)
+          formWithErrors.discardingErrors.withError("postcode", Messages("validation.error.countrypostcode"))
+        else formWithErrors, countriesList)))
+
       },
       validFormData => {
         keyStoreConnector.saveFormData(KeystoreKeys.provideCorrespondAddress, validFormData)

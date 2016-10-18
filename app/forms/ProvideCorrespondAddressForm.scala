@@ -29,8 +29,8 @@ object ProvideCorrespondAddressForm {
       "addressline2" -> mandatoryAddressLineCheck,
       "addressline3" -> optional(optionalAddressLineCheck),
       "addressline4" -> optional(addressLineFourCheck),
-      "postcode" -> mandatoryIfEqual("countryCode","GB",postcodeCheck),
+      "postcode" -> optional(postcodeCheck),
       "countryCode" -> countryCodeCheck
-    )(ProvideCorrespondAddressModel.apply)(ProvideCorrespondAddressModel.unapply)
+    )(ProvideCorrespondAddressModel.apply)(ProvideCorrespondAddressModel.unapply).verifying(postcodeCountryCheckConstraint)
   )
 }
