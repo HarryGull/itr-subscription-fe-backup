@@ -30,6 +30,7 @@ validation.error.telephoneNumber=Enter a valid telephone number
 validation.error.postcode=Enter a valid postcode
 validation.error.countryCode=Enter a country
 validation.error.linefouraddresssline=Use fewer than 18 characters in the address line
+validation.error.countrypostcode=Postcode must be entered if United Kingdom is selected for country
 
 
 #Welcome page
