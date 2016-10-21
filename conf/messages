@@ -84,3 +84,9 @@ page.registrationInformation.ReviewCompanyDetails.title= Review company details
 page.registrationInformation.ReviewCompanyDetails.button.continue= Confirm and register
 page.registrationInformation.ReviewCompanyDetails.correspondenceAddress= Correspondence address
 page.registrationInformation.ReviewCompanyDetails.companyContact= Company contact
+
+## Feedback ##
+feedback.title = Feedback
+
+## Feedback Thank You ##
+feedback.thankyou.title = Feedback received

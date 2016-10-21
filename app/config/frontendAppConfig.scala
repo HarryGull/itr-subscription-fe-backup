@@ -26,30 +26,31 @@ trait AppConfig {
   val reportAProblemPartialUrl: String
   val reportAProblemNonJSUrl: String
   val notAuthorisedRedirectUrl: String
-  val twoFactorUrl: String
   val ggSignInUrl: String
   val introductionUrl: String
   val businessCustomerUrl: String
   val submissionUrl: String
+  val contactFormServiceIdentifier: String
+  val contactFrontendPartialBaseUrl: String
+
 }
 
 object FrontendAppConfig extends AppConfig with ServicesConfig {
 
   private def loadConfig(key: String) = configuration.getString(key).getOrElse(throw new Exception(s"Missing configuration key: $key"))
 
-  private val contactHost = configuration.getString(s"contact-frontend.host").getOrElse("")
-  private val contactFormServiceIdentifier = "MyService"
-
   override lazy val assetsPrefix = loadConfig(s"assets.url") + loadConfig(s"assets.version")
   override lazy val analyticsToken = loadConfig(s"google-analytics.token")
   override lazy val analyticsHost = loadConfig(s"google-analytics.host")
-  override lazy val reportAProblemPartialUrl = s"$contactHost/contact/problem_reports_ajax?service=$contactFormServiceIdentifier"
-  override lazy val reportAProblemNonJSUrl = s"$contactHost/contact/problem_reports_nonjs?service=$contactFormServiceIdentifier"
-
   override lazy val notAuthorisedRedirectUrl = configuration.getString("not-authorised-callback.url").getOrElse("")
   override lazy val ggSignInUrl = configuration.getString("government-gateway-sign-in.host").getOrElse("")
-  override lazy val twoFactorUrl = configuration.getString("two-factor.host").getOrElse("")
   override lazy val introductionUrl = configuration.getString("introduction.url").getOrElse("")
   override lazy val businessCustomerUrl = configuration.getString("business-customer.url").getOrElse("")
   override lazy val submissionUrl = configuration.getString("submission.url").getOrElse("")
+
+  private val contactFrontendService = baseUrl("contact-frontend")
+  override val contactFormServiceIdentifier = "TAVC"
+  override lazy val contactFrontendPartialBaseUrl = s"$contactFrontendService"
+  override lazy val reportAProblemPartialUrl = s"$contactFrontendPartialBaseUrl/contact/problem_reports_ajax?service=$contactFormServiceIdentifier"
+  override lazy val reportAProblemNonJSUrl = s"$contactFrontendPartialBaseUrl/contact/problem_reports_nonjs?service=$contactFormServiceIdentifier"
 }
