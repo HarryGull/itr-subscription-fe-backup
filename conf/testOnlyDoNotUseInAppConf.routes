@@ -9,8 +9,8 @@
 # !!!WARNING!!! Every route defined in this file MUST be prefixed with "/test-only/". This is because NGINX is blocking every uri containing the string "test-only" in production.
 # Failing to follow this rule may result in test routes deployed in production.
 
-GET        /test-only/investment-tax-relief/reset-enrolments       testOnly.controllers.ResetEnrolmentsController.resetEnrolments
-GET        /test-only/investment-tax-relief/de-enrol               testOnly.controllers.DeEnrolController.deEnrol
+GET        /investment-tax-relief-subscription/test-only/reset-enrolments       testOnly.controllers.ResetEnrolmentsController.resetEnrolments
+GET        /investment-tax-relief-subscription/test-only/de-enrol               testOnly.controllers.DeEnrolController.deEnrol
 
 # Add all the application routes to the prod.routes file
 ->         /                                 prod.Routes
