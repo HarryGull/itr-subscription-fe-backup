@@ -21,8 +21,10 @@
 package testOnly.connectors
 
 import config.WSHttp
+import play.api.libs.json.{JsValue, Json}
 import uk.gov.hmrc.play.config.ServicesConfig
 import uk.gov.hmrc.play.http._
+
 import scala.concurrent.Future
 
 trait DeEnrolmentConnector extends ServicesConfig with RawResponseReads {
@@ -32,7 +34,7 @@ trait DeEnrolmentConnector extends ServicesConfig with RawResponseReads {
   val http: HttpGet with HttpPost
 
   def deEnrol()(implicit hc: HeaderCarrier): Future[HttpResponse] =
-    http.POSTEmpty(s"$serviceURL/$deEnrolURI")
+    http.POST[JsValue, HttpResponse](s"$serviceURL/$deEnrolURI",Json.parse("""{"keepAgentAllocations": true}"""))
 
 }
 
