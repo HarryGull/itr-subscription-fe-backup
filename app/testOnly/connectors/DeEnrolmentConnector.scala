@@ -33,13 +33,13 @@ trait DeEnrolmentConnector extends ServicesConfig with RawResponseReads {
   val deEnrolURI: String
   val http: HttpGet with HttpPost
 
-  def deEnrol()(implicit hc: HeaderCarrier): Future[HttpResponse] =
-    http.POST[JsValue, HttpResponse](s"$serviceURL/$deEnrolURI",Json.parse("""{"keepAgentAllocations": true}"""))
-
+  def deEnrol()(implicit hc: HeaderCarrier): Future[HttpResponse] = {
+    http.POST[JsValue, HttpResponse](s"$serviceURL/$deEnrolURI", Json.parse("""{"keepAgentAllocations": true}"""))
+  }
 }
 
 object DeEnrolmentConnector extends DeEnrolmentConnector {
   val serviceURL = baseUrl("tax-enrolments")
-  val deEnrolURI = "de-enrol/HMRC-TAVC-ORG"
+  val deEnrolURI = "tax-enrolments/de-enrol/HMRC-TAVC-ORG"
   val http = WSHttp
 }
