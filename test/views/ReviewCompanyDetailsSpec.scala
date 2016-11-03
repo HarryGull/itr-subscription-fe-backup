@@ -48,7 +48,7 @@ class ReviewCompanyDetailsSpec extends UnitSpec with MockitoSugar with WithFakeA
         }
         document.title() shouldBe Messages("page.registrationInformation.ReviewCompanyDetails.title")
         document.getElementById("main-heading").text() shouldBe
-          s"${Messages("page.registrationInformation.ReviewCompanyDetails.heading")} ${validModel.businessName}"
+          s"${Messages("page.registrationInformation.ReviewCompanyDetails.heading")}"
         document.body.getElementById("correspondenceAddress-question").text shouldBe
           Messages("page.registrationInformation.ReviewCompanyDetails.correspondenceAddress")
         document.body.getElementById("correspondenceAddress-answer").children().size() shouldBe 6
@@ -79,7 +79,7 @@ class ReviewCompanyDetailsSpec extends UnitSpec with MockitoSugar with WithFakeA
         }
         document.title() shouldBe Messages("page.registrationInformation.ReviewCompanyDetails.title")
         document.getElementById("main-heading").text() shouldBe
-          s"${Messages("page.registrationInformation.ReviewCompanyDetails.heading")} ${validModel.businessName}"
+          s"${Messages("page.registrationInformation.ReviewCompanyDetails.heading")}"
         document.body.getElementById("correspondenceAddress-question").text shouldBe
           Messages("page.registrationInformation.ReviewCompanyDetails.correspondenceAddress")
         document.body.getElementById("correspondenceAddress-answer").children().size() shouldBe 3
