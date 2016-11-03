@@ -30,10 +30,10 @@ import views.html.registrationInformation.ReviewCompanyDetails
 class ReviewCompanyDetailsSpec extends UnitSpec with MockitoSugar with WithFakeApplication with FakeRequestHelper {
 
   val maxAddress = ProvideCorrespondAddressModel("addressline1","addressline2",Some("addressline3"),Some("addressline4"),Some("AB1 1AB"),"GB")
-  val maxContact = ContactDetailsSubscriptionModel("firstname","lastname","01234567890",Some("09876543210"),"hello@world.com")
+  val maxContact = ContactDetailsSubscriptionModel("firstname","lastname",Some("01234567890"),Some("09876543210"),"hello@world.com")
   val maxDetails = ReviewCompanyDetailsModel(validModel,maxAddress,maxContact)
   val minAddress = ProvideCorrespondAddressModel("addressline1","addressline2",None,None,None,"AB")
-  val minContact = ContactDetailsSubscriptionModel("firstname","lastname","01234567890",None,"hello@world.com")
+  val minContact = ContactDetailsSubscriptionModel("firstname","lastname",None,None,"hello@world.com")
   val minDetails = ReviewCompanyDetailsModel(validModel,minAddress,minContact)
   lazy val pageMax = ReviewCompanyDetails(maxDetails)(authorisedFakeRequest)
   lazy val pageMin = ReviewCompanyDetails(minDetails)(authorisedFakeRequest)
@@ -62,8 +62,8 @@ class ReviewCompanyDetailsSpec extends UnitSpec with MockitoSugar with WithFakeA
           Messages("page.registrationInformation.ReviewCompanyDetails.companyContact")
         document.body.getElementById("companyContact-answer").children().size() shouldBe 4
         document.body.getElementById("name").text shouldBe s"${maxContact.firstName} ${maxContact.lastName}"
-        document.body.getElementById("telephonenumber").text shouldBe maxContact.telephoneNumber
-        document.body.getElementById("telephonenumber2").text shouldBe maxContact.telephoneNumber2.get
+        document.body.getElementById("landline").text shouldBe maxContact.telephoneNumber.get
+        document.body.getElementById("mobile").text shouldBe maxContact.telephoneNumber2.get
         document.body.getElementById("email").text shouldBe maxContact.email
         document.getElementById("submit").text() shouldBe Messages("page.registrationInformation.ReviewCompanyDetails.button.continue")
         document.body.getElementById("get-help-action").text shouldBe Messages("common.error.help.text")
@@ -88,9 +88,8 @@ class ReviewCompanyDetailsSpec extends UnitSpec with MockitoSugar with WithFakeA
         document.body.getElementById("countrycode").text shouldBe minAddress.countryCode
         document.body.getElementById("companyContact-question").text shouldBe
           Messages("page.registrationInformation.ReviewCompanyDetails.companyContact")
-        document.body.getElementById("companyContact-answer").children().size() shouldBe 3
+        document.body.getElementById("companyContact-answer").children().size() shouldBe 2
         document.body.getElementById("name").text shouldBe s"${minContact.firstName} ${minContact.lastName}"
-        document.body.getElementById("telephonenumber").text shouldBe minContact.telephoneNumber
         document.body.getElementById("email").text shouldBe minContact.email
         document.getElementById("submit").text() shouldBe Messages("page.registrationInformation.ReviewCompanyDetails.button.continue")
         document.body.getElementById("get-help-action").text shouldBe Messages("common.error.help.text")
