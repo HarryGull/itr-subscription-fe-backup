@@ -32,7 +32,7 @@ class ContactDetailsSubscriptionFormSpec extends UnitSpec {
 
   "Creating a form using a valid model (with telelphone2)" should {
     "return a form with the data specified in the model" in {
-      val model = ContactDetailsSubscriptionModel("Percy", "Montague", "06472 778833", Some("06472 123998"), "harry@wishingwell.com")
+      val model = ContactDetailsSubscriptionModel("Percy", "Montague", Some("06472 778833"), Some("06472 123998"), "harry@wishingwell.com")
       val form = contactDetailsSubscriptionForm.fill(model)
       form.data("firstName") shouldBe "Percy"
       form.data("lastName") shouldBe "Montague"
@@ -45,7 +45,7 @@ class ContactDetailsSubscriptionFormSpec extends UnitSpec {
 
   "Creating a form using a valid model (no telelphone2)" should {
     "return a form with the data specified in the model" in {
-      val model = ContactDetailsSubscriptionModel("Percy", "Montague", "06472 778833", None, "harry@wishingwell.com")
+      val model = ContactDetailsSubscriptionModel("Percy", "Montague", Some("06472 778833"), None, "harry@wishingwell.com")
       val form = contactDetailsSubscriptionForm.fill(model)
       form.data("firstName") shouldBe "Percy"
       form.data("lastName") shouldBe "Montague"
@@ -100,7 +100,7 @@ class ContactDetailsSubscriptionFormSpec extends UnitSpec {
     }
   }
 
-  "Creating a form using an invalid post" when {
+  "Creating a form using a valid post" when {
     "supplied with no data for telephoneNumber" should {
       lazy val form = contactDetailsSubscriptionForm.bind(Map(
         "firstName" -> "Tim",
@@ -109,15 +109,8 @@ class ContactDetailsSubscriptionFormSpec extends UnitSpec {
         "telephoneNumber2" -> "",
         "email" -> "Test@email.com")
       )
-      "raise form error" in {
-        form.hasErrors shouldBe true
-      }
-      "raise 1 form error" in {
-        form.errors.length shouldBe 1
-        form.errors.head.key shouldBe "telephoneNumber"
-      }
-      "associate the correct error message to the error" in {
-        form.error("telephoneNumber").get.message shouldBe Messages("validation.error.telephoneNumber")
+      "raise no errors" in {
+        form.hasErrors shouldBe false
       }
     }
   }
@@ -180,13 +173,11 @@ class ContactDetailsSubscriptionFormSpec extends UnitSpec {
       "raise form error" in {
         form.hasErrors shouldBe true
       }
-      "raise 2 form errors" in {
-        form.errors.length shouldBe 2
-        form.errors.head.key shouldBe "telephoneNumber"
-        form.errors(1).key shouldBe "email"
+      "raise 1 form errors" in {
+        form.errors.length shouldBe 1
+        form.errors.head.key shouldBe "email"
       }
       "associate the correct error message to the error" in {
-        form.error("telephoneNumber").get.message shouldBe Messages("validation.error.telephoneNumber")
         form.error("email").get.message shouldBe Messages("validation.error.email")
       }
     }
@@ -204,16 +195,14 @@ class ContactDetailsSubscriptionFormSpec extends UnitSpec {
       "raise form error" in {
         form.hasErrors shouldBe true
       }
-      "raise 3 form errors" in {
-        form.errors.length shouldBe 3
+      "raise 2 form errors" in {
+        form.errors.length shouldBe 2
         form.errors.head.key shouldBe "firstName"
         form.errors(1).key shouldBe "lastName"
-        form.errors(2).key shouldBe "telephoneNumber"
       }
       "associate the correct error message to the error" in {
         form.error("firstName").get.message shouldBe Messages("error.required")
         form.error("lastName").get.message shouldBe Messages("error.required")
-        form.error("telephoneNumber").get.message shouldBe Messages("validation.error.telephoneNumber")
       }
     }
   }

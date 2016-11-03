@@ -23,12 +23,12 @@ import uk.gov.hmrc.play.test.UnitSpec
 class SubscriptionModelSpec extends UnitSpec {
 
   val maxProvideCorrespondAddressModel = ProvideCorrespondAddressModel("line1","line2",Some("line3"),Some("line4"),Some("AB1 1AB"),"GB")
-  val maxContactDetailsSubscriptionModel = ContactDetailsSubscriptionModel("first","last","01234567890",Some("09876543210"),"email@email.com")
+  val maxContactDetailsSubscriptionModel = ContactDetailsSubscriptionModel("first","last",Some("01234567890"),Some("09876543210"),"email@email.com")
   val maxIntermediateCorrespondenceDetailsModel = IntermediateCorrespondenceDetailsModel(maxProvideCorrespondAddressModel,maxContactDetailsSubscriptionModel)
   val maxIntermediateSubscriptionTypeModel = IntermediateSubscriptionTypeModel(maxIntermediateCorrespondenceDetailsModel)
 
   val minProvideCorrespondAddressModel = ProvideCorrespondAddressModel("line1","line2",None,None,None,"AA")
-  val minContactDetailsSubscriptionModel = ContactDetailsSubscriptionModel("first","last","01234567890",None,"email@email.com")
+  val minContactDetailsSubscriptionModel = ContactDetailsSubscriptionModel("first","last",Some("01234567890"),None,"email@email.com")
   val minIntermediateCorrespondenceDetailsModel = IntermediateCorrespondenceDetailsModel(minProvideCorrespondAddressModel,minContactDetailsSubscriptionModel)
   val minIntermediateSubscriptionTypeModel = IntermediateSubscriptionTypeModel(minIntermediateCorrespondenceDetailsModel)
 
