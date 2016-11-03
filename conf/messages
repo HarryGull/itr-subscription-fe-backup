@@ -74,8 +74,8 @@ page.registrationInformation.ContactDetailsSubscription.heading= Who should we c
 page.registrationInformation.ContactDetailsSubscription.title= Contact details subscription
 page.registrationInformation.ContactDetailsSubscription.firstName.label=First Name
 page.registrationInformation.ContactDetailsSubscription.lastName.label=Last Name
-page.registrationInformation.ContactDetailsSubscription.telephoneNumber.label= Telephone Number
-page.registrationInformation.ContactDetailsSubscription.telephoneNumber2.label= Telephone Number 2 (optional)
+page.registrationInformation.ContactDetailsSubscription.telephoneNumber.label= Landline (optional)
+page.registrationInformation.ContactDetailsSubscription.telephoneNumber2.label= Mobile (optional)
 page.registrationInformation.ContactDetailsSubscription.email.label= Email
 
 # Review Company Details

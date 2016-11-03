@@ -23,9 +23,11 @@
                     </span></td>
                     <td id="companyContact-answer">
                         <p id="name">@reviewCompanyDetails.contactDetails.firstName @reviewCompanyDetails.contactDetails.lastName</p>
-                        <p id="telephonenumber">@reviewCompanyDetails.contactDetails.telephoneNumber</p>
+                        @if(reviewCompanyDetails.contactDetails.telephoneNumber.isDefined) {
+                        <p id="landline">@reviewCompanyDetails.contactDetails.telephoneNumber</p>
+                        }
                         @if(reviewCompanyDetails.contactDetails.telephoneNumber2.isDefined) {
-                        <p id="telephonenumber2">@reviewCompanyDetails.contactDetails.telephoneNumber2.get</p>
+                        <p id="mobile">@reviewCompanyDetails.contactDetails.telephoneNumber2.get</p>
                         }
                         <p id="email">@reviewCompanyDetails.contactDetails.email</p>
                     </td>

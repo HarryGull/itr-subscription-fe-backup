@@ -20,7 +20,7 @@ import play.api.libs.json.Json
 
 case class ContactDetailsSubscriptionModel(firstName : String,
                                          lastName : String,
-                                         telephoneNumber : String,
+                                         telephoneNumber : Option[String],
                                          telephoneNumber2 : Option[String],
                                          email : String)
 

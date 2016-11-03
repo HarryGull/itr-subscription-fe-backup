@@ -48,9 +48,9 @@ class ContactDetailsSubscriptionControllerSpec extends UnitSpec with MockitoSuga
     override lazy val registeredBusinessCustomerService = mockRegisteredBusinessCustomerService
   }
 
-  val model = ContactDetailsSubscriptionModel("Dagumi","Fujiwara","86",Some("86"),"dagumi.tofuboy@akinaSpeedStars.com")
+  val model = ContactDetailsSubscriptionModel("Dagumi","Fujiwara",Some("86"),Some("86"),"dagumi.tofuboy@akinaSpeedStars.com")
   val cacheMap: CacheMap = CacheMap("", Map("" -> Json.toJson(model)))
-  val keyStoreSavedContactDetailsSubscription = ContactDetailsSubscriptionModel("Dagumi","Fujiwara","86",Some("86"),"dagumi.tofuboy@akinaSpeedStars.com")
+  val keyStoreSavedContactDetailsSubscription = ContactDetailsSubscriptionModel("Dagumi","Fujiwara",Some("86"),Some("86"),"dagumi.tofuboy@akinaSpeedStars.com")
 
   implicit val hc = HeaderCarrier()
 
