@@ -17,6 +17,20 @@
             <table>
                 <tbody>
                 <tr>
+                    <td><span class="form-title heading-small" id="companyContact-question">
+                        @Messages("page.registrationInformation.ReviewCompanyDetails.companyContact")
+                    </span></td>
+                    <td id="companyContact-answer">
+                        <p id="name">@reviewCompanyDetails.contactDetails.firstName @reviewCompanyDetails.contactDetails.lastName</p>
+                        <p id="telephonenumber">@reviewCompanyDetails.contactDetails.telephoneNumber</p>
+                        @if(reviewCompanyDetails.contactDetails.telephoneNumber2.isDefined) {
+                        <p id="telephonenumber2">@reviewCompanyDetails.contactDetails.telephoneNumber2.get</p>
+                        }
+                        <p id="email">@reviewCompanyDetails.contactDetails.email</p>
+                    </td>
+                    <td><a href="@controllers.routes.ContactDetailsSubscriptionController.show().url" id="companyContact-link">Change</a></td>
+                </tr>
+                <tr>
                     <td><span class="form-title heading-small" id="correspondenceAddress-question">
                         @Messages("page.registrationInformation.ReviewCompanyDetails.correspondenceAddress")
                     </span></td>
@@ -35,20 +49,6 @@
                         <p id="countrycode">@reviewCompanyDetails.correspondenceAddress.countryCode</p>
                     </td>
                     <td><a href="@controllers.routes.ProvideCorrespondAddressController.show().url" id="correspondenceAddress-link">Change</a></td>
-                </tr>
-                <tr>
-                    <td><span class="form-title heading-small" id="companyContact-question">
-                        @Messages("page.registrationInformation.ReviewCompanyDetails.companyContact")
-                    </span></td>
-                    <td id="companyContact-answer">
-                        <p id="name">@reviewCompanyDetails.contactDetails.firstName @reviewCompanyDetails.contactDetails.lastName</p>
-                        <p id="telephonenumber">@reviewCompanyDetails.contactDetails.telephoneNumber</p>
-                        @if(reviewCompanyDetails.contactDetails.telephoneNumber2.isDefined) {
-                        <p id="telephonenumber2">@reviewCompanyDetails.contactDetails.telephoneNumber2.get</p>
-                        }
-                        <p id="email">@reviewCompanyDetails.contactDetails.email</p>
-                    </td>
-                    <td><a href="@controllers.routes.ContactDetailsSubscriptionController.show().url" id="companyContact-link">Change</a></td>
                 </tr>
                 </tbody>
             </table>
