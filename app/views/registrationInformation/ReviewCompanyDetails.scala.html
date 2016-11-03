@@ -10,13 +10,14 @@
 <div class="grid-row">
     <div class="column-two-thirds">
 
-        <h1 id="main-heading" class="form-title heading-xlarge">@Messages("page.registrationInformation.ReviewCompanyDetails.heading")
-            @reviewCompanyDetails.registrationReviewDetails.businessName</h1>
+        <h1 id="main-heading" class="form-title heading-xlarge">@Messages("page.registrationInformation.ReviewCompanyDetails.heading")</h1>
+
+            <p class="form-hint">@Messages("page.registrationInformation.ReviewCompanyDetails.hint")</p>
 
         <div class="form-group">
             <table>
                 <tbody>
-                <tr>
+                <tr class="divider--top">
                     <td><span class="form-title heading-small" id="companyContact-question">
                         @Messages("page.registrationInformation.ReviewCompanyDetails.companyContact")
                     </span></td>

@@ -79,7 +79,8 @@ page.registrationInformation.ContactDetailsSubscription.telephoneNumber2.label= 
 page.registrationInformation.ContactDetailsSubscription.email.label= Email
 
 # Review Company Details
-page.registrationInformation.ReviewCompanyDetails.heading= Confirm the contact details for
+page.registrationInformation.ReviewCompanyDetails.heading= Confirm the contact details for your company
+page.registrationInformation.ReviewCompanyDetails.hint= This should be the company you wish to register for this service.
 page.registrationInformation.ReviewCompanyDetails.title= Review company details
 page.registrationInformation.ReviewCompanyDetails.button.continue= Confirm and register
 page.registrationInformation.ReviewCompanyDetails.correspondenceAddress= Correspondence address
