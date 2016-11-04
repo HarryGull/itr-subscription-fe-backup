@@ -64,7 +64,6 @@ class FeedbackControllerSpec extends UnitSpec with MockitoSugar with WithFakeApp
     override def contactFormReferer(implicit request: Request[AnyContent]): String = request.headers.get(REFERER).getOrElse("")
 
     override val applicationConfig: AppConfig = new AppConfig {
-      override val assetsPrefix: String = ""
       override val reportAProblemNonJSUrl: String = ""
       override val contactFrontendPartialBaseUrl: String = ""
       override val analyticsHost: String = ""
