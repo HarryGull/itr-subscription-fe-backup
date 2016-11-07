@@ -27,6 +27,7 @@ common.error.missingField= This field is required
 validation.error.optionaladdresssline=Use fewer than 28 characters in the address line
 validation.error.mandatoryaddresssline=Address line must be entered
 validation.error.telephoneNumber=Enter a valid telephone number
+validation.error.email=Enter a valid email address
 validation.error.postcode=Enter a valid postcode
 validation.error.countryCode=Enter a country
 validation.error.linefouraddresssline=Use fewer than 18 characters in the address line
@@ -72,11 +73,11 @@ page.address.country.select = Select one country
 #Contact Details Subscription
 page.registrationInformation.ContactDetailsSubscription.heading= Who should we contact?
 page.registrationInformation.ContactDetailsSubscription.title= Contact details subscription
-page.registrationInformation.ContactDetailsSubscription.firstName.label=First Name
-page.registrationInformation.ContactDetailsSubscription.lastName.label=Last Name
-page.registrationInformation.ContactDetailsSubscription.telephoneNumber.label= Telephone Number
-page.registrationInformation.ContactDetailsSubscription.telephoneNumber2.label= Telephone Number 2 (optional)
-page.registrationInformation.ContactDetailsSubscription.email.label= Email
+page.registrationInformation.ContactDetailsSubscription.forename.label=First Name
+page.registrationInformation.ContactDetailsSubscription.surname.label=Last Name
+page.registrationInformation.ContactDetailsSubscription.telephoneNumber.label= Landline (optional)
+page.registrationInformation.ContactDetailsSubscription.mobileNumber.label= Mobile (optional)
+page.registrationInformation.ContactDetailsSubscription.email.label= Email address
 
 # Review Company Details
 page.registrationInformation.ReviewCompanyDetails.heading= Confirm the contact details for

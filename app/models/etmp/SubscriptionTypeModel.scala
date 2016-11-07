@@ -69,7 +69,7 @@ object SubscriptionTypeModel {
 
   implicit val cdreads: Reads[ContactDetailsModel] = (
     (__ \"telephoneNumber").readNullable[String] and
-      (__ \"telephoneNumber2").readNullable[String] and
+      (__ \"mobileNumber").readNullable[String] and
       (__ \"faxNumber").readNullable[String] and
       (__ \"email").readNullable[String]
     )(ContactDetailsModel.apply _)
@@ -77,8 +77,8 @@ object SubscriptionTypeModel {
   implicit val cdwrites = Json.writes[ContactDetailsModel]
 
   implicit val cnreads: Reads[ContactNameModel] = (
-    (__ \"firstName").read[String] and
-      (__ \"lastName").readNullable[String]
+    (__ \"forename").read[String] and
+      (__ \"surname").readNullable[String]
     )(ContactNameModel.apply _)
 
   implicit val cnwrites = Json.writes[ContactNameModel]

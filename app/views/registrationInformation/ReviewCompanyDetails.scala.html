@@ -41,10 +41,10 @@
                         @Messages("page.registrationInformation.ReviewCompanyDetails.companyContact")
                     </span></td>
                     <td id="companyContact-answer">
-                        <p id="name">@reviewCompanyDetails.contactDetails.firstName @reviewCompanyDetails.contactDetails.lastName</p>
+                        <p id="name">@reviewCompanyDetails.contactDetails.forename @reviewCompanyDetails.contactDetails.surname</p>
                         <p id="telephonenumber">@reviewCompanyDetails.contactDetails.telephoneNumber</p>
-                        @if(reviewCompanyDetails.contactDetails.telephoneNumber2.isDefined) {
-                        <p id="telephonenumber2">@reviewCompanyDetails.contactDetails.telephoneNumber2.get</p>
+                        @if(reviewCompanyDetails.contactDetails.mobileNumber.isDefined) {
+                        <p id="mobilenumber">@reviewCompanyDetails.contactDetails.mobileNumber.get</p>
                         }
                         <p id="email">@reviewCompanyDetails.contactDetails.email</p>
                     </td>

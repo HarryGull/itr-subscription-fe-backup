@@ -30,7 +30,7 @@ object KeystoreHelper extends MockitoSugar {
 
   lazy val mockKeystoreConnector = mock[KeystoreConnector]
   val provideModel = ProvideCorrespondAddressModel("test1","test2",Some("test3"),Some("test4"),Some("test5"),"test6")
-  val contactDetailsModel = ContactDetailsSubscriptionModel("test1","test2","test3",Some("test4"),"test5")
+  val contactDetailsModel = ContactDetailsSubscriptionModel("test1","test2",Some("test3"),Some("test4"),"test5")
 
   def allDetails(): Unit = {
     withRegDetails()

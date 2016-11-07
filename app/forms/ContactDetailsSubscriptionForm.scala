@@ -23,10 +23,10 @@ import play.api.data.Forms._
 object ContactDetailsSubscriptionForm {
   val contactDetailsSubscriptionForm = Form(
     mapping(
-      "firstName" -> nonEmptyText,
-      "lastName" -> nonEmptyText,
-      "telephoneNumber" -> utils.Validation.telephoneNumberCheck,
-      "telephoneNumber2" -> optional(utils.Validation.optionalTelephoneNumberCheck),
+      "forename" -> nonEmptyText,
+      "surname" -> nonEmptyText,
+      "telephoneNumber" -> optional(utils.Validation.telephoneNumberCheck),
+      "mobileNumber" -> optional(utils.Validation.telephoneNumberCheck),
       "email" -> utils.Validation.emailCheck
     )(ContactDetailsSubscriptionModel.apply)(ContactDetailsSubscriptionModel.unapply)
   )

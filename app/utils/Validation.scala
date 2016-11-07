@@ -127,9 +127,9 @@ object Validation {
   }
 
   def telephoneNumberCheck: Mapping[String] = {
-    val validTelephoneNumberLine = """^[0-9\(\)\+ ]{0,23}\S$""".r
+    val validTelephoneNumberLine = """^[A-Z0-9 )/(*#-]{1,24}$""".r
     val telephoneNumberCheckConstraint: Constraint[String] =
-      Constraint("constraints.telephoneNumber")({
+      Constraint("contraints.telephoneNumber")({
         text =>
           val error = text match {
             case validTelephoneNumberLine() => Nil

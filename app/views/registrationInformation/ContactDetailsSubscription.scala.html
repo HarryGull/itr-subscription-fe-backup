@@ -18,23 +18,23 @@
         <div class="form-group">
 
             @input(
-            contactDetailsSubscriptionForm("firstName"),
+            contactDetailsSubscriptionForm("forename"),
             '_divClass -> "form-label",
-            '_labelId -> "label-firstName",
-            '_label -> Messages("page.registrationInformation.ContactDetailsSubscription.firstName.label"),
+            '_labelId -> "label-forename",
+            '_label -> Messages("page.registrationInformation.ContactDetailsSubscription.forename.label"),
             '_maxlength -> "35",
             '_inputClass -> "input--medium input--cleared",
-            'id -> "firstName"
+            'id -> "forename"
             )
 
             @input(
-            contactDetailsSubscriptionForm("lastName"),
+            contactDetailsSubscriptionForm("surname"),
             '_divClass -> "form-label",
-            '_labelId -> "label-lastName",
-            '_label -> Messages("page.registrationInformation.ContactDetailsSubscription.lastName.label"),
+            '_labelId -> "label-surname",
+            '_label -> Messages("page.registrationInformation.ContactDetailsSubscription.surname.label"),
             '_maxlength -> "35",
             '_inputClass -> "input--medium input--cleared",
-            'id -> "lastName"
+            'id -> "surname"
             )
 
             @input(
@@ -48,13 +48,13 @@
             )
 
             @input(
-            contactDetailsSubscriptionForm("telephoneNumber2"),
+            contactDetailsSubscriptionForm("mobileNumber"),
             '_divClass -> "form-label",
-            '_labelId -> "label-telephoneNumber2",
-            '_label -> Messages("page.registrationInformation.ContactDetailsSubscription.telephoneNumber2.label"),
+            '_labelId -> "label-mobileNumber",
+            '_label -> Messages("page.registrationInformation.ContactDetailsSubscription.mobileNumber.label"),
             '_maxlength -> "24",
             '_inputClass -> "input--medium input--cleared",
-            'id -> "telephoneNumber2"
+            'id -> "mobileNumber"
             )
 
             @input(

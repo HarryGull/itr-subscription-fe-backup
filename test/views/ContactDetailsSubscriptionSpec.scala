@@ -34,7 +34,7 @@ class ContactDetailsSubscriptionSpec extends UnitSpec with WithFakeApplication w
     "Verify that the contact details page contains the correct elements when a valid ContactDetailsSubscriptionModel is passed" in {
 
       val contactDetailsSubscriptionModel = new ContactDetailsSubscriptionModel(
-        "Jeff","Stelling","01384 555678", Some("01783432876"), "Jeff.Stelling@HMRC.gov.uk"
+        "Jeff","Stelling",Some("01384 555678"), Some("01783432876"), "Jeff.Stelling@HMRC.gov.uk"
       )
       lazy val form = contactDetailsSubscriptionForm.fill(contactDetailsSubscriptionModel)
       lazy val page = ContactDetailsSubscription(form)(authorisedFakeRequest)
@@ -42,52 +42,52 @@ class ContactDetailsSubscriptionSpec extends UnitSpec with WithFakeApplication w
 
       document.title() shouldBe Messages("page.registrationInformation.ContactDetailsSubscription.title")
       document.getElementById("main-heading").text() shouldBe Messages("page.registrationInformation.ContactDetailsSubscription.heading")
-      document.getElementById("label-firstName").text() shouldBe Messages("page.registrationInformation.ContactDetailsSubscription.firstName.label")
-      document.getElementById("label-lastName").text() shouldBe Messages("page.registrationInformation.ContactDetailsSubscription.lastName.label")
+      document.getElementById("label-forename").text() shouldBe Messages("page.registrationInformation.ContactDetailsSubscription.forename.label")
+      document.getElementById("label-surname").text() shouldBe Messages("page.registrationInformation.ContactDetailsSubscription.surname.label")
       document.getElementById("label-telephoneNumber").text() shouldBe Messages("page.registrationInformation.ContactDetailsSubscription.telephoneNumber.label")
-      document.getElementById("label-telephoneNumber2").text() shouldBe
-        Messages("page.registrationInformation.ContactDetailsSubscription.telephoneNumber2.label")
+      document.getElementById("label-mobileNumber").text() shouldBe
+        Messages("page.registrationInformation.ContactDetailsSubscription.mobileNumber.label")
       document.getElementById("label-email").text() shouldBe Messages("page.registrationInformation.ContactDetailsSubscription.email.label")
       document.getElementById("next").text() shouldBe Messages("common.button.continue")
     }
 
     "Verify that the contact details page contains the correct elements when a valid (empty) ContactDetailsSubscriptionModel is passed" in {
 
-      val emptyForm = contactDetailsSubscriptionForm.fill(new ContactDetailsSubscriptionModel("", "" , "", None, ""))
+      val emptyForm = contactDetailsSubscriptionForm.fill(new ContactDetailsSubscriptionModel("", "" , Some(""), None, ""))
       lazy val page = ContactDetailsSubscription(emptyForm)(authorisedFakeRequest)
       lazy val document = Jsoup.parse(page.body)
 
       document.title() shouldBe Messages("page.registrationInformation.ContactDetailsSubscription.title")
       document.getElementById("main-heading").text() shouldBe Messages("page.registrationInformation.ContactDetailsSubscription.heading")
-      document.getElementById("label-firstName").text() shouldBe Messages("page.registrationInformation.ContactDetailsSubscription.firstName.label")
-      document.getElementById("label-lastName").text() shouldBe Messages("page.registrationInformation.ContactDetailsSubscription.lastName.label")
+      document.getElementById("label-forename").text() shouldBe Messages("page.registrationInformation.ContactDetailsSubscription.forename.label")
+      document.getElementById("label-surname").text() shouldBe Messages("page.registrationInformation.ContactDetailsSubscription.surname.label")
       document.getElementById("label-telephoneNumber").text() shouldBe Messages("page.registrationInformation.ContactDetailsSubscription.telephoneNumber.label")
-      document.getElementById("label-telephoneNumber2").text() shouldBe
-        Messages("page.registrationInformation.ContactDetailsSubscription.telephoneNumber2.label")
+      document.getElementById("label-mobileNumber").text() shouldBe
+        Messages("page.registrationInformation.ContactDetailsSubscription.mobileNumber.label")
       document.getElementById("label-email").text() shouldBe Messages("page.registrationInformation.ContactDetailsSubscription.email.label")
       document.getElementById("next").text() shouldBe Messages("common.button.continue")
     }
 
     "Verify that the proposed investment page contains the correct elements (error elements) when an invalid ContactDetailsSubscriptionModel is submitted" in {
 
-      val emptyForm = contactDetailsSubscriptionForm.bind(Map("firstname" -> "", "lastname" -> "", "telephone" -> "T", "telephone2" -> "", "email" -> ""))
+      val emptyForm = contactDetailsSubscriptionForm.bind(Map("forename" -> "", "surname" -> "", "telephoneNumber" -> "+T", "mobileNumber" -> "", "email" -> ""))
       lazy val emptyPage = ContactDetailsSubscription(emptyForm)(authorisedFakeRequest)
       lazy val document = Jsoup.parse(emptyPage.body)
 
       document.title() shouldBe Messages("page.registrationInformation.ContactDetailsSubscription.title")
       document.getElementById("main-heading").text() shouldBe Messages("page.registrationInformation.ContactDetailsSubscription.heading")
-      document.getElementById("label-firstName").text() contains Messages("page.registrationInformation.ContactDetailsSubscription.firstName.label")
-      document.getElementById("label-lastName").text() contains Messages("page.registrationInformation.ContactDetailsSubscription.lastName.label")
+      document.getElementById("label-forename").text() contains Messages("page.registrationInformation.ContactDetailsSubscription.forename.label")
+      document.getElementById("label-surname").text() contains Messages("page.registrationInformation.ContactDetailsSubscription.surname.label")
       document.getElementById("label-telephoneNumber").text() contains Messages("page.registrationInformation.ContactDetailsSubscription.telephoneNumber.label")
-      document.getElementById("label-telephoneNumber2").text() contains
-        Messages("page.registrationInformation.ContactDetailsSubscription.telephoneNumber2.label")
+      document.getElementById("label-mobileNumber").text() contains
+        Messages("page.registrationInformation.ContactDetailsSubscription.mobileNumber.label")
       document.getElementById("label-email").text() contains Messages("page.registrationInformation.ContactDetailsSubscription.email.label")
       document.getElementById("next").text() shouldBe Messages("common.button.continue")
 //      document.getElementById("error-summary-display").hasClass("error-summary--show")
 
-      document.getElementById("firstName-error-summary").text should include(Messages("common.error.missingField"))
-      document.getElementById("lastName-error-summary").text should include(Messages("common.error.missingField"))
-      document.getElementById("telephoneNumber-error-summary").text should include(Messages("common.error.missingField"))
+      document.getElementById("forename-error-summary").text should include(Messages("common.error.missingField"))
+      document.getElementById("surname-error-summary").text should include(Messages("common.error.missingField"))
+      document.getElementById("telephoneNumber-error-summary").text should include(Messages("validation.error.telephoneNumber"))
       document.getElementById("email-error-summary").text should include(Messages("validation.error.email"))
 
 
