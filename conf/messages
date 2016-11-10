@@ -28,9 +28,10 @@ validation.error.optionaladdresssline=Use fewer than 28 characters in the addres
 validation.error.mandatoryaddresssline=Address line must be entered
 validation.error.telephoneNumber=Enter a valid telephone number
 validation.error.postcode=Enter a valid postcode
-validation.error.countryCode=Enter a country
+validation.error.countryCode=Country must be entered
 validation.error.linefouraddresssline=Use fewer than 18 characters in the address line
-validation.error.countrypostcode=Postcode must be entered if United Kingdom is selected for country
+validation.error.countrypostcode=Postcode must be entered if country selected is United Kingdom
+validation.error.email=Enter a valid email address
 
 
 #Welcome page
