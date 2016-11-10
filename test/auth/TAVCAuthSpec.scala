@@ -17,6 +17,8 @@
 package auth
 
 import java.net.URLEncoder
+
+import controllers.routes
 import play.api.test.FakeRequest
 import play.api.http.Status
 import uk.gov.hmrc.play.frontend.auth.AuthenticationProviderIds
@@ -53,7 +55,7 @@ class TAVCAuthSpec extends UnitSpec with WithFakeApplication {
       val ggw=new GovernmentGatewayProvider(MockConfig.introductionUrl,MockConfig.ggSignInUrl)
       val timeoutHandler = ggw.handleSessionTimeout(fakeRequest)
       status(timeoutHandler) shouldBe SEE_OTHER
-      redirectLocation(timeoutHandler) shouldBe Some("/investment-tax-relief-subscription/timeout")
+      redirectLocation(timeoutHandler) shouldBe Some(routes.TimeoutController.timeout().url)
     }
   }
 
