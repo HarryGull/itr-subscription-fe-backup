@@ -36,7 +36,7 @@ validation.error.email=Enter a valid email address
 
 #Welcome page
 page.introduction.welcome.title=WelcomeSubscription
-page.introduction.welcome.heading=Get tax relief for your investors - Subscription
+page.introduction.welcome.heading=Apply for Enterprise Investment Scheme - Subscription
 page.introduction.welcome.description.one=If you have a small or medium-sized company the government can help it grow by offering tax relief to your investors.
 page.introduction.welcome.description.two=This service lets you:
 page.introduction.welcome.bullet.learn=learn about tax relief schemes

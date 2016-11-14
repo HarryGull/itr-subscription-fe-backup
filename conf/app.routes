@@ -2,35 +2,26 @@
 
 GET         /assets/*file            controllers.Assets.at(path="/public", file)
 
-#Start route
 ########################################################
-GET         /                        controllers.StartController.start
-########################################################
-GET         /timeout                                controllers.TimeoutController.timeout
 
-GET        /                                        controllers.StartController.start
-GET        /introduction                            controllers.IntroductionController.show
-POST       /introduction                            controllers.IntroductionController.submit
 
-GET        /confirm-correspondence-address          controllers.ConfirmCorrespondAddressController.show
-POST       /confirm-correspondence-address          controllers.ConfirmCorrespondAddressController.submit
+GET         /                                           controllers.ConfirmCorrespondAddressController.redirect
 
-GET        /provide-correspondence-address          controllers.ProvideCorrespondAddressController.show
-POST       /provide-correspondence-address          controllers.ProvideCorrespondAddressController.submit
+GET         /confirm-correspondence-address             controllers.ConfirmCorrespondAddressController.show
+POST        /confirm-correspondence-address             controllers.ConfirmCorrespondAddressController.submit
 
-GET        /contact-details-subscription            controllers.ContactDetailsSubscriptionController.show
-POST       /contact-details-subscription            controllers.ContactDetailsSubscriptionController.submit
+GET         /provide-correspondence-address             controllers.ProvideCorrespondAddressController.show
+POST        /provide-correspondence-address             controllers.ProvideCorrespondAddressController.submit
 
-GET        /review-company-details                  controllers.ReviewCompanyDetailsController.show
-POST       /review-company-details                  controllers.ReviewCompanyDetailsController.submit
+GET         /contact-details-subscription               controllers.ContactDetailsSubscriptionController.show
+POST        /contact-details-subscription               controllers.ContactDetailsSubscriptionController.submit
 
-#Session Timeout route
-#####################################################################################################################
-GET         /session-timeout         controllers.TimeoutController.timeout
-GET         /restart                 controllers.IntroductionController.restart
-#####################################################################################################################
+GET         /review-company-details                     controllers.ReviewCompanyDetailsController.show
+POST        /review-company-details                     controllers.ReviewCompanyDetailsController.submit
+
+GET         /session-timeout                            controllers.TimeoutController.timeout
 
 #Feedback routes
-GET         /feedback               controllers.feedback.FeedbackController.show
-POST        /feedback               controllers.feedback.FeedbackController.submit
-GET         /thankyou               controllers.feedback.FeedbackController.thankyou
+GET         /feedback                                   controllers.feedback.FeedbackController.show
+POST        /feedback                                   controllers.feedback.FeedbackController.submit
+GET         /thankyou                                   controllers.feedback.FeedbackController.thankyou

@@ -21,8 +21,9 @@ import common.{Constants, KeystoreKeys}
 import config.{FrontendAppConfig, FrontendAuthConnector}
 import connectors.KeystoreConnector
 import forms.ConfirmCorrespondAddressForm._
-import models.{AddressModel, ProvideCorrespondAddressModel, CompanyRegistrationReviewDetailsModel, ConfirmCorrespondAddressModel}
+import models.{AddressModel, CompanyRegistrationReviewDetailsModel, ConfirmCorrespondAddressModel, ProvideCorrespondAddressModel}
 import play.api.libs.json.Json
+import play.api.mvc.{Action, AnyContent}
 import services.RegisteredBusinessCustomerService
 import uk.gov.hmrc.play.frontend.controller.FrontendController
 import uk.gov.hmrc.play.http.HeaderCarrier
@@ -40,6 +41,10 @@ object ConfirmCorrespondAddressController extends ConfirmCorrespondAddressContro
 trait ConfirmCorrespondAddressController extends FrontendController with AuthorisedForTAVC {
 
   val keyStoreConnector: KeystoreConnector
+
+  def redirect(): Action[AnyContent] = Authorised.async { implicit user => implicit request =>
+    Future.successful(Redirect(routes.ConfirmCorrespondAddressController.show().url))
+  }
 
   private def getConfirmCorrespondenceModels(implicit headerCarrier: HeaderCarrier) : Future[(Option[ConfirmCorrespondAddressModel],
     CompanyRegistrationReviewDetailsModel)] = {
