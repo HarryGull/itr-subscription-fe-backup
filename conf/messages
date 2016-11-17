@@ -87,6 +87,11 @@ page.registrationInformation.ReviewCompanyDetails.button.continue= Continue
 page.registrationInformation.ReviewCompanyDetails.correspondenceAddress= Correspondence address
 page.registrationInformation.ReviewCompanyDetails.companyContact= Company contact
 
+#signout page
+page.signout.SignedOut.title = You''re signed out
+page.signout.SignedOut.header = You''re signed out
+page.signout.SignedOut.explore = Explore GOV.UK
+
 ## Feedback ##
 feedback.title = Feedback
 

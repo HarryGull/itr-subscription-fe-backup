@@ -25,3 +25,7 @@ GET         /session-timeout                            controllers.TimeoutContr
 GET         /feedback                                   controllers.feedback.FeedbackController.show
 POST        /feedback                                   controllers.feedback.FeedbackController.submit
 GET         /thankyou                                   controllers.feedback.FeedbackController.thankyou
+
+# Sign out route
+GET        /sign-out                                    controllers.SignOutController.signout
+GET        /signed-out                                  controllers.SignOutController.show
