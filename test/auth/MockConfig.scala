@@ -30,4 +30,6 @@ object MockConfig extends AppConfig {
   override val submissionUrl: String = "/investment-tax-relief/"
   override val contactFrontendPartialBaseUrl: String = ""
   override val contactFormServiceIdentifier: String = ""
+  override val ggSignOutUrl: String = "/gg/sign-out"
+  override val signOutPageUrl: String = "/signout"
 }
