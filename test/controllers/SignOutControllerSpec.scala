@@ -21,9 +21,14 @@ import config.{FrontendAppConfig, FrontendAuthConnector}
 import helpers.FakeRequestHelper
 import org.scalatest.mock.MockitoSugar
 import helpers.AuthHelper._
+import play.api.mvc.{Action, Request, Result}
 import play.api.test.Helpers._
 import services.RegisteredBusinessCustomerService
+import uk.gov.hmrc.passcode.authentication.PlayRequestTypes._
+import uk.gov.hmrc.play.frontend.auth.AuthContext
 import uk.gov.hmrc.play.test.{UnitSpec, WithFakeApplication}
+
+import scala.concurrent.Future
 
 
 class SignOutControllerSpec extends UnitSpec with FakeRequestHelper with MockitoSugar with WithFakeApplication {
@@ -32,6 +37,9 @@ class SignOutControllerSpec extends UnitSpec with FakeRequestHelper with Mockito
     override lazy val applicationConfig = MockConfig
     override lazy val authConnector = MockAuthConnector
     override lazy val registeredBusinessCustomerService = mockRegisteredBusinessCustomerService
+    override def withVerifiedPasscode(body: => Future[Result])
+                                     (implicit request: Request[_], user: AuthContext): Future[Result] = body
+    override def PasscodeAuthenticatedActionAsync(body: => AsyncPlayRequest) = Action.async(body)
   }
 
   "SignOutController" should {

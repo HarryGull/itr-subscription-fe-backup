@@ -72,7 +72,8 @@ package object auth extends MockitoSugar {
       SessionKeys.sessionId -> s"session-${UUID.randomUUID()}",
       SessionKeys.lastRequestTimestamp -> DateTimeUtils.now.getMillis.toString,
       SessionKeys.token -> "ANYOLDTOKEN",
-      SessionKeys.authProvider -> provider
+      SessionKeys.authProvider -> provider,
+      SessionKeys.otacToken -> "ANYOLDTOKEN"
     )
 
   def timeoutFakeRequest(provider: String = AuthenticationProviderIds.GovernmentGatewayId,
@@ -82,7 +83,8 @@ package object auth extends MockitoSugar {
       SessionKeys.sessionId -> s"session-${UUID.randomUUID()}",
       SessionKeys.lastRequestTimestamp -> DateTimeUtils.now.minusDays(1).getMillis.toString,
       SessionKeys.token -> "ANYOLDTOKEN",
-      SessionKeys.authProvider -> provider
+      SessionKeys.authProvider -> provider,
+      SessionKeys.otacToken -> "ANYOLDTOKEN"
     )
 
 }

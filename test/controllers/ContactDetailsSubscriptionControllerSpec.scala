@@ -16,7 +16,7 @@
 
 package controllers
 
-import auth.{MockAuthConnector, MockConfig}
+import auth.{MockAuthConnector, MockConfig, TAVCUser}
 import common.Encoder._
 import config.{FrontendAppConfig, FrontendAuthConnector}
 import connectors.KeystoreConnector
@@ -29,8 +29,10 @@ import org.scalatest.BeforeAndAfterEach
 import org.scalatest.mock.MockitoSugar
 import org.scalatestplus.play.OneServerPerSuite
 import play.api.libs.json.Json
+import play.api.mvc.{AnyContent, Request, Result}
 import play.api.test.Helpers._
 import uk.gov.hmrc.http.cache.client.CacheMap
+import uk.gov.hmrc.play.frontend.auth.AuthContext
 import uk.gov.hmrc.play.http.HeaderCarrier
 import uk.gov.hmrc.play.test.UnitSpec
 
@@ -46,6 +48,8 @@ class ContactDetailsSubscriptionControllerSpec extends UnitSpec with MockitoSuga
     override lazy val authConnector = MockAuthConnector
     val keyStoreConnector: KeystoreConnector = mockKeyStoreConnector
     override lazy val registeredBusinessCustomerService = mockRegisteredBusinessCustomerService
+    override def withVerifiedPasscode(body: => Future[Result])
+                                     (implicit request: Request[_], user: AuthContext): Future[Result] = body
   }
 
   val model = ContactDetailsSubscriptionModel("Dagumi","Fujiwara",Some("86"),Some("86"),"dagumi.tofuboy@akinaSpeedStars.com")

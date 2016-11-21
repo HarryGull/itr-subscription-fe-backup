@@ -27,7 +27,9 @@ import common.Encoder._
 import org.mockito.Matchers
 import org.mockito.Mockito._
 import org.scalatest.mock.MockitoSugar
+import play.api.mvc.{Request, Result}
 import services.{RegisteredBusinessCustomerService, SubscriptionService}
+import uk.gov.hmrc.play.frontend.auth.AuthContext
 import uk.gov.hmrc.play.http.HttpResponse
 import uk.gov.hmrc.play.test.{UnitSpec, WithFakeApplication}
 
@@ -43,6 +45,8 @@ class ReviewCompanyDetailsControllerSpec extends UnitSpec with FakeRequestHelper
     override val keystoreConnector = mockKeystoreConnector
     override lazy val registeredBusinessCustomerService = mockRegisteredBusinessCustomerService
     override lazy val subscriptionService = mockSubscriptionService
+    override def withVerifiedPasscode(body: => Future[Result])
+                                     (implicit request: Request[_], user: AuthContext): Future[Result] = body
   }
 
   "ReviewCompanyDetailsController" should {

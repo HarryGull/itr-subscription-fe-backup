@@ -37,7 +37,7 @@ trait SignOutController extends FrontendController with AuthorisedForTAVC {
     Future.successful(Redirect(s"${applicationConfig.ggSignOutUrl}?continue=${applicationConfig.signOutPageUrl}"))
   }
 
-  def show(): Action[AnyContent] = Action.async { implicit request =>
+  def show(): Action[AnyContent] = PasscodeAuthenticatedActionAsync { implicit request =>
     Future.successful(Ok(SignedOut()))
   }
 

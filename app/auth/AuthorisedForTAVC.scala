@@ -19,13 +19,14 @@ package auth
 import play.api.mvc.{Action, AnyContent, Request, Result}
 import config.{AppConfig, FrontendAppConfig}
 import services.RegisteredBusinessCustomerService
+import uk.gov.hmrc.passcode.authentication.PasscodeAuthentication
 import uk.gov.hmrc.play.frontend.auth._
 import uk.gov.hmrc.play.frontend.auth.connectors.domain.Accounts
 import uk.gov.hmrc.play.http.HeaderCarrier
 
 import scala.concurrent.Future
 
-trait AuthorisedForTAVC extends Actions {
+trait AuthorisedForTAVC extends Actions with PasscodeAuthentication {
 
   val applicationConfig: AppConfig
   val registeredBusinessCustomerService: RegisteredBusinessCustomerService
@@ -47,8 +48,8 @@ trait AuthorisedForTAVC extends Actions {
   class AuthorisedBy(regime: TaxRegime) {
     def async(action: AsyncUserRequest): Action[AnyContent] = {
       AuthorisedFor(regime, visibilityPredicate).async {
-        authContext: AuthContext => implicit request =>
-          action(TAVCUser(authContext))(request)
+        implicit user => implicit request =>
+          withVerifiedPasscode(action(TAVCUser(user))(request))
       }
     }
     // $COVERAGE-OFF$

@@ -41,7 +41,8 @@ private object AppDependencies {
     "uk.gov.hmrc" %% "play-health" % playHealthVersion,
     "uk.gov.hmrc" %% "play-ui" % playUiVersion,
     "uk.gov.hmrc" %% "http-caching-client" % cachingClientVersion,
-    "uk.gov.hmrc" %% "play-conditional-form-mapping" % playConditionalMappingVersion
+    "uk.gov.hmrc" %% "play-conditional-form-mapping" % playConditionalMappingVersion,
+    "uk.gov.hmrc" %% "passcode-verification" % "3.5.0"
   )
 
   trait TestDependencies {

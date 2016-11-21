@@ -18,6 +18,7 @@ package controllers
 
 import views.html.warnings._
 import play.api.mvc.{Action, AnyContent}
+import uk.gov.hmrc.passcode.authentication.PasscodeAuthentication
 import uk.gov.hmrc.play.frontend.controller.FrontendController
 import uk.gov.hmrc.play.http.{HeaderCarrier, SessionKeys}
 
@@ -25,9 +26,9 @@ import scala.concurrent.Future
 
 object TimeoutController extends TimeoutController
 
-trait TimeoutController extends FrontendController {
+trait TimeoutController extends FrontendController with PasscodeAuthentication {
 
-  def timeout:Action[AnyContent] = Action.async { implicit request =>
+  def timeout:Action[AnyContent] = PasscodeAuthenticatedActionAsync { implicit request =>
     Future.successful(Ok(sessionTimeout()))
   }
 }
