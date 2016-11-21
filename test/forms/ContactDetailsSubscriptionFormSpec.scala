@@ -255,14 +255,11 @@ class ContactDetailsSubscriptionFormSpec extends UnitSpec {
       "mobile" -> "",
       "email" -> "Matt.Divet@hmrcaspire.com")
     )
-    "raise form error" in {
-      form.hasErrors shouldBe true
+    "raise no error" in {
+      form.hasErrors shouldBe false
     }
-    "raise 1 form errors" in {
-      form.errors.length shouldBe 1
-    }
-    "associate the correct error message to the error" in {
-      form.error("landline").get.message shouldBe Messages("validation.error.telephoneNumber")
+    "raise 0 form errors" in {
+      form.errors.length shouldBe 0
     }
 
   }
@@ -275,14 +272,11 @@ class ContactDetailsSubscriptionFormSpec extends UnitSpec {
       "mobile" -> "     ",
       "email" -> "Matt.Divet@hmrcaspire.com")
     )
-    "raise form error" in {
-      form.hasErrors shouldBe true
+    "raise no errors" in {
+      form.hasErrors shouldBe false
     }
-    "raise 1 form errors" in {
-      form.errors.length shouldBe 1
-    }
-    "associate the correct error message to the error" in {
-      form.error("mobile").get.message shouldBe Messages("validation.error.telephoneNumber")
+    "raise 0 form errors" in {
+      form.errors.length shouldBe 0
     }
 
   }
@@ -347,15 +341,11 @@ class ContactDetailsSubscriptionFormSpec extends UnitSpec {
       "mobile" -> "",
       "email" -> "Doug.Perry@digital.hmrc.gov.uk")
     )
-    "raise form error" in {
-      form.hasErrors shouldBe true
+    "raise no error" in {
+      form.hasErrors shouldBe false
     }
-    "raise 1 form error" in {
-      form.errors.length shouldBe 1
-      form.errors.head.key shouldBe "landline"
-    }
-    "associate the correct error message to the error" in {
-      form.error("landline").get.message shouldBe Messages("validation.error.telephoneNumber")
+    "raise 0 form errors" in {
+      form.errors.length shouldBe 0
     }
   }
 
@@ -367,15 +357,11 @@ class ContactDetailsSubscriptionFormSpec extends UnitSpec {
       "mobile" -> "OI782 O98372",
       "email" -> "Doug.Perry@digital.hmrc.gov.uk")
     )
-    "raise form error" in {
-      form.hasErrors shouldBe true
+    "raise no error" in {
+      form.hasErrors shouldBe false
     }
-    "raise 1 form error" in {
-      form.errors.length shouldBe 1
-      form.errors.head.key shouldBe "mobile"
-    }
-    "associate the correct error message to the error" in {
-      form.error("mobile").get.message shouldBe Messages("validation.error.telephoneNumber")
+    "raise 0 form errors" in {
+      form.errors.length shouldBe 0
     }
   }
 
@@ -648,10 +634,14 @@ class ContactDetailsSubscriptionFormSpec extends UnitSpec {
       "email" -> "Jules.Mcshane@digital.hmrc.gov.uk.")
     )
     "raise form error" in {
-      form.hasErrors shouldBe false
+      form.hasErrors shouldBe true
     }
     "raise 0 form errors" in {
-      form.errors.length shouldBe 0
+      form.errors.length shouldBe 1
+      form.errors.head.key shouldBe "landline"
+    }
+    "associate the correct error message to the error" in {
+      form.error("landline").get.message shouldBe Messages("validation.error.telephoneNumber")
     }
   }
 
@@ -663,15 +653,11 @@ class ContactDetailsSubscriptionFormSpec extends UnitSpec {
       "mobile" -> "",
       "email" -> "Jules.Mcshane@digital.hmrc.gov.uk.")
     )
-    "raise form error" in {
-      form.hasErrors shouldBe true
+    "raise no errors" in {
+      form.hasErrors shouldBe false
     }
-    "raise 1 form error" in {
-      form.errors.length shouldBe 1
-      form.errors.head.key shouldBe "landline"
-    }
-    "associate the correct error message to the error" in {
-      form.error("landline").get.message shouldBe Messages("validation.error.telephoneNumber")
+    "raise 0 form errors" in {
+      form.errors.length shouldBe 0
     }
   }
 
@@ -683,15 +669,11 @@ class ContactDetailsSubscriptionFormSpec extends UnitSpec {
       "mobile" -> "",
       "email" -> "Jules.Mcshane@digital.hmrc.gov.uk.")
     )
-    "raise form error" in {
-      form.hasErrors shouldBe true
+    "raise no errors" in {
+      form.hasErrors shouldBe false
     }
-    "raise 1 form error" in {
-      form.errors.length shouldBe 1
-      form.errors.head.key shouldBe "landline"
-    }
-    "associate the correct error message to the error" in {
-      form.error("landline").get.message shouldBe Messages("validation.error.telephoneNumber")
+    "raise 0 form errors" in {
+      form.errors.length shouldBe 0
     }
   }
 
@@ -703,15 +685,11 @@ class ContactDetailsSubscriptionFormSpec extends UnitSpec {
       "mobile" -> "",
       "email" -> "Jules.Mcshane@digital.hmrc.gov.uk.")
     )
-    "raise form error" in {
-      form.hasErrors shouldBe true
+    "raise no errors" in {
+      form.hasErrors shouldBe false
     }
-    "raise 1 form error" in {
-      form.errors.length shouldBe 1
-      form.errors.head.key shouldBe "landline"
-    }
-    "associate the correct error message to the error" in {
-      form.error("landline").get.message shouldBe Messages("validation.error.telephoneNumber")
+    "raise 0 form errors" in {
+      form.errors.length shouldBe 0
     }
   }
 
@@ -764,10 +742,10 @@ class ContactDetailsSubscriptionFormSpec extends UnitSpec {
       "email" -> "Jules.Mcshane@digital.hmrc.gov.uk.")
     )
     "raise form error" in {
-      form.hasErrors shouldBe false
+      form.hasErrors shouldBe true
     }
-    "raise 0 form errors" in {
-      form.errors.length shouldBe 0
+    "raise 1 form error" in {
+      form.errors.length shouldBe 1
     }
   }
 
@@ -835,15 +813,11 @@ class ContactDetailsSubscriptionFormSpec extends UnitSpec {
       "mobile" -> "",
       "email" -> "Jules.Mcshane@digital.hmrc.gov.uk.")
     )
-    "raise form error" in {
-      form.hasErrors shouldBe true
+    "raise no error" in {
+      form.hasErrors shouldBe false
     }
-    "raise 1 form error" in {
-      form.errors.length shouldBe 1
-      form.errors.head.key shouldBe "landline"
-    }
-    "associate the correct error message to the error" in {
-      form.error("landline").get.message shouldBe Messages("validation.error.telephoneNumber")
+    "raise 0 form errors" in {
+      form.errors.length shouldBe 0
     }
   }
 
