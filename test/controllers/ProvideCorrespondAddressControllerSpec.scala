@@ -29,8 +29,10 @@ import org.scalatest.BeforeAndAfterEach
 import org.scalatest.mock.MockitoSugar
 import org.scalatestplus.play.OneServerPerSuite
 import play.api.libs.json.Json
+import play.api.mvc.{Request, Result}
 import play.api.test.Helpers._
 import uk.gov.hmrc.http.cache.client.CacheMap
+import uk.gov.hmrc.play.frontend.auth.AuthContext
 import uk.gov.hmrc.play.http.HeaderCarrier
 import uk.gov.hmrc.play.test.UnitSpec
 
@@ -46,6 +48,8 @@ class ProvideCorrespondAddressControllerSpec extends UnitSpec with MockitoSugar 
     override lazy val authConnector = MockAuthConnector
     val keyStoreConnector: KeystoreConnector = mockKeyStoreConnector
     override lazy val registeredBusinessCustomerService = mockRegisteredBusinessCustomerService
+    override def withVerifiedPasscode(body: => Future[Result])
+                                     (implicit request: Request[_], user: AuthContext): Future[Result] = body
   }
 
   val model = ProvideCorrespondAddressModel("Akina Speed Stars","Mt. Akina",None,None,None,"JP")

@@ -17,14 +17,22 @@
 package controllers
 
 import helpers.FakeRequestHelper
+import play.api.mvc.{Request, Result}
 import uk.gov.hmrc.play.test.{UnitSpec, WithFakeApplication}
 import play.api.test.Helpers._
+import play.api.mvc.Action
+import uk.gov.hmrc.passcode.authentication.PlayRequestTypes._
+
 
 class TimeoutControllerSpec extends UnitSpec with FakeRequestHelper with WithFakeApplication {
 
+  object TestController extends TimeoutController {
+    override def PasscodeAuthenticatedActionAsync(body: => AsyncPlayRequest) = Action.async(body)
+  }
+
   "timeout" should {
 
-    lazy val result = TimeoutController.timeout(fakeRequest)
+    lazy val result = TestController.timeout(fakeRequest)
 
     "return a 200" in {
       status(result) shouldBe OK

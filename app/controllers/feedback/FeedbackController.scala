@@ -18,11 +18,14 @@ package controllers.feedback
 
 import java.net.URLEncoder
 
+import auth.AuthorisedForTAVC
 import play.api.Logger
 import play.api.http.{Status => HttpStatus}
 import play.api.mvc.{Action, AnyContent, Request, RequestHeader}
 import play.twirl.api.Html
 import config.{AppConfig, FrontendAppConfig, WSHttp}
+import services.RegisteredBusinessCustomerService
+import uk.gov.hmrc.passcode.authentication.PasscodeAuthentication
 import views.html.feedback.feedback_thankyou
 import uk.gov.hmrc.play.frontend.auth.Actions
 import uk.gov.hmrc.play.frontend.auth.connectors.AuthConnector
@@ -54,9 +57,10 @@ object FeedbackController extends FeedbackController with PartialRetriever {
   }
 
   override val applicationConfig: AppConfig = FrontendAppConfig
+  override val registeredBusinessCustomerService = RegisteredBusinessCustomerService
 }
 
-trait FeedbackController extends FrontendController with Actions {
+trait FeedbackController extends FrontendController with AuthorisedForTAVC {
   implicit val formPartialRetriever: FormPartialRetriever
   implicit val cachedStaticHtmlPartialRetriever: CachedStaticHtmlPartialRetriever
 
@@ -75,16 +79,15 @@ trait FeedbackController extends FrontendController with Actions {
   private def feedbackThankYouPartialUrl(ticketId: String)(implicit request: Request[AnyContent]) =
     s"${applicationConfig.contactFrontendService}/beta-feedback/form/confirmation?ticketId=${urlEncode(ticketId)}"
 
-  def show: Action[AnyContent] = UnauthorisedAction {
-    implicit request =>
+  def show: Action[AnyContent] = Authorised.async { implicit user => implicit request =>
       (request.session.get(REFERER), request.headers.get(REFERER)) match {
-        case (None, Some(ref)) => Ok(views.html.feedback.feedback(feedbackFormPartialUrl, None)).withSession(request.session + (REFERER -> ref))
-        case _ => Ok(views.html.feedback.feedback(feedbackFormPartialUrl, None))
+        case (None, Some(ref)) => Future.successful(Ok(views.html.feedback.feedback(feedbackFormPartialUrl, None))
+          .withSession(request.session + (REFERER -> ref)))
+        case _ => Future.successful(Ok(views.html.feedback.feedback(feedbackFormPartialUrl, None)))
       }
   }
 
-  def submit: Action[AnyContent] = UnauthorisedAction.async {
-    implicit request =>
+  def submit: Action[AnyContent] = Authorised.async { implicit user => implicit request =>
       request.body.asFormUrlEncoded.map { formData =>
         httpPost.POSTForm[HttpResponse](feedbackHmrcSubmitPartialUrl, formData)(rds = readPartialsForm, hc = partialsReadyHeaderCarrier).map {
           resp =>
@@ -100,11 +103,10 @@ trait FeedbackController extends FrontendController with Actions {
       }
   }
 
-  def thankyou: Action[AnyContent] = UnauthorisedAction {
-    implicit request =>
+  def thankyou: Action[AnyContent] = Authorised.async { implicit user => implicit request =>
       val ticketId = request.session.get(TICKET_ID).getOrElse("N/A")
       val referer = request.session.get(REFERER).getOrElse("/")
-      Ok(feedback_thankyou(feedbackThankYouPartialUrl(ticketId), referer)).withSession(request.session - REFERER)
+      Future.successful(Ok(feedback_thankyou(feedbackThankYouPartialUrl(ticketId), referer)).withSession(request.session - REFERER))
   }
 
   private def urlEncode(value: String) = URLEncoder.encode(value, "UTF-8")
