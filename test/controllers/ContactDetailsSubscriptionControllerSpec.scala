@@ -52,9 +52,9 @@ class ContactDetailsSubscriptionControllerSpec extends UnitSpec with MockitoSuga
                                      (implicit request: Request[_], user: AuthContext): Future[Result] = body
   }
 
-  val model = ContactDetailsSubscriptionModel("Dagumi","Fujiwara",Some("86"),Some("86"),"dagumi.tofuboy@akinaSpeedStars.com")
+  val model = ContactDetailsSubscriptionModel("First","Last",Some("86"),Some("86"),"test@test.com")
   val cacheMap: CacheMap = CacheMap("", Map("" -> Json.toJson(model)))
-  val keyStoreSavedContactDetailsSubscription = ContactDetailsSubscriptionModel("Dagumi","Fujiwara",Some("86"),Some("86"),"dagumi.tofuboy@akinaSpeedStars.com")
+  val keyStoreSavedContactDetailsSubscription = ContactDetailsSubscriptionModel("First","Last",Some("86"),Some("86"),"test@test.com")
 
   implicit val hc = HeaderCarrier()
 
@@ -151,11 +151,11 @@ class ContactDetailsSubscriptionControllerSpec extends UnitSpec with MockitoSuga
 
   "Sending a valid form submit to the ContactDetailsSubscriptionController" should {
 
-    val formInput = Seq("firstName" -> "Dagumi",
-      "lastName" -> "Fujiwara",
-      "telephoneNumber" -> "94594594586",
+    val formInput = Seq("firstName" -> "First",
+      "lastName" -> "Last",
+      "telephoneNumber" -> "00000000000",
       "telephoneNumber2" -> "",
-      "email" -> "dagumi.tofuboy@akinaSpeedStars.com")
+      "email" -> "test@test.com")
 
     "return a 303" in {
       withRegDetails()
@@ -180,9 +180,9 @@ class ContactDetailsSubscriptionControllerSpec extends UnitSpec with MockitoSuga
     "redirect with a bad request" in {
       withRegDetails()
       val formInput =
-        Seq("firstName" -> "Dagumi",
-        "lastName" -> "Fujiwara",
-        "telephoneNumber" -> "94594594586",
+        Seq("firstName" -> "First",
+        "lastName" -> "Last",
+        "telephoneNumber" -> "00000000000",
         "telephoneNumber2" -> "",
         "email" -> "")
 
@@ -197,7 +197,7 @@ class ContactDetailsSubscriptionControllerSpec extends UnitSpec with MockitoSuga
   "Sending an empty invalid form submission with validation errors to the ContactDetailsSubscriptionController" should {
     "redirect to itself" in {
       withRegDetails()
-      val formInput = "addressline1" -> "Akina Speed Stars"
+      val formInput = "addressline1" -> "Line 1"
       submitWithSessionAndAuth(ContactDetailsSubscriptionControllerTest.submit,formInput)(
         result => {
           status(result) shouldBe BAD_REQUEST
@@ -208,11 +208,11 @@ class ContactDetailsSubscriptionControllerSpec extends UnitSpec with MockitoSuga
 
   "Sending a valid form submit to the ContactDetailsSubscriptionController and business customer details are not in keystore" should {
 
-    val formInput = Seq("firstName" -> "Dagumi",
-      "lastName" -> "Fujiwara",
-      "telephoneNumber" -> "94594594586",
+    val formInput = Seq("firstName" -> "First",
+      "lastName" -> "Last",
+      "telephoneNumber" -> "00000000000",
       "telephoneNumber2" -> "",
-      "email" -> "dagumi.tofuboy@akinaSpeedStars.com")
+      "email" -> "test@test.com")
 
     "return a 303" in {
       noRegDetails()
@@ -236,9 +236,9 @@ class ContactDetailsSubscriptionControllerSpec extends UnitSpec with MockitoSuga
     "and business customer details are not in keystore" should {
 
     val formInput =
-      Seq("firstName" -> "Dagumi",
-        "lastName" -> "Fujiwara",
-        "telephoneNumber" -> "94594594586",
+      Seq("firstName" -> "First",
+        "lastName" -> "Last",
+        "telephoneNumber" -> "00000000000",
         "telephoneNumber2" -> "",
         "email" -> "")
 
@@ -262,7 +262,7 @@ class ContactDetailsSubscriptionControllerSpec extends UnitSpec with MockitoSuga
   "Sending an empty invalid form submission with validation errors to the ContactDetailsSubscriptionController " +
     "and business customer details are not in keystore" should {
 
-    val formInput = "addressline1" -> "Akina Speed Stars"
+    val formInput = "addressline1" -> "Line 1"
 
     "return a 303" in {
       noRegDetails()

@@ -22,22 +22,22 @@ import uk.gov.hmrc.play.test.UnitSpec
 
 class SubscriptionModelSpec extends UnitSpec {
 
-  val maxProvideCorrespondAddressModel = ProvideCorrespondAddressModel("line1","line2",Some("line3"),Some("line4"),Some("AB1 1AB"),"GB")
-  val maxContactDetailsSubscriptionModel = ContactDetailsSubscriptionModel("first","last",Some("01234567890"),Some("09876543210"),"email@email.com")
+  val maxProvideCorrespondAddressModel = ProvideCorrespondAddressModel("line1","line2",Some("line3"),Some("line4"),Some("AA1 1AA"),"GB")
+  val maxContactDetailsSubscriptionModel = ContactDetailsSubscriptionModel("first","last",Some("00000000000"),Some("00000000000"),"test@test.com")
   val maxIntermediateCorrespondenceDetailsModel = IntermediateCorrespondenceDetailsModel(maxProvideCorrespondAddressModel,maxContactDetailsSubscriptionModel)
   val maxIntermediateSubscriptionTypeModel = IntermediateSubscriptionTypeModel(maxIntermediateCorrespondenceDetailsModel)
 
   val minProvideCorrespondAddressModel = ProvideCorrespondAddressModel("line1","line2",None,None,None,"AA")
-  val minContactDetailsSubscriptionModel = ContactDetailsSubscriptionModel("first","last",Some("01234567890"),None,"email@email.com")
+  val minContactDetailsSubscriptionModel = ContactDetailsSubscriptionModel("first","last",Some("00000000000"),None,"test@test.com")
   val minIntermediateCorrespondenceDetailsModel = IntermediateCorrespondenceDetailsModel(minProvideCorrespondAddressModel,minContactDetailsSubscriptionModel)
   val minIntermediateSubscriptionTypeModel = IntermediateSubscriptionTypeModel(minIntermediateCorrespondenceDetailsModel)
 
-  val maxContactAddress = ContactAddressModel("line1","line2",Some("line3"),Some("line4"),"GB",Some("AB1 1AB"))
-  val maxContactDetails = ContactDetailsModel(Some("01234567890"),Some("09876543210"),None,Some("email@email.com"))
+  val maxContactAddress = ContactAddressModel("line1","line2",Some("line3"),Some("line4"),"GB",Some("AA1 1AA"))
+  val maxContactDetails = ContactDetailsModel(Some("00000000000"),Some("00000000000"),None,Some("test@test.com"))
   val maxContactName = ContactNameModel("first",Some("last"))
 
   val minContactAddress = ContactAddressModel("line1","line2",None,None,"AA",None)
-  val minContactDetails = ContactDetailsModel(Some("01234567890"),None,None,Some("email@email.com"))
+  val minContactDetails = ContactDetailsModel(Some("00000000000"),None,None,Some("test@test.com"))
   val minContactName = ContactNameModel("first",Some("last"))
 
   "SubscriptionTypeModel" when {

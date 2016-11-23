@@ -34,7 +34,7 @@ class ContactDetailsSubscriptionSpec extends UnitSpec with WithFakeApplication w
     "Verify that the contact details page contains the correct elements when a valid ContactDetailsSubscriptionModel is passed" in {
 
       val contactDetailsSubscriptionModel = new ContactDetailsSubscriptionModel(
-        "Jeff","Stelling",Some("01384 555678"), Some("01783432876"), "Jeff.Stelling@HMRC.gov.uk"
+        "First","Last",Some("00000 000000"), Some("00000000000"), "test@test.com"
       )
       lazy val form = contactDetailsSubscriptionForm.fill(contactDetailsSubscriptionModel)
       lazy val page = ContactDetailsSubscription(form)(authorisedFakeRequest)

@@ -52,9 +52,9 @@ class ProvideCorrespondAddressControllerSpec extends UnitSpec with MockitoSugar 
                                      (implicit request: Request[_], user: AuthContext): Future[Result] = body
   }
 
-  val model = ProvideCorrespondAddressModel("Akina Speed Stars","Mt. Akina",None,None,None,"JP")
+  val model = ProvideCorrespondAddressModel("Line 1","Line 2",None,None,None,"JP")
   val cacheMap: CacheMap = CacheMap("", Map("" -> Json.toJson(model)))
-  val keyStoreSavedProvideCorrespondAddress = ProvideCorrespondAddressModel("Akina Speed Stars","Mt. Akina",None,None,None,"JP")
+  val keyStoreSavedProvideCorrespondAddress = ProvideCorrespondAddressModel("Line 1","Line 2",None,None,None,"JP")
 
   implicit val hc = HeaderCarrier()
 
@@ -153,8 +153,8 @@ class ProvideCorrespondAddressControllerSpec extends UnitSpec with MockitoSugar 
     "redirect to the Contact Details Subscription Controller page" in {
       withRegDetails()
       val formInput =
-        Seq("addressline1" -> "Akina Speed Stars",
-        "addressline2" -> "Mt. Akina",
+        Seq("addressline1" -> "Line 1",
+        "addressline2" -> "Line 2",
         "addressline3" -> "",
         "addressline4" -> "",
         "postcode" -> "",
@@ -173,7 +173,7 @@ class ProvideCorrespondAddressControllerSpec extends UnitSpec with MockitoSugar 
     "redirect with a bad request" in {
       withRegDetails()
       val formInput =
-        Seq("addressline1" -> "Akina Speed Stars",
+        Seq("addressline1" -> "Line 1",
         "addressline2" -> "",
         "addressline3" -> "",
         "addressline4" -> "",
@@ -191,7 +191,7 @@ class ProvideCorrespondAddressControllerSpec extends UnitSpec with MockitoSugar 
   "Sending an empty invalid form submission with validation errors to the ProvideCorrespondAddressController" should {
     "redirect to itself" in {
       withRegDetails()
-      val formInput = "addressline1" -> "Akina Speed Stars"
+      val formInput = "addressline1" -> "Line 1"
 
       submitWithSessionAndAuth(ProvideCorrespondAddressControllerTest.submit,formInput)(
         result => {
@@ -205,8 +205,8 @@ class ProvideCorrespondAddressControllerSpec extends UnitSpec with MockitoSugar 
     "and business customer details are not in keystore" should {
 
     val formInput =
-      Seq("addressline1" -> "Akina Speed Stars",
-        "addressline2" -> "Mt. Akina",
+      Seq("addressline1" -> "Line 1",
+        "addressline2" -> "Line 2",
         "addressline3" -> "",
         "addressline4" -> "",
         "postcode" -> "",
@@ -235,7 +235,7 @@ class ProvideCorrespondAddressControllerSpec extends UnitSpec with MockitoSugar 
     "and business customer details are not in keystore" should {
 
     val formInput =
-      Seq("addressline1" -> "Akina Speed Stars",
+      Seq("addressline1" -> "Line 1",
         "addressline2" -> "",
         "addressline3" -> "",
         "addressline4" -> "",
@@ -264,7 +264,7 @@ class ProvideCorrespondAddressControllerSpec extends UnitSpec with MockitoSugar 
   "Sending an empty invalid form submission with validation errors to the ProvideCorrespondAddressController " +
     "and business customer details are not in keystore" should {
 
-    val formInput = "addressline1" -> "Akina Speed Stars"
+    val formInput = "addressline1" -> "Line 1"
 
     "return a 303" in {
       noRegDetails()
