@@ -37,14 +37,14 @@ object AuthHelper extends MockitoSugar {
 
   val validJson = Json.parse(
     """{
-      |"businessName":"Company",
+      |"businessName":"Test Name",
       |"businessType":"Corporate Body",
       |"businessAddress":{
-      |"line_1":"23 High Street",
-      |"line_2":"Park View",
-      |"line_3":"Gloucester",
-      |"line_4":"Gloucestershire",
-      |"postcode":"NE98 1ZZ",
+      |"line_1":"Line 1",
+      |"line_2":"Line 2",
+      |"line_3":"Line 3",
+      |"line_4":"Line 4",
+      |"postcode":"AA1 1AA",
       |"country":"GB"
       |},
       |"sapNumber":"1234567890",
@@ -55,14 +55,14 @@ object AuthHelper extends MockitoSugar {
       |}""".stripMargin)
 
   val validModel = new CompanyRegistrationReviewDetailsModel(
-    "Company",
+    "Test Name",
     Some("Corporate Body"),
     new AddressModel(
-      "23 High Street",
-      "Park View",
-      Some("Gloucester"),
-      Some("Gloucestershire"),
-      Some("NE98 1ZZ"),
+      "Line 1",
+      "Line 2",
+      Some("Line 3"),
+      Some("Line 4"),
+      Some("AA1 1AA"),
       "GB"
     ),
     "1234567890",
@@ -73,11 +73,11 @@ object AuthHelper extends MockitoSugar {
   )
 
   val validModelMin = new CompanyRegistrationReviewDetailsModel(
-    "Company",
+    "Test Name",
     None,
     new AddressModel(
-      "23 High Street",
-      "Park View",
+      "Line 1",
+      "Line 2",
       None,
       None,
       None,

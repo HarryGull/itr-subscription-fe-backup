@@ -25,7 +25,7 @@ class ContactDetailsSubscriptionFormSpec extends UnitSpec {
 
   "Creating a form using an empty model" should {
     lazy val form = contactDetailsSubscriptionForm
-    "return an empty string for firstName, lastName, telephone number and email" in {
+    "return an empty string for Name, lastName, telephone number and email" in {
       form.data.isEmpty shouldBe true
     }
   }
@@ -57,7 +57,7 @@ class ContactDetailsSubscriptionFormSpec extends UnitSpec {
   }
 
   "Creating a form using an invalid post" when {
-    "supplied with no data for firstName" should {
+    "supplied with no data for Name" should {
       lazy val form = contactDetailsSubscriptionForm.bind(Map(
         "firstName" -> "",
         "lastName" -> "Jones",
@@ -138,7 +138,7 @@ class ContactDetailsSubscriptionFormSpec extends UnitSpec {
   }
 
   "Creating a form using an invalid post" when {
-    "supplied with no data for firstName and lastName" should {
+    "supplied with no data for Name and lastName" should {
       lazy val form = contactDetailsSubscriptionForm.bind(Map(
         "firstName" -> "",
         "lastName" -> "",
@@ -184,7 +184,7 @@ class ContactDetailsSubscriptionFormSpec extends UnitSpec {
   }
 
   "Creating a form using an invalid post" when {
-    "supplied with no data for firstName, lastName or telephone number" should {
+    "supplied with no data for Name, lastName or telephone number" should {
       lazy val form = contactDetailsSubscriptionForm.bind(Map(
         "firstName" -> "",
         "lastName" -> "",
@@ -207,7 +207,7 @@ class ContactDetailsSubscriptionFormSpec extends UnitSpec {
     }
   }
 
-  "supplied with empty space for firstName" should {
+  "supplied with empty space for Name" should {
     lazy val form = contactDetailsSubscriptionForm.bind(Map(
       "firstName" -> "    ",
       "lastName" -> "Pivot",
@@ -301,13 +301,13 @@ class ContactDetailsSubscriptionFormSpec extends UnitSpec {
     }
   }
 
-  "supplied with numeric input for firstName" should {
+  "supplied with numeric input for Name" should {
     lazy val form = contactDetailsSubscriptionForm.bind(Map(
       "firstName" -> "D0ug",
-      "lastName" -> "Perry",
+      "lastName" -> "Last",
       "landline" -> "03782 098372",
       "mobile" -> "",
-      "email" -> "Doug.Perry@digital.hmrc.gov.uk")
+      "email" -> "test@test.com")
     )
     "raise form error" in {
       form.hasErrors shouldBe false
@@ -319,11 +319,11 @@ class ContactDetailsSubscriptionFormSpec extends UnitSpec {
 
   "supplied with numeric input for lastName" should {
     lazy val form = contactDetailsSubscriptionForm.bind(Map(
-      "firstName" -> "Doug",
+      "firstName" -> "First",
       "lastName" -> "P3rry",
       "landline" -> "03782 098372",
       "mobile" -> "",
-      "email" -> "Doug.Perry@digital.hmrc.gov.uk")
+      "email" -> "test@test.com")
     )
     "raise form error" in {
       form.hasErrors shouldBe false
@@ -335,11 +335,11 @@ class ContactDetailsSubscriptionFormSpec extends UnitSpec {
 
   "supplied with alphanumeric input for telephone number" should {
     lazy val form = contactDetailsSubscriptionForm.bind(Map(
-      "firstName" -> "Doug",
-      "lastName" -> "Perry",
+      "firstName" -> "First",
+      "lastName" -> "Last",
       "landline" -> "OI782 O98372",
       "mobile" -> "",
-      "email" -> "Doug.Perry@digital.hmrc.gov.uk")
+      "email" -> "test@test.com")
     )
     "raise no error" in {
       form.hasErrors shouldBe false
@@ -351,11 +351,11 @@ class ContactDetailsSubscriptionFormSpec extends UnitSpec {
 
   "supplied with alphanumeric input for telephone number2" should {
     lazy val form = contactDetailsSubscriptionForm.bind(Map(
-      "firstName" -> "Doug",
-      "lastName" -> "Perry",
-      "landline" -> "01782333829",
-      "mobile" -> "OI782 O98372",
-      "email" -> "Doug.Perry@digital.hmrc.gov.uk")
+      "firstName" -> "First",
+      "lastName" -> "Last",
+      "landline" -> "00000000000",
+      "mobile" -> "AAAAAA000000",
+      "email" -> "test@test.com")
     )
     "raise no error" in {
       form.hasErrors shouldBe false
@@ -367,11 +367,11 @@ class ContactDetailsSubscriptionFormSpec extends UnitSpec {
 
   "supplied with alphanumeric input for email" should {
     lazy val form = contactDetailsSubscriptionForm.bind(Map(
-      "firstName" -> "Doug",
-      "lastName" -> "Perry",
-      "landline" -> "01782 098372",
+      "firstName" -> "First",
+      "lastName" -> "Last",
+      "landline" -> "00000000000",
       "mobile" -> "",
-      "email" -> "D0ug.P3rry@d1g1tal.hmrc.g0v.uk")
+      "email" -> "test@test.com")
     )
     "raise form error" in {
       form.hasErrors shouldBe false
@@ -383,13 +383,13 @@ class ContactDetailsSubscriptionFormSpec extends UnitSpec {
 
   //  BVA
 
-  "firstName value supplied with the minimum allowed" should {
+  "Name value supplied with the minimum allowed" should {
     lazy val form = contactDetailsSubscriptionForm.bind(Map(
       "firstName" -> "D",
-      "lastName" -> "Perry",
-      "landline" -> "01375 869472",
+      "lastName" -> "Last",
+      "landline" -> "00000000000",
       "mobile" -> "",
-      "email" -> "Doug.Perry@digital.hmrc.gov.uk.")
+      "email" -> "test@test.com")
     )
     "raise form error" in {
       form.hasErrors shouldBe false
@@ -401,11 +401,11 @@ class ContactDetailsSubscriptionFormSpec extends UnitSpec {
 
   "lastName value supplied with the minimum allowed" should {
     lazy val form = contactDetailsSubscriptionForm.bind(Map(
-      "firstName" -> "Doug",
+      "firstName" -> "First",
       "lastName" -> "P",
-      "landline" -> "01375 869472",
+      "landline" -> "00000000000",
       "mobile" -> "",
-      "email" -> "Doug.Perry@digital.hmrc.gov.uk.")
+      "email" -> "test@test.com")
     )
     "raise form error" in {
       form.hasErrors shouldBe false
@@ -417,11 +417,11 @@ class ContactDetailsSubscriptionFormSpec extends UnitSpec {
 
   "landline value supplied with the minimum allowed" should {
     lazy val form = contactDetailsSubscriptionForm.bind(Map(
-      "firstName" -> "Doug",
-      "lastName" -> "Perry",
+      "firstName" -> "First",
+      "lastName" -> "Last",
       "landline" -> "0",
       "mobile" -> "",
-      "email" -> "Doug.Perry@digital.hmrc.gov.uk.")
+      "email" -> "test@test.com")
     )
     "raise form error" in {
       form.hasErrors shouldBe false
@@ -433,9 +433,9 @@ class ContactDetailsSubscriptionFormSpec extends UnitSpec {
 
   "email value supplied with the minimum allowed" should {
     lazy val form = contactDetailsSubscriptionForm.bind(Map(
-      "firstName" -> "Doug",
-      "lastName" -> "Perry",
-      "landline" -> "01375 869472",
+      "firstName" -> "First",
+      "lastName" -> "Last",
+      "landline" -> "00000000000",
       "mobile" -> "",
       "email" -> "D@d.")
     )
@@ -447,13 +447,13 @@ class ContactDetailsSubscriptionFormSpec extends UnitSpec {
     }
   }
 
-  "firstName value supplied with the maximum allowed (on the boundary)" should {
+  "Name value supplied with the maximum allowed (on the boundary)" should {
     lazy val form = contactDetailsSubscriptionForm.bind(Map(
       "firstName" -> "Thisnameisthirtyfivecharacterslongg",
-      "lastName" -> "Perry",
-      "landline" -> "01375 869472",
+      "lastName" -> "Last",
+      "landline" -> "00000000000",
       "mobile" -> "",
-      "email" -> "Doug.Perry@digital.hmrc.gov.uk.")
+      "email" -> "test@test.com")
     )
     "raise form error" in {
       form.hasErrors shouldBe false
@@ -465,11 +465,11 @@ class ContactDetailsSubscriptionFormSpec extends UnitSpec {
 
   "lastName value supplied with the maximum allowed (on the boundary)" should {
     lazy val form = contactDetailsSubscriptionForm.bind(Map(
-      "firstName" -> "Doug",
+      "firstName" -> "First",
       "lastName" -> "Thisnameisthirtyfivecharacterslongg",
-      "landline" -> "01375 869472",
+      "landline" -> "00000000000",
       "mobile" -> "",
-      "email" -> "Doug.Perry@digital.hmrc.gov.uk.")
+      "email" -> "test@test.com")
     )
     "raise form error" in {
       form.hasErrors shouldBe false
@@ -481,11 +481,11 @@ class ContactDetailsSubscriptionFormSpec extends UnitSpec {
 
   "landline value supplied with the maximum allowed (on the boundary)" should {
     lazy val form = contactDetailsSubscriptionForm.bind(Map(
-      "firstName" -> "Doug",
-      "lastName" -> "Perry",
-      "landline" -> "467846328764987832176776",
+      "firstName" -> "First",
+      "lastName" -> "Last",
+      "landline" -> "000000000000000000000000",
       "mobile" -> "",
-      "email" -> "Doug.Perry@digital.hmrc.gov.uk.")
+      "email" -> "test@test.com")
     )
     "raise form error" in {
       form.hasErrors shouldBe false
@@ -497,11 +497,11 @@ class ContactDetailsSubscriptionFormSpec extends UnitSpec {
 
   "mobile value supplied with the maximum allowed (on the boundary)" should {
     lazy val form = contactDetailsSubscriptionForm.bind(Map(
-      "firstName" -> "Doug",
-      "lastName" -> "Perry",
-      "landline" -> "01788625142",
-      "mobile" -> "467846328764987832176776",
-      "email" -> "Doug.Perry@digital.hmrc.gov.uk.")
+      "firstName" -> "First",
+      "lastName" -> "Last",
+      "landline" -> "00000000000",
+      "mobile" -> "000000000000000000000000",
+      "email" -> "test@test.com")
     )
     "raise form error" in {
       form.hasErrors shouldBe false
@@ -513,11 +513,11 @@ class ContactDetailsSubscriptionFormSpec extends UnitSpec {
 
   "landline value supplied over the maximum allowed (over the boundary)" should {
     lazy val form = contactDetailsSubscriptionForm.bind(Map(
-      "firstName" -> "Doug",
-      "lastName" -> "Perry",
+      "firstName" -> "First",
+      "lastName" -> "Last",
       "landline" -> "1234567890123456789012345",
       "mobile" -> "",
-      "email" -> "Doug.Perry@digital.hmrc.gov.uk.")
+      "email" -> "test@test.com")
     )
     "raise form error" in {
       form.hasErrors shouldBe true
@@ -533,11 +533,11 @@ class ContactDetailsSubscriptionFormSpec extends UnitSpec {
 
   "mobile value supplied over the maximum allowed (over the boundary)" should {
     lazy val form = contactDetailsSubscriptionForm.bind(Map(
-      "firstName" -> "Doug",
-      "lastName" -> "Perry",
-      "landline" -> "01782555627",
+      "firstName" -> "First",
+      "lastName" -> "Last",
+      "landline" -> "00000000000",
       "mobile" -> "1234567890123456789012345",
-      "email" -> "Doug.Perry@digital.hmrc.gov.uk.")
+      "email" -> "test@test.com")
     )
     "raise form error" in {
       form.hasErrors shouldBe true
@@ -553,11 +553,11 @@ class ContactDetailsSubscriptionFormSpec extends UnitSpec {
 
   "landline value supplied over the maximum allowed (over the boundary) includes whitespace in the count" should {
     lazy val form = contactDetailsSubscriptionForm.bind(Map(
-      "firstName" -> "Doug",
-      "lastName" -> "Perry",
+      "firstName" -> "First",
+      "lastName" -> "Last",
       "landline" -> "123456789012345 789 01245",
       "mobile" -> "",
-      "email" -> "Doug.Perry@digital.hmrc.gov.uk.")
+      "email" -> "test@test.com")
     )
     "raise form error" in {
       form.hasErrors shouldBe true
@@ -573,11 +573,11 @@ class ContactDetailsSubscriptionFormSpec extends UnitSpec {
 
   "mobile value supplied over the maximum allowed (over the boundary) includes whitespace in the count" should {
     lazy val form = contactDetailsSubscriptionForm.bind(Map(
-      "firstName" -> "Doug",
-      "lastName" -> "Perry",
-      "landline" -> "01728385968",
+      "firstName" -> "First",
+      "lastName" -> "Last",
+      "landline" -> "00000000000",
       "mobile" -> "123456789012345 789 01245",
-      "email" -> "Doug.Perry@digital.hmrc.gov.uk.")
+      "email" -> "test@test.com")
     )
     "raise form error" in {
       form.hasErrors shouldBe true
@@ -595,11 +595,11 @@ class ContactDetailsSubscriptionFormSpec extends UnitSpec {
 
   "landline value supplied with multiple white space" should {
     lazy val form = contactDetailsSubscriptionForm.bind(Map(
-      "firstName" -> "Jules",
-      "lastName" -> "McShane",
+      "firstName" -> "First",
+      "lastName" -> "Last",
       "landline" -> "0 13 8 4 5 5 5 8 6 9",
       "mobile" -> "",
-      "email" -> "jules.mcshane@digital.hmrc.gov.uk.")
+      "email" -> "test@test.com")
     )
     "raise form error" in {
       form.hasErrors shouldBe false
@@ -611,11 +611,11 @@ class ContactDetailsSubscriptionFormSpec extends UnitSpec {
 
   "landline value supplied with brackets" should {
     lazy val form = contactDetailsSubscriptionForm.bind(Map(
-      "firstName" -> "Jules",
-      "lastName" -> "Mcshane",
-      "landline" -> "(01548) 665599",
+      "firstName" -> "First",
+      "lastName" -> "Last",
+      "landline" -> "(00000) 000000",
       "mobile" -> "",
-      "email" -> "Jules.Mcshane@digital.hmrc.gov.uk.")
+      "email" -> "test@test.com")
     )
     "raise form error" in {
       form.hasErrors shouldBe false
@@ -627,11 +627,11 @@ class ContactDetailsSubscriptionFormSpec extends UnitSpec {
 
   "landline value supplied with +44" should {
     lazy val form = contactDetailsSubscriptionForm.bind(Map(
-      "firstName" -> "Jules",
-      "lastName" -> "Mcshane",
-      "landline" -> "+447567728337",
+      "firstName" -> "First",
+      "lastName" -> "Last",
+      "landline" -> "+44000000000",
       "mobile" -> "",
-      "email" -> "Jules.Mcshane@digital.hmrc.gov.uk.")
+      "email" -> "test@test.com")
     )
     "raise form error" in {
       form.hasErrors shouldBe true
@@ -647,11 +647,11 @@ class ContactDetailsSubscriptionFormSpec extends UnitSpec {
 
   "landline value supplied with /" should {
     lazy val form = contactDetailsSubscriptionForm.bind(Map(
-      "firstName" -> "Jules",
-      "lastName" -> "Mcshane",
-      "landline" -> "0/13/84/55/33/82",
+      "firstName" -> "First",
+      "lastName" -> "Last",
+      "landline" -> "0/00/00/00/00/00",
       "mobile" -> "",
-      "email" -> "Jules.Mcshane@digital.hmrc.gov.uk.")
+      "email" -> "test@test.com")
     )
     "raise no errors" in {
       form.hasErrors shouldBe false
@@ -663,11 +663,11 @@ class ContactDetailsSubscriptionFormSpec extends UnitSpec {
 
   "landline value supplied with #" should {
     lazy val form = contactDetailsSubscriptionForm.bind(Map(
-      "firstName" -> "Jules",
-      "lastName" -> "Mcshane",
-      "landline" -> "#06534879542",
+      "firstName" -> "First",
+      "lastName" -> "Last",
+      "landline" -> "#000000000",
       "mobile" -> "",
-      "email" -> "Jules.Mcshane@digital.hmrc.gov.uk.")
+      "email" -> "test@test.com")
     )
     "raise no errors" in {
       form.hasErrors shouldBe false
@@ -679,11 +679,11 @@ class ContactDetailsSubscriptionFormSpec extends UnitSpec {
 
   "landline value supplied with *" should {
     lazy val form = contactDetailsSubscriptionForm.bind(Map(
-      "firstName" -> "Jules",
-      "lastName" -> "Mcshane",
-      "landline" -> "*06534879542",
+      "firstName" -> "First",
+      "lastName" -> "Last",
+      "landline" -> "*000000000",
       "mobile" -> "",
-      "email" -> "Jules.Mcshane@digital.hmrc.gov.uk.")
+      "email" -> "test@test.com")
     )
     "raise no errors" in {
       form.hasErrors shouldBe false
@@ -695,11 +695,11 @@ class ContactDetailsSubscriptionFormSpec extends UnitSpec {
 
   "landline value supplied with :" should {
     lazy val form = contactDetailsSubscriptionForm.bind(Map(
-      "firstName" -> "Jules",
-      "lastName" -> "Mcshane",
-      "landline" -> "06534:879542",
+      "firstName" -> "First",
+      "lastName" -> "Last",
+      "landline" -> "00000:00000",
       "mobile" -> "",
-      "email" -> "Jules.Mcshane@digital.hmrc.gov.uk.")
+      "email" -> "test@test.com")
     )
     "raise form error" in {
       form.hasErrors shouldBe true
@@ -715,11 +715,11 @@ class ContactDetailsSubscriptionFormSpec extends UnitSpec {
 
   "landline value supplied with - (American)" should {
     lazy val form = contactDetailsSubscriptionForm.bind(Map(
-      "firstName" -> "Jules",
-      "lastName" -> "Mcshane",
-      "landline" -> "+1 855-953-3597",
+      "firstName" -> "First",
+      "lastName" -> "Last",
+      "landline" -> "+1 000-000-0000",
       "mobile" -> "",
-      "email" -> "Jules.Mcshane@digital.hmrc.gov.uk.")
+      "email" -> "test@test.com")
     )
     "raise form error" in {
       form.hasErrors shouldBe true
@@ -735,11 +735,11 @@ class ContactDetailsSubscriptionFormSpec extends UnitSpec {
 
   "landline value supplied with - (France)" should {
     lazy val form = contactDetailsSubscriptionForm.bind(Map(
-      "firstName" -> "Jules",
-      "lastName" -> "Mcshane",
-      "landline" -> "+33(0)644444444",
+      "firstName" -> "First",
+      "lastName" -> "Last",
+      "landline" -> "+33(0)000000000",
       "mobile" -> "",
-      "email" -> "Jules.Mcshane@digital.hmrc.gov.uk.")
+      "email" -> "test@test.com")
     )
     "raise form error" in {
       form.hasErrors shouldBe true
@@ -751,11 +751,11 @@ class ContactDetailsSubscriptionFormSpec extends UnitSpec {
 
   "landline value supplied with ext (extensions)" should {
     lazy val form = contactDetailsSubscriptionForm.bind(Map(
-      "firstName" -> "Jules",
-      "lastName" -> "Mcshane",
-      "landline" -> "+44 1611234567 ext 123",
+      "firstName" -> "First",
+      "lastName" -> "Last",
+      "landline" -> "+44 00000000 ext 000",
       "mobile" -> "",
-      "email" -> "Jules.Mcshane@digital.hmrc.gov.uk.")
+      "email" -> "test@test.com")
     )
     "raise form error" in {
       form.hasErrors shouldBe true
@@ -771,11 +771,11 @@ class ContactDetailsSubscriptionFormSpec extends UnitSpec {
 
   "landline value supplied with . " should {
     lazy val form = contactDetailsSubscriptionForm.bind(Map(
-      "firstName" -> "Jules",
-      "lastName" -> "Mcshane",
-      "landline" -> "00336.44.44.44.44",
+      "firstName" -> "First",
+      "lastName" -> "Last",
+      "landline" -> "00000.00.00.00.00",
       "mobile" -> "",
-      "email" -> "Jules.Mcshane@digital.hmrc.gov.uk.")
+      "email" -> "test@test.com")
     )
     "raise form error" in {
       form.hasErrors shouldBe true
@@ -791,11 +791,11 @@ class ContactDetailsSubscriptionFormSpec extends UnitSpec {
 
   "landline value supplied with a leading space " should {
     lazy val form = contactDetailsSubscriptionForm.bind(Map(
-      "firstName" -> "Jules",
-      "lastName" -> "Mcshane",
-      "landline" -> " 01384 512364",
+      "firstName" -> "First",
+      "lastName" -> "Last",
+      "landline" -> " 00000 000000",
       "mobile" -> "",
-      "email" -> "Jules.Mcshane@digital.hmrc.gov.uk.")
+      "email" -> "test@test.com")
     )
     "raise form error" in {
       form.hasErrors shouldBe false
@@ -807,11 +807,11 @@ class ContactDetailsSubscriptionFormSpec extends UnitSpec {
 
   "landline value supplied with a trailing space " should {
     lazy val form = contactDetailsSubscriptionForm.bind(Map(
-      "firstName" -> "Jules",
-      "lastName" -> "Mcshane",
-      "landline" -> "01384 512364 ",
+      "firstName" -> "First",
+      "lastName" -> "Last",
+      "landline" -> "00000 000000 ",
       "mobile" -> "",
-      "email" -> "Jules.Mcshane@digital.hmrc.gov.uk.")
+      "email" -> "test@test.com")
     )
     "raise no error" in {
       form.hasErrors shouldBe false
@@ -825,11 +825,11 @@ class ContactDetailsSubscriptionFormSpec extends UnitSpec {
 
   "email supplied with multiple white spaces" should {
     lazy val form = contactDetailsSubscriptionForm.bind(Map(
-      "firstName" -> "Pat",
-      "lastName" -> "Butcher",
-      "landline" -> "08475 849375",
-      "mobile" -> "08475 849375",
-      "email" -> "P at@Butche r.com")
+      "firstName" -> "First",
+      "lastName" -> "Last",
+      "landline" -> "00000000000",
+      "mobile" -> "00000000000",
+      "email" -> "t est@tes t.com")
     )
     "raise form error" in {
       form.hasErrors shouldBe true
@@ -845,11 +845,11 @@ class ContactDetailsSubscriptionFormSpec extends UnitSpec {
 
   "email supplied with multiple @" should {
     lazy val form = contactDetailsSubscriptionForm.bind(Map(
-      "firstName" -> "Pat",
-      "lastName" -> "Butcher",
-      "landline" -> "08475 849375",
-      "mobile" -> "07675 849375",
-      "email" -> "Pat@Butcher@HMRC.gov.uk")
+      "firstName" -> "First",
+      "lastName" -> "Last",
+      "landline" -> "00000000000",
+      "mobile" -> "0000000000",
+      "email" -> "test@@test.com")
     )
     "raise form error" in {
       form.hasErrors shouldBe true
@@ -865,11 +865,11 @@ class ContactDetailsSubscriptionFormSpec extends UnitSpec {
 
   "email supplied without @" should {
     lazy val form = contactDetailsSubscriptionForm.bind(Map(
-      "firstName" -> "Pat",
-      "lastName" -> "Butcher",
-      "landline" -> "08475 849375",
-      "mobile" -> "08785 849375",
-      "email" -> "PatButcher.com")
+      "firstName" -> "First",
+      "lastName" -> "Last",
+      "landline" -> "00000000000",
+      "mobile" -> "0000000000",
+      "email" -> "FirstLast.com")
     )
     "raise form error" in {
       form.hasErrors shouldBe true
@@ -885,11 +885,11 @@ class ContactDetailsSubscriptionFormSpec extends UnitSpec {
 
   "email supplied with sub domain" should {
     lazy val form = contactDetailsSubscriptionForm.bind(Map(
-      "firstName" -> "Pat",
-      "lastName" -> "Butcher",
-      "landline" -> "08475 849375",
-      "mobile" -> "08876 849375",
-      "email" -> "PatButcher@subdomain.ntlworld.com")
+      "firstName" -> "First",
+      "lastName" -> "Last",
+      "landline" -> "00000000000",
+      "mobile" -> "0000000000",
+      "email" -> "FirstLast@subdomain.ntlworld.com")
     )
     "raise form error" in {
       form.hasErrors shouldBe false
@@ -899,13 +899,13 @@ class ContactDetailsSubscriptionFormSpec extends UnitSpec {
     }
   }
 
-  "email supplied with firstname.lastname@" should {
+  "email supplied with name.lastname@" should {
     lazy val form = contactDetailsSubscriptionForm.bind(Map(
-      "firstName" -> "Pat",
-      "lastName" -> "Butcher",
-      "landline" -> "08475 849375",
-      "mobile" -> "09827 849375",
-      "email" -> "Pat.Butcher@HMRC.gov.uk")
+      "firstName" -> "First",
+      "lastName" -> "Last",
+      "landline" -> "00000000000",
+      "mobile" -> "00000000000",
+      "email" -> "test@test.com")
     )
     "raise form error" in {
       form.hasErrors shouldBe false
@@ -915,13 +915,13 @@ class ContactDetailsSubscriptionFormSpec extends UnitSpec {
     }
   }
 
-  "email supplied with firstName lastName <email@example.com>" should {
+  "email supplied with Name lastName <email@example.com>" should {
     lazy val form = contactDetailsSubscriptionForm.bind(Map(
-      "firstName" -> "Pat",
-      "lastName" -> "Butcher",
-      "landline" -> "08475 849375",
-      "mobile" -> "08475 826273",
-      "email" -> "Pat Butcher <Pat.Butcher@HMRC.gov.uk>")
+      "firstName" -> "First",
+      "lastName" -> "Last",
+      "landline" -> "00000000000",
+      "mobile" -> "00000000000",
+      "email" -> "test <test@test.com>")
     )
     "raise form error" in {
       form.hasErrors shouldBe true
@@ -935,13 +935,13 @@ class ContactDetailsSubscriptionFormSpec extends UnitSpec {
     }
   }
 
-  "email supplied with firstname+lastname@" should {
+  "email supplied with name+lastname@" should {
     lazy val form = contactDetailsSubscriptionForm.bind(Map(
-      "firstName" -> "Pat",
-      "lastName" -> "Butcher",
-      "landline" -> "08475 849375",
-      "mobile" -> "098766 849375",
-      "email" -> "Pat+Butcher@HMRC.gov.uk")
+      "firstName" -> "First",
+      "lastName" -> "Last",
+      "landline" -> "00000000000",
+      "mobile" -> "00000000000",
+      "email" -> "name+lastname@")
     )
     "raise form error" in {
       form.hasErrors shouldBe true
@@ -955,13 +955,13 @@ class ContactDetailsSubscriptionFormSpec extends UnitSpec {
     }
   }
 
-  "email supplied with firstname_lastname@" should {
+  "email supplied with name_lastname@" should {
     lazy val form = contactDetailsSubscriptionForm.bind(Map(
-      "firstName" -> "Pat",
-      "lastName" -> "Butcher",
-      "landline" -> "08475 849375",
-      "mobile" -> "08176 849375",
-      "email" -> "Pat_Butcher@HMRC.gov.uk")
+      "firstName" -> "First",
+      "lastName" -> "Last",
+      "landline" -> "00000000000",
+      "mobile" -> "00000000000",
+      "email" -> "test@test.com")
     )
     "raise form error" in {
       form.hasErrors shouldBe false
@@ -973,11 +973,11 @@ class ContactDetailsSubscriptionFormSpec extends UnitSpec {
 
   "Part 1 - minimum allowed supplied for email (on boundary) " should {
     lazy val form = contactDetailsSubscriptionForm.bind(Map(
-      "firstName" -> "Pat",
-      "lastName" -> "Butcher",
-      "landline" -> "08475 849375",
-      "mobile" -> "08475 284432",
-      "email" -> "P@HMRC.gov.uk")
+      "firstName" -> "First",
+      "lastName" -> "Last",
+      "landline" -> "00000000000",
+      "mobile" -> "00000000000",
+      "email" -> "P@test.com")
     )
     "raise form error" in {
       form.hasErrors shouldBe false
@@ -987,13 +987,13 @@ class ContactDetailsSubscriptionFormSpec extends UnitSpec {
     }
   }
 
-  "Part 1 - nothing supplied for first part of the email (under the boundary) " should {
+  "Part 1 - nothing supplied for  part of the email (under the boundary) " should {
     lazy val form = contactDetailsSubscriptionForm.bind(Map(
-      "firstName" -> "Pat",
-      "lastName" -> "Butcher",
-      "landline" -> "08475 849375",
-      "mobile" -> "08475 872816",
-      "email" -> "@HMRC.gov.uk")
+      "firstName" -> "First",
+      "lastName" -> "Last",
+      "landline" -> "00000000000",
+      "mobile" -> "00000000000",
+      "email" -> "@test.com")
     )
     "raise form error" in {
       form.hasErrors shouldBe true
@@ -1009,11 +1009,11 @@ class ContactDetailsSubscriptionFormSpec extends UnitSpec {
 
   "Part 1 - maximum allowed supplied for email (on boundary) " should {
     lazy val form = contactDetailsSubscriptionForm.bind(Map(
-      "firstName" -> "Pat",
-      "lastName" -> "Butcher",
-      "landline" -> "08475 849375",
-      "mobile" -> "08425 849375",
-      "email" -> "thisisalongemailthisisalongemailthisisalongemailthisisalongemail@HMRC.gov.uk")
+      "firstName" -> "First",
+      "lastName" -> "Last",
+      "landline" -> "00000000000",
+      "mobile" -> "00000000000",
+      "email" -> "thisisalongemailthisisalongemailthisisalongemailthisisalongemail@test.com")
     )
     "raise form error" in {
       form.hasErrors shouldBe false
@@ -1023,13 +1023,13 @@ class ContactDetailsSubscriptionFormSpec extends UnitSpec {
     }
   }
 
-  "Part 1 - too many characters supplied for the first part of the email (over the boundary) " should {
+  "Part 1 - too many characters supplied for the  part of the email (over the boundary) " should {
     lazy val form = contactDetailsSubscriptionForm.bind(Map(
-      "firstName" -> "Pat",
-      "lastName" -> "Butcher",
-      "landline" -> "08475 849375",
-      "mobile" -> "08475 843375",
-      "email" -> "thisisalongemailthisisalongemailthisisalongemailthisisalongemailx@HMRC.gov.uk")
+      "firstName" -> "First",
+      "lastName" -> "Last",
+      "landline" -> "00000000000",
+      "mobile" -> "00000000000",
+      "email" -> "thisisalongemailthisisalongemailthisisalongemailthisisalongemailx@test.com")
     )
     "raise form error" in {
       form.hasErrors shouldBe true
@@ -1045,11 +1045,11 @@ class ContactDetailsSubscriptionFormSpec extends UnitSpec {
 
   "Part 2 - minimum allowed supplied for email (on boundary)" should {
     lazy val form = contactDetailsSubscriptionForm.bind(Map(
-      "firstName" -> "Pat",
-      "lastName" -> "Butcher",
-      "landline" -> "08475 849375",
-      "mobile" -> "01475 849375",
-      "email" -> "Pat.Butcher@P")
+      "firstName" -> "First",
+      "lastName" -> "Last",
+      "landline" -> "00000000000",
+      "mobile" -> "00000000000",
+      "email" -> "test@P")
     )
     "raise form error" in {
       form.hasErrors shouldBe false
@@ -1061,11 +1061,11 @@ class ContactDetailsSubscriptionFormSpec extends UnitSpec {
 
   "Part 2 - nothing supplied for second part of the email (under the boundary) " should {
     lazy val form = contactDetailsSubscriptionForm.bind(Map(
-      "firstName" -> "Pat",
-      "lastName" -> "Butcher",
-      "landline" -> "08475 849375",
-      "mobile" -> "08475 849395",
-      "email" -> "Pat.Butcher@")
+      "firstName" -> "First",
+      "lastName" -> "Last",
+      "landline" -> "00000000000",
+      "mobile" -> "00000000000",
+      "email" -> "test@")
     )
     "raise form error" in {
       form.hasErrors shouldBe true
@@ -1081,11 +1081,11 @@ class ContactDetailsSubscriptionFormSpec extends UnitSpec {
 
   "Part 2 - maximum allowed supplied for email (on boundary) " should {
     lazy val form = contactDetailsSubscriptionForm.bind(Map(
-      "firstName" -> "Pat",
-      "lastName" -> "Butcher",
-      "landline" -> "08475 849375",
-      "mobile" -> "08475 149375",
-      "email" -> "Pat.Butcher@thisisalongemailthisisalongemailthisisalongemai.thisisalongemail")
+      "firstName" -> "First",
+      "lastName" -> "Last",
+      "landline" -> "00000000000",
+      "mobile" -> "00000000000",
+      "email" -> "test@thisisalongemailthisisalongemailthisisalongemai.thisisalongemail")
     )
     "raise form error" in {
       form.hasErrors shouldBe false
@@ -1097,11 +1097,11 @@ class ContactDetailsSubscriptionFormSpec extends UnitSpec {
 
   "Part 2 - too many characters supplied for the second part of the email (over the boundary) " should {
     lazy val form = contactDetailsSubscriptionForm.bind(Map(
-      "firstName" -> "Pat",
-      "lastName" -> "Butcher",
-      "landline" -> "08475 849375",
-      "mobile" -> "08475 849335",
-      "email" -> "Pat.Butcher@thisisalongemailthisisalongemailthisisalongemai.thisisalongemailx")
+      "firstName" -> "First",
+      "lastName" -> "Last",
+      "landline" -> "00000000000",
+      "mobile" -> "00000000000",
+      "email" -> "test@thisisalongemailthisisalongemailthisisalongemai.thisisalongemailx")
     )
     "raise form error" in {
       form.hasErrors shouldBe true
@@ -1117,10 +1117,10 @@ class ContactDetailsSubscriptionFormSpec extends UnitSpec {
 
   "Part 3 - max characters supplied for the email (on both boundaries) " should {
     lazy val form = contactDetailsSubscriptionForm.bind(Map(
-      "firstName" -> "Pat",
-      "lastName" -> "Butcher",
-      "landline" -> "08475 849375",
-      "mobile" -> "08475 841375",
+      "firstName" -> "First",
+      "lastName" -> "Last",
+      "landline" -> "00000000000",
+      "mobile" -> "00000000000",
       "email" -> "thisisalongemailthisisalongemailthisisalongemailthisisalongemail@thisisalongemailthisisalongemailthisisalongemai.thisisalongemail")
     )
     "raise form error" in {

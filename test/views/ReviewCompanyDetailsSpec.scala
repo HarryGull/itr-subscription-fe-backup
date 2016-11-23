@@ -29,11 +29,11 @@ import views.html.registrationInformation.ReviewCompanyDetails
 
 class ReviewCompanyDetailsSpec extends UnitSpec with MockitoSugar with WithFakeApplication with FakeRequestHelper {
 
-  val maxAddress = ProvideCorrespondAddressModel("addressline1","addressline2",Some("addressline3"),Some("addressline4"),Some("AB1 1AB"),"GB")
-  val maxContact = ContactDetailsSubscriptionModel("firstname","lastname",Some("01234567890"),Some("09876543210"),"hello@world.com")
+  val maxAddress = ProvideCorrespondAddressModel("addressline1","addressline2",Some("addressline3"),Some("addressline4"),Some("AA1 1AA"),"GB")
+  val maxContact = ContactDetailsSubscriptionModel("firstname","lastname",Some("00000000000"),Some("00000000000"),"test@test.com")
   val maxDetails = ReviewCompanyDetailsModel(validModel,maxAddress,maxContact)
   val minAddress = ProvideCorrespondAddressModel("addressline1","addressline2",None,None,None,"AB")
-  val minContact = ContactDetailsSubscriptionModel("firstname","lastname",None,None,"hello@world.com")
+  val minContact = ContactDetailsSubscriptionModel("firstname","lastname",None,None,"test@test.com")
   val minDetails = ReviewCompanyDetailsModel(validModel,minAddress,minContact)
   lazy val pageMax = ReviewCompanyDetails(maxDetails)(authorisedFakeRequest)
   lazy val pageMin = ReviewCompanyDetails(minDetails)(authorisedFakeRequest)
