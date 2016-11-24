@@ -23,13 +23,13 @@ import play.api.Logger
 import play.api.http.{Status => HttpStatus}
 import play.api.mvc.{Action, AnyContent, Request, RequestHeader}
 import play.twirl.api.Html
-import config.{AppConfig, FrontendAppConfig, WSHttp}
+import config.{AppConfig, FrontendAppConfig, FrontendAuthConnector, WSHttp}
+import config.FrontendGlobal.internalServerErrorTemplate
+import connectors.KeystoreConnector
 import services.RegisteredBusinessCustomerService
-import uk.gov.hmrc.passcode.authentication.PasscodeAuthentication
 import views.html.feedback.feedback_thankyou
-import uk.gov.hmrc.play.frontend.auth.Actions
 import uk.gov.hmrc.play.frontend.auth.connectors.AuthConnector
-import uk.gov.hmrc.play.frontend.controller.{FrontendController, UnauthorisedAction}
+import uk.gov.hmrc.play.frontend.controller.FrontendController
 import uk.gov.hmrc.play.frontend.filters.SessionCookieCryptoFilter
 import uk.gov.hmrc.play.http.{HeaderCarrier, HttpGet, HttpPost, _}
 import uk.gov.hmrc.play.partials._
@@ -44,7 +44,6 @@ object FeedbackController extends FeedbackController with PartialRetriever {
   override def contactFormReferer(implicit request: Request[AnyContent]): String = request.headers.get(REFERER).getOrElse("")
   override def localSubmitUrl(implicit request: Request[AnyContent]): String = routes.FeedbackController.submit().url
 
-  protected def authConnector: AuthConnector = config.FrontendAuthConnector
   protected def loadPartial(url : String)(implicit request : RequestHeader) : HtmlPartial = ???
 
   implicit val cachedStaticHtmlPartialRetriever: CachedStaticHtmlPartialRetriever = new CachedStaticHtmlPartialRetriever {
@@ -56,8 +55,9 @@ object FeedbackController extends FeedbackController with PartialRetriever {
     override def crypto: (String) => String = cookie => SessionCookieCryptoFilter.encrypt(cookie)
   }
 
-  override val applicationConfig: AppConfig = FrontendAppConfig
-  override val registeredBusinessCustomerService = RegisteredBusinessCustomerService
+  override lazy val applicationConfig: AppConfig = FrontendAppConfig
+  override lazy val registeredBusinessCustomerService = RegisteredBusinessCustomerService
+  override lazy val authConnector = FrontendAuthConnector
 }
 
 trait FeedbackController extends FrontendController with AuthorisedForTAVC {
@@ -69,6 +69,7 @@ trait FeedbackController extends FrontendController with AuthorisedForTAVC {
   def localSubmitUrl(implicit request: Request[AnyContent]): String
 
   val applicationConfig: AppConfig
+  val authConnector: AuthConnector
 
   private val TICKET_ID = "ticketId"
   private def feedbackFormPartialUrl(implicit request: Request[AnyContent]) =
@@ -80,33 +81,35 @@ trait FeedbackController extends FrontendController with AuthorisedForTAVC {
     s"${applicationConfig.contactFrontendService}/beta-feedback/form/confirmation?ticketId=${urlEncode(ticketId)}"
 
   def show: Action[AnyContent] = Authorised.async { implicit user => implicit request =>
-      (request.session.get(REFERER), request.headers.get(REFERER)) match {
-        case (None, Some(ref)) => Future.successful(Ok(views.html.feedback.feedback(feedbackFormPartialUrl, None))
-          .withSession(request.session + (REFERER -> ref)))
-        case _ => Future.successful(Ok(views.html.feedback.feedback(feedbackFormPartialUrl, None)))
-      }
+    (request.session.get(REFERER), request.headers.get(REFERER)) match {
+      case (None, Some(ref)) => Future.successful(Ok(views.html.feedback.feedback(feedbackFormPartialUrl, None))
+        .withSession(request.session + (REFERER -> ref)))
+      case _ => Future.successful(Ok(views.html.feedback.feedback(feedbackFormPartialUrl, None)))
+    }
   }
 
   def submit: Action[AnyContent] = Authorised.async { implicit user => implicit request =>
-      request.body.asFormUrlEncoded.map { formData =>
-        httpPost.POSTForm[HttpResponse](feedbackHmrcSubmitPartialUrl, formData)(rds = readPartialsForm, hc = partialsReadyHeaderCarrier).map {
-          resp =>
-            resp.status match {
-              case HttpStatus.OK => Redirect(routes.FeedbackController.thankyou()).withSession(request.session + (TICKET_ID -> resp.body))
-              case HttpStatus.BAD_REQUEST => BadRequest(views.html.feedback.feedback(feedbackFormPartialUrl, Some(Html(resp.body))))
-              case status => Logger.warn(s"Unexpected status code from feedback form: $status"); InternalServerError
-            }
-        }
-      }.getOrElse {
-        Logger.warn("Trying to submit an empty feedback form")
-        Future.successful(InternalServerError)
+    request.body.asFormUrlEncoded.map { formData =>
+      httpPost.POSTForm[HttpResponse](feedbackHmrcSubmitPartialUrl, formData)(rds = readPartialsForm, hc = partialsReadyHeaderCarrier).map {
+        resp =>
+          resp.status match {
+            case HttpStatus.OK => Redirect(routes.FeedbackController.thankyou()).withSession(request.session + (TICKET_ID -> resp.body))
+            case HttpStatus.BAD_REQUEST => BadRequest(views.html.feedback.feedback(feedbackFormPartialUrl, Some(Html(resp.body))))
+            case status =>
+              Logger.warn(s"Unexpected status code from feedback form: $status")
+              InternalServerError(internalServerErrorTemplate)
+          }
       }
+    }.getOrElse {
+      Logger.warn("Trying to submit an empty feedback form")
+      Future.successful(InternalServerError(internalServerErrorTemplate))
+    }
   }
 
   def thankyou: Action[AnyContent] = Authorised.async { implicit user => implicit request =>
-      val ticketId = request.session.get(TICKET_ID).getOrElse("N/A")
-      val referer = request.session.get(REFERER).getOrElse("/")
-      Future.successful(Ok(feedback_thankyou(feedbackThankYouPartialUrl(ticketId), referer)).withSession(request.session - REFERER))
+    val ticketId = request.session.get(TICKET_ID).getOrElse("N/A")
+    val referer = request.session.get(REFERER).getOrElse("/investment-tax-relief-subscription/")
+    Future.successful(Ok(feedback_thankyou(feedbackThankYouPartialUrl(ticketId), referer)).withSession(request.session - REFERER))
   }
 
   private def urlEncode(value: String) = URLEncoder.encode(value, "UTF-8")
