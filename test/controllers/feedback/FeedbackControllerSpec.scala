@@ -19,6 +19,7 @@ package controllers.feedback
 import auth.{MockAuthConnector, MockConfig}
 import helpers.AuthHelper._
 import config.AppConfig
+import connectors.KeystoreConnector
 import helpers.FakeRequestHelper
 import org.mockito.Matchers
 import org.mockito.Mockito._
