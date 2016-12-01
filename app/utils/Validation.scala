@@ -32,7 +32,7 @@ import scala.util.{Failure, Success, Try}
 object Validation {
 
   def mandatoryAddressLineCheck: Mapping[String] = {
-    val validAddressLine = """[a-zA-Z0-9,.\(\)/&'"\-]{1}[a-zA-Z0-9, .\(\)/&'"\-]{0,26}""".r
+    val validAddressLine = """[a-zA-Z0-9,.\(\)/&'"\-]{1}[a-zA-Z0-9, .\(\)/&'"\-]{0,34}""".r
     val addresssLineCheckConstraint: Constraint[String] =
       Constraint("constraints.mandatoryAddressLine")({
         text =>
@@ -46,7 +46,7 @@ object Validation {
   }
 
   def optionalAddressLineCheck: Mapping[String] = {
-    val validAddressLine = """^$|[a-zA-Z0-9,.\(\)/&'"\-]{1}[a-zA-Z0-9, .\(\)/&'"\-]{0,26}""".r
+    val validAddressLine = """^$|[a-zA-Z0-9,.\(\)/&'"\-]{1}[a-zA-Z0-9, .\(\)/&'"\-]{0,34}""".r
     val addresssLineCheckConstraint: Constraint[String] =
       Constraint("constraints.optionalAddressLine")({
         text =>
@@ -60,7 +60,7 @@ object Validation {
   }
 
   def addressLineFourCheck: Mapping[String] = {
-    val validAddressLine = """^$|[a-zA-Z0-9,.\(\)/&'"\-]{1}[a-zA-Z0-9, .\(\)/&'"\-]{0,17}""".r
+    val validAddressLine = """^$|[a-zA-Z0-9,.\(\)/&'"\-]{1}[a-zA-Z0-9, .\(\)/&'"\-]{0,34}""".r
     val addressLineFourCheckConstraint: Constraint[String] =
       Constraint("constraints.addressLineFour")({
         text =>
