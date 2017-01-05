@@ -26,6 +26,8 @@ import play.api.i18n.Messages
 import play.api.test.Helpers._
 import uk.gov.hmrc.play.test.{UnitSpec, WithFakeApplication}
 import views.html.registrationInformation.ReviewCompanyDetails
+import play.api.i18n.Messages.Implicits._
+import play.api.Play.current
 
 class ReviewCompanyDetailsSpec extends UnitSpec with MockitoSugar with WithFakeApplication with FakeRequestHelper {
 
@@ -35,8 +37,8 @@ class ReviewCompanyDetailsSpec extends UnitSpec with MockitoSugar with WithFakeA
   val minAddress = ProvideCorrespondAddressModel("addressline1","addressline2",None,None,None,"AB")
   val minContact = ContactDetailsSubscriptionModel("firstname","lastname",None,None,"test@test.com")
   val minDetails = ReviewCompanyDetailsModel(validModel,minAddress,minContact)
-  lazy val pageMax = ReviewCompanyDetails(maxDetails)(authorisedFakeRequest)
-  lazy val pageMin = ReviewCompanyDetails(minDetails)(authorisedFakeRequest)
+  lazy val pageMax = ReviewCompanyDetails(maxDetails)(authorisedFakeRequest, applicationMessages)
+  lazy val pageMin = ReviewCompanyDetails(minDetails)(authorisedFakeRequest, applicationMessages)
 
   "Review Company Details page" when {
 

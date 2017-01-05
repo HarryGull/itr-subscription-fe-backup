@@ -16,25 +16,29 @@
 
 package testOnly.controllers
 
+import akka.stream.Materializer
 import helpers.FakeRequestHelper
 import org.mockito.Matchers
 import org.mockito.Mockito._
 import org.mockito.stubbing.OngoingStubbing
 import org.scalatest.mock.MockitoSugar
+import org.scalatestplus.play.OneAppPerSuite
 import testOnly.connectors.{AuthenticatorConnector, DeEnrolmentConnector}
 import uk.gov.hmrc.play.http.logging.SessionId
 import uk.gov.hmrc.play.http.{HeaderCarrier, HttpResponse}
-import uk.gov.hmrc.play.test.{UnitSpec, WithFakeApplication}
+import uk.gov.hmrc.play.test.UnitSpec
 import play.mvc.Http.Status._
 
 import scala.concurrent.Future
 
-class DeEnrolControllerSpec extends UnitSpec with FakeRequestHelper with WithFakeApplication with MockitoSugar {
+class DeEnrolControllerSpec extends UnitSpec with FakeRequestHelper with OneAppPerSuite with MockitoSugar {
 
   object TestController extends DeEnrolController {
     override val deEnrolmentConnector = mock[DeEnrolmentConnector]
     override val authenticatorConnector = mock[AuthenticatorConnector]
   }
+
+  implicit lazy val materializer: Materializer = app.materializer
 
   implicit val hc: HeaderCarrier = HeaderCarrier(sessionId = Some(SessionId("session1234")))
 

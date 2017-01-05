@@ -27,6 +27,8 @@ import play.api.i18n.Messages
 import play.api.test.Helpers._
 import uk.gov.hmrc.play.test.{UnitSpec, WithFakeApplication}
 import views.html.registrationInformation.ProvideCorrespondAddress
+import play.api.i18n.Messages.Implicits._
+import play.api.Play.current
 
 class ProvideCorrespondAddressSpec extends UnitSpec with MockitoSugar with WithFakeApplication with FakeRequestHelper{
 
@@ -57,9 +59,9 @@ class ProvideCorrespondAddressSpec extends UnitSpec with MockitoSugar with WithF
     "countryCode" -> ""))
 
   val countriesList : List[(String, String)] = List(("JP","Japan"),("GB","United Kingdom"))
-  lazy val page = ProvideCorrespondAddress(form, countriesList)(authorisedFakeRequest)
-  lazy val emptyPage = ProvideCorrespondAddress(emptyForm, countriesList)(authorisedFakeRequest)
-  lazy val errorPage = ProvideCorrespondAddress(errorForm, countriesList)(authorisedFakeRequest)
+  lazy val page = ProvideCorrespondAddress(form, countriesList)(authorisedFakeRequest, applicationMessages)
+  lazy val emptyPage = ProvideCorrespondAddress(emptyForm, countriesList)(authorisedFakeRequest, applicationMessages)
+  lazy val errorPage = ProvideCorrespondAddress(errorForm, countriesList)(authorisedFakeRequest, applicationMessages)
 
   "The Provide Correspondence Address page" should {
 

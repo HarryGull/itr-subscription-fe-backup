@@ -26,6 +26,8 @@ import services.{RegisteredBusinessCustomerService, SubscriptionService}
 import uk.gov.hmrc.play.frontend.controller.FrontendController
 import utils.CountriesHelper
 import views.html.registrationInformation.ReviewCompanyDetails
+import play.api.i18n.Messages.Implicits._
+import play.api.Play.current
 
 import scala.concurrent.Future
 

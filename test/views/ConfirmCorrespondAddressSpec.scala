@@ -30,6 +30,8 @@ import play.api.test.Helpers._
 import uk.gov.hmrc.play.test.{UnitSpec, WithFakeApplication}
 import utils.CountriesHelper
 import views.html.registrationInformation.ConfirmCorrespondAddress
+import play.api.i18n.Messages.Implicits._
+import play.api.Play.current
 
 
 class ConfirmCorrespondAddressSpec extends UnitSpec with MockitoSugar with WithFakeApplication with FakeRequestHelper{
@@ -41,9 +43,9 @@ class ConfirmCorrespondAddressSpec extends UnitSpec with MockitoSugar with WithF
 
   lazy val form = confirmCorrespondAddressForm.bind(Map("contactAddressUse" -> Constants.StandardRadioButtonYesValue))
   lazy val emptyForm = confirmCorrespondAddressForm.bind(Map("contactAddressUse" -> ""))
-  lazy val pageMax = ConfirmCorrespondAddress(form,validModel)(authorisedFakeRequest)
-  lazy val pageMin = ConfirmCorrespondAddress(form,validModelMin)(authorisedFakeRequest)
-  lazy val emptyPage = ConfirmCorrespondAddress(emptyForm,validModel)(authorisedFakeRequest)
+  lazy val pageMax = ConfirmCorrespondAddress(form,validModel)(authorisedFakeRequest, applicationMessages)
+  lazy val pageMin = ConfirmCorrespondAddress(form,validModelMin)(authorisedFakeRequest, applicationMessages)
+  lazy val emptyPage = ConfirmCorrespondAddress(emptyForm,validModel)(authorisedFakeRequest, applicationMessages)
 
   "The Confirm Correspondence Address page" should {
 
