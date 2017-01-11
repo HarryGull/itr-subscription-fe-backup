@@ -16,22 +16,19 @@
 
 package connectors
 
-import config.WSHttp
+import common.BaseTestSpec
+import config.{FrontendAppConfig, WSHttp}
 import models.etmp.{CorrespondenceDetailsModel, SubscriptionTypeModel}
 import org.mockito.Matchers
-import org.scalatest.mock.MockitoSugar
 import org.mockito.Mockito._
 import play.api.libs.json.JsValue
-import uk.gov.hmrc.play.config.ServicesConfig
-import uk.gov.hmrc.play.http.{HeaderCarrier, HttpResponse}
+import uk.gov.hmrc.play.http.HttpResponse
 import uk.gov.hmrc.play.http.ws.WSHttp
-import uk.gov.hmrc.play.test.{UnitSpec, WithFakeApplication}
 import play.api.test.Helpers._
 
-class SubscriptionConnectorSpec extends UnitSpec with WithFakeApplication with ServicesConfig with MockitoSugar {
+class SubscriptionConnectorSpec extends BaseTestSpec {
 
   lazy val mockHttp = mock[WSHttp]
-  implicit val hc = new HeaderCarrier()
   val safeID = "ABC123"
   val postcode = "AB11AB"
   val url = "localhost"
@@ -49,7 +46,7 @@ class SubscriptionConnectorSpec extends UnitSpec with WithFakeApplication with S
     }
 
     "Use base url for investment-tax-relief-subscription" in {
-      SubscriptionConnector.serviceUrl shouldBe baseUrl("investment-tax-relief-subscription")
+      SubscriptionConnector.serviceUrl shouldBe FrontendAppConfig.subscriptionUrl
     }
 
   }

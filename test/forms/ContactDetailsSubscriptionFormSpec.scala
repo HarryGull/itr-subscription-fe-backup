@@ -16,15 +16,13 @@
 
 package forms
 
+import common.BaseTestSpec
 import forms.ContactDetailsSubscriptionForm._
 import models.ContactDetailsSubscriptionModel
-import org.scalatestplus.play.OneAppPerSuite
 import play.api.i18n.Messages
-import uk.gov.hmrc.play.test.UnitSpec
 import play.api.i18n.Messages.Implicits._
-import play.api.Play.current
 
-class ContactDetailsSubscriptionFormSpec extends UnitSpec with OneAppPerSuite {
+class ContactDetailsSubscriptionFormSpec extends BaseTestSpec {
 
   "Creating a form using an empty model" should {
     lazy val form = contactDetailsSubscriptionForm
@@ -76,7 +74,7 @@ class ContactDetailsSubscriptionFormSpec extends UnitSpec with OneAppPerSuite {
         form.errors.head.key shouldBe "firstName"
       }
       "associate the correct error message to the error" in {
-        form.error("firstName").get.message shouldBe Messages("error.required")
+        Messages(form.error("firstName").get.message) shouldBe Messages("error.required")
       }
     }
   }
@@ -98,7 +96,7 @@ class ContactDetailsSubscriptionFormSpec extends UnitSpec with OneAppPerSuite {
         form.errors.head.key shouldBe "lastName"
       }
       "associate the correct error message to the error" in {
-        form.error("lastName").get.message shouldBe Messages("error.required")
+        Messages(form.error("lastName").get.message) shouldBe Messages("error.required")
       }
     }
   }
@@ -135,7 +133,7 @@ class ContactDetailsSubscriptionFormSpec extends UnitSpec with OneAppPerSuite {
         form.errors.head.key shouldBe "email"
       }
       "associate the correct error message to the error" in {
-        form.error("email").get.message shouldBe Messages("validation.error.email")
+        Messages(form.error("email").get.message) shouldBe Messages("validation.error.email")
       }
     }
   }
@@ -158,8 +156,8 @@ class ContactDetailsSubscriptionFormSpec extends UnitSpec with OneAppPerSuite {
         form.errors(1).key shouldBe "lastName"
       }
       "associate the correct error message to the error" in {
-        form.error("firstName").get.message shouldBe Messages("error.required")
-        form.error("lastName").get.message shouldBe Messages("error.required")
+        Messages(form.error("firstName").get.message) shouldBe Messages("error.required")
+        Messages(form.error("lastName").get.message) shouldBe Messages("error.required")
       }
     }
   }
@@ -181,7 +179,7 @@ class ContactDetailsSubscriptionFormSpec extends UnitSpec with OneAppPerSuite {
         form.errors.head.key shouldBe "email"
       }
       "associate the correct error message to the error" in {
-        form.error("email").get.message shouldBe Messages("validation.error.email")
+        Messages(form.error("email").get.message) shouldBe Messages("validation.error.email")
       }
     }
   }
@@ -204,8 +202,8 @@ class ContactDetailsSubscriptionFormSpec extends UnitSpec with OneAppPerSuite {
         form.errors(1).key shouldBe "lastName"
       }
       "associate the correct error message to the error" in {
-        form.error("firstName").get.message shouldBe Messages("error.required")
-        form.error("lastName").get.message shouldBe Messages("error.required")
+        Messages(form.error("firstName").get.message) shouldBe Messages("error.required")
+        Messages(form.error("lastName").get.message) shouldBe Messages("error.required")
       }
     }
   }
@@ -226,7 +224,7 @@ class ContactDetailsSubscriptionFormSpec extends UnitSpec with OneAppPerSuite {
       form.errors.head.key shouldBe "firstName"
     }
     "associate the correct error message to the error " in {
-      form.error("firstName").get.message shouldBe Messages("error.required")
+      Messages(form.error("firstName").get.message) shouldBe Messages("error.required")
     }
   }
 
@@ -246,7 +244,7 @@ class ContactDetailsSubscriptionFormSpec extends UnitSpec with OneAppPerSuite {
       form.errors.head.key shouldBe "lastName"
     }
     "associate the correct error message to the error " in {
-      form.error("lastName").get.message shouldBe Messages("error.required")
+      Messages(form.error("lastName").get.message) shouldBe Messages("error.required")
     }
   }
 
@@ -300,7 +298,7 @@ class ContactDetailsSubscriptionFormSpec extends UnitSpec with OneAppPerSuite {
       form.errors.head.key shouldBe "email"
     }
     "associate the correct error message to the error " in {
-      form.error("email").get.message shouldBe Messages("validation.error.email")
+      Messages(form.error("email").get.message) shouldBe Messages("validation.error.email")
     }
   }
 
@@ -530,7 +528,7 @@ class ContactDetailsSubscriptionFormSpec extends UnitSpec with OneAppPerSuite {
       form.errors.head.key shouldBe "landline"
     }
     "associate the correct error message to the error" in {
-      form.error("landline").get.message shouldBe Messages("validation.error.telephoneNumber")
+      Messages(form.error("landline").get.message) shouldBe Messages("validation.error.telephoneNumber")
     }
   }
 
@@ -550,7 +548,7 @@ class ContactDetailsSubscriptionFormSpec extends UnitSpec with OneAppPerSuite {
       form.errors.head.key shouldBe "mobile"
     }
     "associate the correct error message to the error" in {
-      form.error("mobile").get.message shouldBe Messages("validation.error.telephoneNumber")
+      Messages(form.error("mobile").get.message) shouldBe Messages("validation.error.telephoneNumber")
     }
   }
 
@@ -570,7 +568,7 @@ class ContactDetailsSubscriptionFormSpec extends UnitSpec with OneAppPerSuite {
       form.errors.head.key shouldBe "landline"
     }
     "associate the correct error message to the error" in {
-      form.error("landline").get.message shouldBe Messages("validation.error.telephoneNumber")
+      Messages(form.error("landline").get.message) shouldBe Messages("validation.error.telephoneNumber")
     }
   }
 
@@ -590,7 +588,7 @@ class ContactDetailsSubscriptionFormSpec extends UnitSpec with OneAppPerSuite {
       form.errors.head.key shouldBe "mobile"
     }
     "associate the correct error message to the error" in {
-      form.error("mobile").get.message shouldBe Messages("validation.error.telephoneNumber")
+      Messages(form.error("mobile").get.message) shouldBe Messages("validation.error.telephoneNumber")
     }
   }
 
@@ -644,7 +642,7 @@ class ContactDetailsSubscriptionFormSpec extends UnitSpec with OneAppPerSuite {
       form.errors.head.key shouldBe "landline"
     }
     "associate the correct error message to the error" in {
-      form.error("landline").get.message shouldBe Messages("validation.error.telephoneNumber")
+      Messages(form.error("landline").get.message) shouldBe Messages("validation.error.telephoneNumber")
     }
   }
 
@@ -712,7 +710,7 @@ class ContactDetailsSubscriptionFormSpec extends UnitSpec with OneAppPerSuite {
       form.errors.head.key shouldBe "landline"
     }
     "associate the correct error message to the error" in {
-      form.error("landline").get.message shouldBe Messages("validation.error.telephoneNumber")
+      Messages(form.error("landline").get.message) shouldBe Messages("validation.error.telephoneNumber")
     }
   }
 
@@ -732,7 +730,7 @@ class ContactDetailsSubscriptionFormSpec extends UnitSpec with OneAppPerSuite {
       form.errors.head.key shouldBe "landline"
     }
     "associate the correct error message to the error" in {
-      form.error("landline").get.message shouldBe Messages("validation.error.telephoneNumber")
+      Messages(form.error("landline").get.message) shouldBe Messages("validation.error.telephoneNumber")
     }
   }
 
@@ -768,7 +766,7 @@ class ContactDetailsSubscriptionFormSpec extends UnitSpec with OneAppPerSuite {
       form.errors.head.key shouldBe "landline"
     }
     "associate the correct error message to the error" in {
-      form.error("landline").get.message shouldBe Messages("validation.error.telephoneNumber")
+      Messages(form.error("landline").get.message) shouldBe Messages("validation.error.telephoneNumber")
     }
   }
 
@@ -788,7 +786,7 @@ class ContactDetailsSubscriptionFormSpec extends UnitSpec with OneAppPerSuite {
       form.errors.head.key shouldBe "landline"
     }
     "associate the correct error message to the error" in {
-      form.error("landline").get.message shouldBe Messages("validation.error.telephoneNumber")
+      Messages(form.error("landline").get.message) shouldBe Messages("validation.error.telephoneNumber")
     }
   }
 
@@ -842,7 +840,7 @@ class ContactDetailsSubscriptionFormSpec extends UnitSpec with OneAppPerSuite {
       form.errors.head.key shouldBe "email"
     }
     "associate the correct error message to the error" in {
-      form.error("email").get.message shouldBe Messages("validation.error.email")
+      Messages(form.error("email").get.message) shouldBe Messages("validation.error.email")
     }
   }
 
@@ -862,7 +860,7 @@ class ContactDetailsSubscriptionFormSpec extends UnitSpec with OneAppPerSuite {
       form.errors.head.key shouldBe "email"
     }
     "associate the correct error message to the error" in {
-      form.error("email").get.message shouldBe Messages("validation.error.email")
+      Messages(form.error("email").get.message) shouldBe Messages("validation.error.email")
     }
   }
 
@@ -882,7 +880,7 @@ class ContactDetailsSubscriptionFormSpec extends UnitSpec with OneAppPerSuite {
       form.errors.head.key shouldBe "email"
     }
     "associate the correct error message to the error" in {
-      form.error("email").get.message shouldBe Messages("validation.error.email")
+      Messages(form.error("email").get.message) shouldBe Messages("validation.error.email")
     }
   }
 
@@ -934,7 +932,7 @@ class ContactDetailsSubscriptionFormSpec extends UnitSpec with OneAppPerSuite {
       form.errors.head.key shouldBe "email"
     }
     "associate the correct error message to the error" in {
-      form.error("email").get.message shouldBe Messages("validation.error.email")
+      Messages(form.error("email").get.message) shouldBe Messages("validation.error.email")
     }
   }
 
@@ -954,7 +952,7 @@ class ContactDetailsSubscriptionFormSpec extends UnitSpec with OneAppPerSuite {
       form.errors.head.key shouldBe "email"
     }
     "associate the correct error message to the error" in {
-      form.error("email").get.message shouldBe Messages("validation.error.email")
+      Messages(form.error("email").get.message) shouldBe Messages("validation.error.email")
     }
   }
 
@@ -1006,7 +1004,7 @@ class ContactDetailsSubscriptionFormSpec extends UnitSpec with OneAppPerSuite {
       form.errors.head.key shouldBe "email"
     }
     "associate the correct error message to the error" in {
-      form.error("email").get.message shouldBe Messages("validation.error.email")
+      Messages(form.error("email").get.message) shouldBe Messages("validation.error.email")
     }
   }
 
@@ -1042,7 +1040,7 @@ class ContactDetailsSubscriptionFormSpec extends UnitSpec with OneAppPerSuite {
       form.errors.head.key shouldBe "email"
     }
     "associate the correct error message to the error" in {
-      form.error("email").get.message shouldBe Messages("validation.error.email")
+      Messages(form.error("email").get.message) shouldBe Messages("validation.error.email")
     }
   }
 
@@ -1078,7 +1076,7 @@ class ContactDetailsSubscriptionFormSpec extends UnitSpec with OneAppPerSuite {
       form.errors.head.key shouldBe "email"
     }
     "associate the correct error message to the error" in {
-      form.error("email").get.message shouldBe Messages("validation.error.email")
+      Messages(form.error("email").get.message) shouldBe Messages("validation.error.email")
     }
   }
 
@@ -1114,7 +1112,7 @@ class ContactDetailsSubscriptionFormSpec extends UnitSpec with OneAppPerSuite {
       form.errors.head.key shouldBe "email"
     }
     "associate the correct error message to the error" in {
-      form.error("email").get.message shouldBe Messages("validation.error.email")
+      Messages(form.error("email").get.message) shouldBe Messages("validation.error.email")
     }
   }
 

@@ -16,19 +16,17 @@
 
 package testOnly.connectors
 
+import common.BaseTestSpec
 import org.mockito.Matchers
 import org.mockito.Mockito._
-import org.scalatest.mock.MockitoSugar
 import play.api.libs.json.{JsValue, Json}
 import play.api.test.Helpers._
-import uk.gov.hmrc.play.http.logging.SessionId
 import uk.gov.hmrc.play.http.ws.WSHttp
-import uk.gov.hmrc.play.http.{HeaderCarrier, HttpResponse}
-import uk.gov.hmrc.play.test.UnitSpec
+import uk.gov.hmrc.play.http.HttpResponse
 
 import scala.concurrent.Future
 
-class DeEnrolmentConnectorSpec extends UnitSpec with MockitoSugar {
+class DeEnrolmentConnectorSpec extends BaseTestSpec {
 
   object TestConnector extends DeEnrolmentConnector {
     val serviceURL = "tax-enrolments"
@@ -36,7 +34,6 @@ class DeEnrolmentConnectorSpec extends UnitSpec with MockitoSugar {
     val http = mock[WSHttp]
   }
 
-  implicit val hc: HeaderCarrier = HeaderCarrier(sessionId = Some(SessionId("session1234")))
   val jsonError = Json.parse("""{"Message": "Error"}""")
 
   "Calling resetEnrolments" when {

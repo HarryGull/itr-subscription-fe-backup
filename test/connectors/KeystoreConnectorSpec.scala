@@ -16,31 +16,22 @@
 
 package connectors
 
-import java.util.UUID
-
+import common.BaseTestSpec
 import models.ConfirmCorrespondAddressModel
 import org.mockito.Matchers
 import org.mockito.Mockito._
-import org.scalatest.mock.MockitoSugar
 import play.api.libs.json.Json
-import uk.gov.hmrc.http.cache.client.{CacheMap, SessionCache}
+import uk.gov.hmrc.http.cache.client.CacheMap
 import uk.gov.hmrc.play.http.{HeaderCarrier, HttpResponse}
-import uk.gov.hmrc.play.http.logging.SessionId
-import uk.gov.hmrc.play.test.UnitSpec
 import play.api.test.Helpers._
 
 import scala.concurrent.Future
 
-class KeystoreConnectorSpec extends UnitSpec with MockitoSugar {
-
-  val mockSessionCache = mock[SessionCache]
-  val sessionId = UUID.randomUUID.toString
+class KeystoreConnectorSpec extends BaseTestSpec {
 
   object TestKeyStoreConnector extends KeystoreConnector {
     override val sessionCache = mockSessionCache
   }
-
-  implicit val hc: HeaderCarrier = HeaderCarrier(sessionId = Some(SessionId(sessionId.toString)))
 
   "fetchAndGetFormData" should {
 

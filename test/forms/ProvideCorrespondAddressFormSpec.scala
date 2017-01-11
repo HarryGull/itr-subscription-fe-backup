@@ -16,15 +16,13 @@
 
 package forms
 
+import common.BaseTestSpec
 import forms.ProvideCorrespondAddressForm._
 import models.ProvideCorrespondAddressModel
-import org.scalatestplus.play.OneAppPerSuite
 import play.api.i18n.Messages
-import uk.gov.hmrc.play.test.UnitSpec
 import play.api.i18n.Messages.Implicits._
-import play.api.Play.current
 
-class ProvideCorrespondAddressFormSpec extends UnitSpec with OneAppPerSuite {
+class ProvideCorrespondAddressFormSpec extends BaseTestSpec {
 
   "Creating a form using an empty model" should {
     lazy val form = provideCorrespondAddressForm
@@ -66,7 +64,7 @@ class ProvideCorrespondAddressFormSpec extends UnitSpec with OneAppPerSuite {
         form.errors.head.key shouldBe "addressline1"
       }
       "associate the correct error message to the error" in {
-        form.error("addressline1").get.message shouldBe Messages("validation.error.mandatoryaddresssline")
+        Messages(form.error("addressline1").get.message) shouldBe Messages("validation.error.mandatoryaddresssline")
       }
     }
   }
@@ -89,7 +87,7 @@ class ProvideCorrespondAddressFormSpec extends UnitSpec with OneAppPerSuite {
         form.errors.head.key shouldBe "addressline2"
       }
       "associate the correct error message to the error" in {
-        form.error("addressline2").get.message shouldBe Messages("validation.error.mandatoryaddresssline")
+        Messages(form.error("addressline2").get.message) shouldBe Messages("validation.error.mandatoryaddresssline")
       }
     }
   }
@@ -112,7 +110,7 @@ class ProvideCorrespondAddressFormSpec extends UnitSpec with OneAppPerSuite {
         form.errors.head.key shouldBe "countryCode"
       }
       "associate the correct error message to the error" in {
-        form.error("countryCode").get.message shouldBe Messages("validation.error.countryCode")
+        Messages(form.error("countryCode").get.message) shouldBe Messages("validation.error.countryCode")
       }
     }
   }
@@ -136,8 +134,8 @@ class ProvideCorrespondAddressFormSpec extends UnitSpec with OneAppPerSuite {
         form.errors(1).key shouldBe "addressline2"
       }
       "associate the correct error message to the error" in {
-        form.error("addressline1").get.message shouldBe Messages("validation.error.mandatoryaddresssline")
-        form.error("addressline2").get.message shouldBe Messages("validation.error.mandatoryaddresssline")
+        Messages(form.error("addressline1").get.message) shouldBe Messages("validation.error.mandatoryaddresssline")
+        Messages(form.error("addressline2").get.message) shouldBe Messages("validation.error.mandatoryaddresssline")
       }
     }
   }
@@ -161,8 +159,8 @@ class ProvideCorrespondAddressFormSpec extends UnitSpec with OneAppPerSuite {
         form.errors(1).key shouldBe "countryCode"
       }
       "associate the correct error message to the error" in {
-        form.error("addressline2").get.message shouldBe Messages("validation.error.mandatoryaddresssline")
-        form.error("countryCode").get.message shouldBe Messages("validation.error.countryCode")
+        Messages(form.error("addressline2").get.message) shouldBe Messages("validation.error.mandatoryaddresssline")
+        Messages(form.error("countryCode").get.message) shouldBe Messages("validation.error.countryCode")
       }
     }
   }
@@ -187,9 +185,9 @@ class ProvideCorrespondAddressFormSpec extends UnitSpec with OneAppPerSuite {
         form.errors(2).key shouldBe "countryCode"
       }
       "associate the correct error message to the error" in {
-        form.error("addressline1").get.message shouldBe Messages("validation.error.mandatoryaddresssline")
-        form.error("addressline2").get.message shouldBe Messages("validation.error.mandatoryaddresssline")
-        form.error("countryCode").get.message shouldBe Messages("validation.error.countryCode")
+        Messages(form.error("addressline1").get.message) shouldBe Messages("validation.error.mandatoryaddresssline")
+        Messages(form.error("addressline2").get.message) shouldBe Messages("validation.error.mandatoryaddresssline")
+        Messages(form.error("countryCode").get.message) shouldBe Messages("validation.error.countryCode")
       }
     }
   }
@@ -211,7 +209,7 @@ class ProvideCorrespondAddressFormSpec extends UnitSpec with OneAppPerSuite {
       form.errors.head.key shouldBe "addressline1"
     }
     "associate the correct error message to the error " in {
-      form.error("addressline1").get.message shouldBe Messages("validation.error.mandatoryaddresssline")
+      Messages(form.error("addressline1").get.message) shouldBe Messages("validation.error.mandatoryaddresssline")
     }
   }
 
@@ -232,7 +230,7 @@ class ProvideCorrespondAddressFormSpec extends UnitSpec with OneAppPerSuite {
       form.errors.head.key shouldBe "addressline2"
     }
     "associate the correct error message to the error " in {
-      form.error("addressline2").get.message shouldBe Messages("validation.error.mandatoryaddresssline")
+      Messages(form.error("addressline2").get.message) shouldBe Messages("validation.error.mandatoryaddresssline")
     }
   }
 
@@ -253,7 +251,7 @@ class ProvideCorrespondAddressFormSpec extends UnitSpec with OneAppPerSuite {
       form.errors.head.key shouldBe "addressline3"
     }
     "associate the correct error message to the error " in {
-      form.error("addressline3").get.message shouldBe Messages("validation.error.optionaladdresssline")
+      Messages(form.error("addressline3").get.message) shouldBe Messages("validation.error.optionaladdresssline")
     }
   }
 
@@ -274,7 +272,7 @@ class ProvideCorrespondAddressFormSpec extends UnitSpec with OneAppPerSuite {
       form.errors.head.key shouldBe "addressline4"
     }
     "associate the correct error message to the error " in {
-      form.error("addressline4").get.message shouldBe Messages("validation.error.linefouraddresssline")
+      Messages(form.error("addressline4").get.message) shouldBe Messages("validation.error.linefouraddresssline")
     }
   }
 
@@ -294,7 +292,7 @@ class ProvideCorrespondAddressFormSpec extends UnitSpec with OneAppPerSuite {
       form.errors.length shouldBe 1
     }
     "associate the correct error message to the error" in {
-      form.error("countryCode").get.message shouldBe Messages("validation.error.countryCode")
+      Messages(form.error("countryCode").get.message) shouldBe Messages("validation.error.countryCode")
     }
   }
 
@@ -314,7 +312,7 @@ class ProvideCorrespondAddressFormSpec extends UnitSpec with OneAppPerSuite {
       form.errors.length shouldBe 1
     }
     "associate the correct error message to the error" in {
-      form.error("postcode").get.message shouldBe Messages("validation.error.postcode")
+      Messages(form.error("postcode").get.message) shouldBe Messages("validation.error.postcode")
     }
   }
 
@@ -403,7 +401,7 @@ class ProvideCorrespondAddressFormSpec extends UnitSpec with OneAppPerSuite {
       form.errors.head.key shouldBe "postcode"
     }
     "associate the correct error message to the error" in {
-      form.error("postcode").get.message shouldBe Messages("validation.error.postcode")
+      Messages(form.error("postcode").get.message) shouldBe Messages("validation.error.postcode")
     }
   }
 
@@ -424,7 +422,7 @@ class ProvideCorrespondAddressFormSpec extends UnitSpec with OneAppPerSuite {
       form.errors.head.key shouldBe "countryCode"
     }
     "associate the correct error message to the error" in {
-      form.error("countryCode").get.message shouldBe Messages("validation.error.countryCode")
+      Messages(form.error("countryCode").get.message) shouldBe Messages("validation.error.countryCode")
     }
   }
 
@@ -634,7 +632,7 @@ class ProvideCorrespondAddressFormSpec extends UnitSpec with OneAppPerSuite {
       form.errors.head.key shouldBe "countryCode"
     }
     "associate the correct error message to the error" in {
-      form.error("countryCode").get.message shouldBe Messages("validation.error.countryCode")
+      Messages(form.error("countryCode").get.message) shouldBe Messages("validation.error.countryCode")
     }
   }
 
@@ -655,7 +653,7 @@ class ProvideCorrespondAddressFormSpec extends UnitSpec with OneAppPerSuite {
       form.errors.head.key shouldBe "addressline1"
     }
     "associate the correct error message to the error" in {
-      form.error("addressline1").get.message shouldBe Messages("validation.error.mandatoryaddresssline")
+      Messages(form.error("addressline1").get.message) shouldBe Messages("validation.error.mandatoryaddresssline")
     }
   }
 
@@ -676,7 +674,7 @@ class ProvideCorrespondAddressFormSpec extends UnitSpec with OneAppPerSuite {
       form.errors.head.key shouldBe "addressline2"
     }
     "associate the correct error message to the error" in {
-      form.error("addressline2").get.message shouldBe Messages("validation.error.mandatoryaddresssline")
+      Messages(form.error("addressline2").get.message) shouldBe Messages("validation.error.mandatoryaddresssline")
     }
   }
 
@@ -697,7 +695,7 @@ class ProvideCorrespondAddressFormSpec extends UnitSpec with OneAppPerSuite {
       form.errors.head.key shouldBe "addressline3"
     }
     "associate the correct error message to the error" in {
-      form.error("addressline3").get.message shouldBe Messages("validation.error.optionaladdresssline")
+      Messages(form.error("addressline3").get.message) shouldBe Messages("validation.error.optionaladdresssline")
     }
   }
 
@@ -718,7 +716,7 @@ class ProvideCorrespondAddressFormSpec extends UnitSpec with OneAppPerSuite {
       form.errors.head.key shouldBe "addressline4"
     }
     "associate the correct error message to the error" in {
-      form.error("addressline4").get.message shouldBe Messages("validation.error.linefouraddresssline")
+      Messages(form.error("addressline4").get.message) shouldBe Messages("validation.error.linefouraddresssline")
     }
   }
 
@@ -739,7 +737,7 @@ class ProvideCorrespondAddressFormSpec extends UnitSpec with OneAppPerSuite {
       form.errors.head.key shouldBe "postcode"
     }
     "associate the correct error message to the error" in {
-      form.error("postcode").get.message shouldBe Messages("validation.error.postcode")
+      Messages(form.error("postcode").get.message) shouldBe Messages("validation.error.postcode")
     }
   }
 
@@ -760,7 +758,7 @@ class ProvideCorrespondAddressFormSpec extends UnitSpec with OneAppPerSuite {
       form.errors.head.key shouldBe "countryCode"
     }
     "associate the correct error message to the error" in {
-      form.error("countryCode").get.message shouldBe Messages("validation.error.countryCode")
+      Messages(form.error("countryCode").get.message) shouldBe Messages("validation.error.countryCode")
     }
   }
 
@@ -783,7 +781,7 @@ class ProvideCorrespondAddressFormSpec extends UnitSpec with OneAppPerSuite {
       form.errors.head.key shouldBe "postcode"
     }
     "associate the correct error message to the error" in {
-      form.error("postcode").get.message shouldBe Messages("validation.error.postcode")
+      Messages(form.error("postcode").get.message) shouldBe Messages("validation.error.postcode")
     }
   }
 
@@ -804,7 +802,7 @@ class ProvideCorrespondAddressFormSpec extends UnitSpec with OneAppPerSuite {
       form.errors.head.key shouldBe "postcode"
     }
     "associate the correct error message to the error" in {
-      form.error("postcode").get.message shouldBe Messages("validation.error.postcode")
+      Messages(form.error("postcode").get.message) shouldBe Messages("validation.error.postcode")
     }
   }
 
@@ -825,7 +823,7 @@ class ProvideCorrespondAddressFormSpec extends UnitSpec with OneAppPerSuite {
       form.errors.head.key shouldBe "postcode"
     }
     "associate the correct error message to the error" in {
-      form.error("postcode").get.message shouldBe Messages("validation.error.postcode")
+      Messages(form.error("postcode").get.message) shouldBe Messages("validation.error.postcode")
     }
   }
 
@@ -863,7 +861,7 @@ class ProvideCorrespondAddressFormSpec extends UnitSpec with OneAppPerSuite {
       form.errors.head.key shouldBe "postcode"
     }
     "associate the correct error message to the error" in {
-      form.error("postcode").get.message shouldBe Messages("validation.error.postcode")
+      Messages(form.error("postcode").get.message) shouldBe Messages("validation.error.postcode")
     }
   }
 
@@ -884,7 +882,7 @@ class ProvideCorrespondAddressFormSpec extends UnitSpec with OneAppPerSuite {
       form.errors.head.key shouldBe "countryCode"
     }
     "associate the correct error message to the error" in {
-      form.error("countryCode").get.message shouldBe Messages("validation.error.countryCode")
+      Messages(form.error("countryCode").get.message) shouldBe Messages("validation.error.countryCode")
     }
   }
 
@@ -905,7 +903,7 @@ class ProvideCorrespondAddressFormSpec extends UnitSpec with OneAppPerSuite {
       form.errors.head.key shouldBe "countryCode"
     }
     "associate the correct error message to the error" in {
-      form.error("countryCode").get.message shouldBe Messages("validation.error.countryCode")
+      Messages(form.error("countryCode").get.message) shouldBe Messages("validation.error.countryCode")
     }
   }
 
@@ -926,7 +924,7 @@ class ProvideCorrespondAddressFormSpec extends UnitSpec with OneAppPerSuite {
       form.errors.head.key shouldBe "countryCode"
     }
     "associate the correct error message to the error" in {
-      form.error("countryCode").get.message shouldBe Messages("validation.error.countryCode")
+      Messages(form.error("countryCode").get.message) shouldBe Messages("validation.error.countryCode")
     }
   }
 
@@ -964,7 +962,7 @@ class ProvideCorrespondAddressFormSpec extends UnitSpec with OneAppPerSuite {
       form.errors.head.key shouldBe "countryCode"
     }
     "associate the correct error message to the error" in {
-      form.error("countryCode").get.message shouldBe Messages("validation.error.countryCode")
+      Messages(form.error("countryCode").get.message) shouldBe Messages("validation.error.countryCode")
     }
   }
 }

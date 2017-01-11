@@ -17,7 +17,6 @@
 package testOnly.controllers
 
 import akka.stream.Materializer
-import helpers.FakeRequestHelper
 import org.mockito.Matchers
 import org.mockito.Mockito._
 import org.mockito.stubbing.OngoingStubbing
@@ -28,6 +27,7 @@ import uk.gov.hmrc.play.http.logging.SessionId
 import uk.gov.hmrc.play.http.{HeaderCarrier, HttpResponse}
 import uk.gov.hmrc.play.test.UnitSpec
 import play.mvc.Http.Status._
+import utils.FakeRequestHelper
 
 import scala.concurrent.Future
 

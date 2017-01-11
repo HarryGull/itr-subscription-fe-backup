@@ -27,7 +27,8 @@ import uk.gov.hmrc.play.frontend.controller.FrontendController
 import utils.CountriesHelper
 import views.html.registrationInformation.ReviewCompanyDetails
 import play.api.i18n.Messages.Implicits._
-import play.api.Play.current
+import play.api.Play._
+import uk.gov.hmrc.passcode.authentication.{PasscodeAuthenticationProvider, PasscodeVerificationConfig}
 
 import scala.concurrent.Future
 
@@ -37,6 +38,8 @@ object ReviewCompanyDetailsController extends ReviewCompanyDetailsController {
   override lazy val registeredBusinessCustomerService = RegisteredBusinessCustomerService
   override lazy val keystoreConnector = KeystoreConnector
   override lazy val subscriptionService = SubscriptionService
+  override def config = new PasscodeVerificationConfig(configuration)
+  override def passcodeAuthenticationProvider = new PasscodeAuthenticationProvider(config)
 }
 
 trait ReviewCompanyDetailsController extends FrontendController with AuthorisedForTAVC {

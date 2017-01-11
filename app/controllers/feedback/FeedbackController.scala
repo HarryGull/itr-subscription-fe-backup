@@ -34,7 +34,8 @@ import uk.gov.hmrc.play.frontend.filters.SessionCookieCryptoFilter
 import uk.gov.hmrc.play.http.{HeaderCarrier, HttpGet, HttpPost, _}
 import uk.gov.hmrc.play.partials._
 import play.api.i18n.Messages.Implicits._
-import play.api.Play.current
+import play.api.Play._
+import uk.gov.hmrc.passcode.authentication.{PasscodeAuthenticationProvider, PasscodeVerificationConfig}
 
 import scala.concurrent.Future
 
@@ -60,6 +61,9 @@ object FeedbackController extends FeedbackController with PartialRetriever {
   override lazy val applicationConfig: AppConfig = FrontendAppConfig
   override lazy val registeredBusinessCustomerService = RegisteredBusinessCustomerService
   override lazy val authConnector = FrontendAuthConnector
+
+  override def config = new PasscodeVerificationConfig(configuration)
+  override def passcodeAuthenticationProvider = new PasscodeAuthenticationProvider(config)
 }
 
 trait FeedbackController extends FrontendController with AuthorisedForTAVC {

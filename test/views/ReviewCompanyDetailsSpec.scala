@@ -16,9 +16,7 @@
 
 package views
 
-import helpers.FakeRequestHelper
-import helpers.AuthHelper._
-import controllers.routes
+import utils.{AuthHelper, FakeRequestHelper}
 import models.{ContactDetailsSubscriptionModel, ProvideCorrespondAddressModel, ReviewCompanyDetailsModel}
 import org.jsoup.Jsoup
 import org.scalatest.mock.MockitoSugar
@@ -29,7 +27,7 @@ import views.html.registrationInformation.ReviewCompanyDetails
 import play.api.i18n.Messages.Implicits._
 import play.api.Play.current
 
-class ReviewCompanyDetailsSpec extends UnitSpec with MockitoSugar with WithFakeApplication with FakeRequestHelper {
+class ReviewCompanyDetailsSpec extends UnitSpec with MockitoSugar with WithFakeApplication with FakeRequestHelper with AuthHelper {
 
   val maxAddress = ProvideCorrespondAddressModel("addressline1","addressline2",Some("addressline3"),Some("addressline4"),Some("AA1 1AA"),"GB")
   val maxContact = ContactDetailsSubscriptionModel("firstname","lastname",Some("00000000000"),Some("00000000000"),"test@test.com")

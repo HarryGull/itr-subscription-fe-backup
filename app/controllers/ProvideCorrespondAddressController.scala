@@ -29,7 +29,8 @@ import uk.gov.hmrc.play.frontend.controller.FrontendController
 import views.html.registrationInformation.ProvideCorrespondAddress
 import utils._
 import play.api.i18n.Messages.Implicits._
-import play.api.Play.current
+import play.api.Play._
+import uk.gov.hmrc.passcode.authentication.{PasscodeAuthenticationProvider, PasscodeVerificationConfig}
 
 import scala.concurrent.Future
 
@@ -39,6 +40,8 @@ object ProvideCorrespondAddressController extends ProvideCorrespondAddressContro
   override lazy val authConnector = FrontendAuthConnector
   override lazy val registeredBusinessCustomerService = RegisteredBusinessCustomerService
   override val keyStoreConnector = KeystoreConnector
+  override def config = new PasscodeVerificationConfig(configuration)
+  override def passcodeAuthenticationProvider = new PasscodeAuthenticationProvider(config)
 }
 
 trait ProvideCorrespondAddressController extends FrontendController with AuthorisedForTAVC {

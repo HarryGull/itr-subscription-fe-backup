@@ -16,26 +16,20 @@
 
 package connectors
 
-import config.{BusinessCustomerSessionCache, TavcSessionCache}
+import common.BaseTestSpec
+import config.BusinessCustomerSessionCache
 import models.CompanyRegistrationReviewDetailsModel
-import helpers.AuthHelper._
 import org.mockito.Matchers
 import org.mockito.Mockito._
-import org.scalatest.mock.MockitoSugar
-import uk.gov.hmrc.http.cache.client.SessionCache
 import uk.gov.hmrc.play.http.HeaderCarrier
-import uk.gov.hmrc.play.http.logging.SessionId
-import uk.gov.hmrc.play.test.UnitSpec
 
 import scala.concurrent.Future
 
-class DataCacheConnectorSpec extends UnitSpec with MockitoSugar {
-
-  val validHeaderCarrier = new HeaderCarrier(sessionId = Some(SessionId("valid-session")))
+class DataCacheConnectorSpec extends BaseTestSpec {
 
   object TestConnector extends DataCacheConnector {
 
-    override val sessionCache: SessionCache = mock[SessionCache]
+    override val sessionCache = mockSessionCache
   }
 
   "BusinessCustomerDataCacheConnector" should {
@@ -49,7 +43,6 @@ class DataCacheConnectorSpec extends UnitSpec with MockitoSugar {
   "DataCacheConnectorSpec.fetchAndGetReviewDetailsForSession" should {
 
     "convert review details json to CompanyRegistrationReviewDetailsModel" in {
-      implicit val hc: HeaderCarrier = validHeaderCarrier
       when(TestConnector.sessionCache.fetchAndGetEntry[CompanyRegistrationReviewDetailsModel]
         (Matchers.anyString())(Matchers.any[HeaderCarrier](),Matchers.any()))
         .thenReturn(Future.successful(Some(validModel)))

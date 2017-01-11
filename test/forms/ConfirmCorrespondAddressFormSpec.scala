@@ -14,37 +14,18 @@
  * limitations under the License.
  */
 
-/**
-  * Copyright 2016 HM Revenue & Customs
-  *
-  * Licensed under the Apache License, Version 2.0 (the "License");
-  * you may not use this file except in compliance with the License.
-  * You may obtain a copy of the License at
-  *
-  * http://www.apache.org/licenses/LICENSE-2.0
-  *
-  * Unless required by applicable law or agreed to in writing, software
-  * distributed under the License is distributed on an "AS IS" BASIS,
-  * WITHOUT WARRANTIED OR CONDITIONS OF ANY KIND, either express or implied.
-  * See the License for the specific language governing permissions and
-  * limitations under the License.
-  */
-
 package forms
 
-import common.Constants
+import common.{BaseTestSpec, Constants}
 import models.ConfirmCorrespondAddressModel
-import org.scalatestplus.play.OneAppPerSuite
 import play.api.data.FormError
 import play.api.i18n.Messages
 import play.api.libs.json.Json
 import play.api.mvc.AnyContentAsFormUrlEncoded
 import play.api.test.FakeRequest
-import uk.gov.hmrc.play.test.UnitSpec
 import play.api.i18n.Messages.Implicits._
-import play.api.Play.current
 
-class ConfirmCorrespondAddressFormSpec extends UnitSpec with OneAppPerSuite {
+class ConfirmCorrespondAddressFormSpec extends BaseTestSpec {
 
   private def bindSuccess(request: FakeRequest[AnyContentAsFormUrlEncoded]) = {
     ConfirmCorrespondAddressForm.confirmCorrespondAddressForm.bindFromRequest()(request).fold(
@@ -65,33 +46,17 @@ class ConfirmCorrespondAddressFormSpec extends UnitSpec with OneAppPerSuite {
 
   "The Confirm Correspondence Address Form" should {
     "Return an error if no radio button is selected" in {
-      val request = FakeRequest("GET", "/").withFormUrlEncodedBody(
-        "contactAddressUse" -> ""
-      )
-      bindWithError(request) match {
-        case Some(err) => {
-          err.key shouldBe "contactAddressUse"
-          err.message shouldBe Messages("error.required")
-          err.args shouldBe Array()
-        }
-        case _ => {
-          fail("Missing error")
-        }
-      }
+      val form = ConfirmCorrespondAddressForm.confirmCorrespondAddressForm.bind(Map("contactAddressUse" -> ""))
+      form.hasErrors shouldBe true
+      form.errors.length shouldBe 1
+      Messages(form.errors.head.message) shouldBe Messages("error.required")
     }
   }
 
   "The Confirm Correspondence Address Form" should {
     "not return an error if the 'Yes' option is selected" in {
-      val request = FakeRequest("GET", "/").withFormUrlEncodedBody(
-        "contactAddressUse" -> Constants.StandardRadioButtonYesValue
-      )
-      bindWithError(request) match {
-        case Some(err) => {
-          fail("Validation error not expected")
-        }
-        case _ => ()
-      }
+      val form = ConfirmCorrespondAddressForm.confirmCorrespondAddressForm.bind(Map("contactAddressUse" -> Constants.StandardRadioButtonYesValue))
+      form.hasErrors shouldBe false
     }
   }
 

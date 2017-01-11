@@ -30,7 +30,7 @@ trait AuthorisedForTAVC extends Actions with PasscodeAuthentication {
 
   val applicationConfig: AppConfig
   val registeredBusinessCustomerService: RegisteredBusinessCustomerService
-  val postSignInRedirectUrl: String = FrontendAppConfig.introductionUrl
+  val postSignInRedirectUrl: String = applicationConfig.introductionUrl
 
   // $COVERAGE-OFF$
   implicit private def hc(implicit request: Request[_]): HeaderCarrier = HeaderCarrier.fromHeadersAndSession(request.headers, Some(request.session))

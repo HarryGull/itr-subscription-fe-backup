@@ -16,21 +16,18 @@
 
 package services
 
+import common.BaseTestSpec
 import connectors.{BusinessCustomerDataCacheConnector, DataCacheConnector}
 import org.mockito.Matchers
 import org.mockito.Mockito._
-import helpers.AuthHelper._
-import org.scalatest.mock.MockitoSugar
 import uk.gov.hmrc.play.http.HeaderCarrier
-import uk.gov.hmrc.play.test.UnitSpec
 
-class RegisteredBusinessCustomerServiceSpec extends UnitSpec with MockitoSugar {
+
+class RegisteredBusinessCustomerServiceSpec extends BaseTestSpec {
 
   object TestService extends RegisteredBusinessCustomerService {
     override val dataCacheConnector =  mock[DataCacheConnector]
   }
-
-  implicit val hc = HeaderCarrier()
 
   "RegisteredBusinessCustomerService" should {
     "use the correct keystore connector" in {

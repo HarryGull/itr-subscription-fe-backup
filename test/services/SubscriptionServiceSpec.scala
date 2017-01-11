@@ -16,24 +16,20 @@
 
 package services
 
+import common.BaseTestSpec
 import connectors.{KeystoreConnector, SubscriptionConnector}
-import helpers.KeystoreHelper._
-import helpers.AuthHelper._
 import models.etmp.{IntermediateCorrespondenceDetailsModel, IntermediateSubscriptionTypeModel, SubscriptionTypeModel}
 import org.mockito.Matchers
-import org.scalatest.mock.MockitoSugar
 import org.mockito.Mockito._
 import play.api.libs.json.Json
 import play.api.test.Helpers._
-import uk.gov.hmrc.play.http.{HeaderCarrier, HttpResponse}
-import uk.gov.hmrc.play.test.{UnitSpec, WithFakeApplication}
+import uk.gov.hmrc.play.http.HttpResponse
 
 import scala.concurrent.Future
 
-class SubscriptionServiceSpec extends UnitSpec with MockitoSugar with WithFakeApplication {
+class SubscriptionServiceSpec extends BaseTestSpec {
 
   lazy val mockSubConnector = mock[SubscriptionConnector]
-  implicit val hc = new HeaderCarrier()
   val subscriptionModel = Json.parse(
     Json.toJson(
       IntermediateSubscriptionTypeModel(IntermediateCorrespondenceDetailsModel(provideModel,contactDetailsModel))

@@ -17,28 +17,24 @@
 package controllers
 
 import auth.{MockAuthConnector, MockConfig}
+import common.BaseTestSpec
 import common.Encoder._
 import config.{FrontendAppConfig, FrontendAuthConnector}
 import connectors.KeystoreConnector
-import helpers.FakeRequestHelper
-import helpers.AuthHelper._
 import models.ProvideCorrespondAddressModel
 import org.mockito.Matchers
 import org.mockito.Mockito._
-import org.scalatest.BeforeAndAfterEach
-import org.scalatest.mock.MockitoSugar
-import org.scalatestplus.play.OneServerPerSuite
+import play.api.Play._
 import play.api.libs.json.Json
 import play.api.mvc.{Request, Result}
 import play.api.test.Helpers._
 import uk.gov.hmrc.http.cache.client.CacheMap
+import uk.gov.hmrc.passcode.authentication.{PasscodeAuthenticationProvider, PasscodeVerificationConfig}
 import uk.gov.hmrc.play.frontend.auth.AuthContext
-import uk.gov.hmrc.play.http.HeaderCarrier
-import uk.gov.hmrc.play.test.UnitSpec
 
 import scala.concurrent.Future
 
-class ProvideCorrespondAddressControllerSpec extends UnitSpec with MockitoSugar with BeforeAndAfterEach with OneServerPerSuite with FakeRequestHelper{
+class ProvideCorrespondAddressControllerSpec extends BaseTestSpec {
 
   val mockKeyStoreConnector = mock[KeystoreConnector]
 
@@ -50,13 +46,13 @@ class ProvideCorrespondAddressControllerSpec extends UnitSpec with MockitoSugar 
     override lazy val registeredBusinessCustomerService = mockRegisteredBusinessCustomerService
     override def withVerifiedPasscode(body: => Future[Result])
                                      (implicit request: Request[_], user: AuthContext): Future[Result] = body
+    override def config = new PasscodeVerificationConfig(configuration(app))
+    override def passcodeAuthenticationProvider = new PasscodeAuthenticationProvider(config)
   }
 
   val model = ProvideCorrespondAddressModel("Line 1","Line 2",None,None,None,"JP")
   val cacheMap: CacheMap = CacheMap("", Map("" -> Json.toJson(model)))
   val keyStoreSavedProvideCorrespondAddress = ProvideCorrespondAddressModel("Line 1","Line 2",None,None,None,"JP")
-
-  implicit val hc = HeaderCarrier()
 
   override def beforeEach() {
     reset(mockKeyStoreConnector)

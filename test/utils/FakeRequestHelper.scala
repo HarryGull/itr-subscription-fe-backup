@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package helpers
+package utils
 
 import java.util.UUID
 
@@ -25,7 +25,7 @@ import uk.gov.hmrc.play.http.SessionKeys
 
 import scala.concurrent.Future
 
-trait FakeRequestHelper{
+trait FakeRequestHelper {
   val sessionId = UUID.randomUUID.toString
   val fakeRequest = FakeRequest()
   lazy val fakeRequestWithSession = fakeRequest.withSession(SessionKeys.sessionId -> s"session-$sessionId")

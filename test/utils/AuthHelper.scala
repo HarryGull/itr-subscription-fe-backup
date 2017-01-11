@@ -14,22 +14,21 @@
  * limitations under the License.
  */
 
-package helpers
+package utils
 
-import auth._
+import auth.{MockAuthConnector, MockConfig}
 import config.AppConfig
 import models.{AddressModel, CompanyRegistrationReviewDetailsModel}
 import org.mockito.Matchers
-import org.scalatest.mock.MockitoSugar
-import org.mockito.stubbing.OngoingStubbing
 import org.mockito.Mockito._
+import org.scalatest.mock.MockitoSugar
 import play.api.libs.json.Json
 import services.RegisteredBusinessCustomerService
 import uk.gov.hmrc.play.http.HeaderCarrier
 
 import scala.concurrent.Future
 
-object AuthHelper extends MockitoSugar {
+trait AuthHelper extends MockitoSugar {
 
   val mockConfig: AppConfig = MockConfig
   val mockAuthConnector = MockAuthConnector

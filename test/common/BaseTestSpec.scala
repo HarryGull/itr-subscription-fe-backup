@@ -14,20 +14,20 @@
  * limitations under the License.
  */
 
-package auth
+package common
 
-import uk.gov.hmrc.play.frontend.controller.FrontendController
+import org.scalatest.BeforeAndAfterEach
+import org.scalatestplus.play.OneAppPerSuite
+import uk.gov.hmrc.http.cache.client.SessionCache
+import uk.gov.hmrc.play.http.HeaderCarrier
+import uk.gov.hmrc.play.http.logging.SessionId
+import uk.gov.hmrc.play.test.UnitSpec
+import utils.{FakeRequestHelper, KeystoreHelper}
 
-import scala.concurrent.Future
+trait BaseTestSpec extends UnitSpec with OneAppPerSuite with BeforeAndAfterEach with FakeRequestHelper with KeystoreHelper {
 
-trait AuthTestController extends FrontendController with AuthorisedForTAVC {
+  implicit val hc: HeaderCarrier = HeaderCarrier(sessionId = Some(SessionId(sessionId.toString)))
 
-  val authorisedAsyncAction = Authorised.async {
-    implicit user =>  implicit request => Future.successful(Ok)
-  }
-
-  val authorisedAction = Authorised {
-    implicit user =>  implicit request => Ok
-  }
+  val mockSessionCache = mock[SessionCache]
 
 }

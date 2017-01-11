@@ -17,9 +17,8 @@
 package views
 
 import connectors.KeystoreConnector
-import controllers.routes
 import forms.ProvideCorrespondAddressForm._
-import helpers.FakeRequestHelper
+import utils.{AuthHelper, FakeRequestHelper}
 import models.ProvideCorrespondAddressModel
 import org.jsoup.Jsoup
 import org.scalatest.mock.MockitoSugar
@@ -30,7 +29,7 @@ import views.html.registrationInformation.ProvideCorrespondAddress
 import play.api.i18n.Messages.Implicits._
 import play.api.Play.current
 
-class ProvideCorrespondAddressSpec extends UnitSpec with MockitoSugar with WithFakeApplication with FakeRequestHelper{
+class ProvideCorrespondAddressSpec extends UnitSpec with MockitoSugar with WithFakeApplication with FakeRequestHelper with AuthHelper {
 
   val mockKeystoreConnector = mock[KeystoreConnector]
 

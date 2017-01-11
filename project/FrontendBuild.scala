@@ -29,7 +29,8 @@ private object AppDependencies {
   private val hmrcTestVersion = "2.2.0"
   private val cachingClientVersion = "6.1.0"
   private val playConditionalMappingVersion = "0.2.0"
-  private val passcodeVerificationVersion = "3.5.0"
+  private val passcodeVerificationVersion = "4.0.0"
+  private val playGraphiteVersion = "3.1.0"
 
   val compile = Seq(
     ws,
@@ -43,7 +44,8 @@ private object AppDependencies {
     "uk.gov.hmrc" %% "play-ui" % playUiVersion,
     "uk.gov.hmrc" %% "http-caching-client" % cachingClientVersion,
     "uk.gov.hmrc" %% "play-conditional-form-mapping" % playConditionalMappingVersion,
-    "uk.gov.hmrc" %% "passcode-verification" % passcodeVerificationVersion
+    "uk.gov.hmrc" %% "passcode-verification" % passcodeVerificationVersion,
+    "uk.gov.hmrc" %% "play-graphite" % playGraphiteVersion
   )
 
   trait TestDependencies {

@@ -16,19 +16,18 @@
 
 package views
 
-import controllers.routes
 import models.ContactDetailsSubscriptionModel
 import org.jsoup.Jsoup
 import org.scalatest.mock.MockitoSugar
 import play.api.i18n.Messages
 import uk.gov.hmrc.play.test.{UnitSpec, WithFakeApplication}
 import forms.ContactDetailsSubscriptionForm._
-import helpers.FakeRequestHelper
+import utils.{AuthHelper, FakeRequestHelper}
 import views.html.registrationInformation.ContactDetailsSubscription
 import play.api.i18n.Messages.Implicits._
 import play.api.Play.current
 
-class ContactDetailsSubscriptionSpec extends UnitSpec with WithFakeApplication with MockitoSugar with FakeRequestHelper{
+class ContactDetailsSubscriptionSpec extends UnitSpec with WithFakeApplication with MockitoSugar with FakeRequestHelper with AuthHelper {
 
   "The Contact Details page" should {
 

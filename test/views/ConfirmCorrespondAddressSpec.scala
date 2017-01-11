@@ -16,11 +16,9 @@
 
 package views
 
-import helpers.FakeRequestHelper
+import utils.{AuthHelper, CountriesHelper, FakeRequestHelper}
 import common.Constants
-import helpers.AuthHelper._
 import connectors.KeystoreConnector
-import controllers.routes
 import forms.ConfirmCorrespondAddressForm._
 import models.ConfirmCorrespondAddressModel
 import org.jsoup.Jsoup
@@ -28,13 +26,12 @@ import org.scalatest.mock.MockitoSugar
 import play.api.i18n.Messages
 import play.api.test.Helpers._
 import uk.gov.hmrc.play.test.{UnitSpec, WithFakeApplication}
-import utils.CountriesHelper
 import views.html.registrationInformation.ConfirmCorrespondAddress
 import play.api.i18n.Messages.Implicits._
 import play.api.Play.current
 
 
-class ConfirmCorrespondAddressSpec extends UnitSpec with MockitoSugar with WithFakeApplication with FakeRequestHelper{
+class ConfirmCorrespondAddressSpec extends UnitSpec with MockitoSugar with WithFakeApplication with FakeRequestHelper with AuthHelper {
 
   val mockKeystoreConnector = mock[KeystoreConnector]
 

@@ -23,10 +23,15 @@ import uk.gov.hmrc.play.frontend.controller.FrontendController
 import uk.gov.hmrc.play.http.{HeaderCarrier, SessionKeys}
 import play.api.i18n.Messages.Implicits._
 import play.api.Play.current
+import uk.gov.hmrc.passcode.authentication.{PasscodeAuthenticationProvider, PasscodeVerificationConfig}
+import play.api.Play.configuration
 
 import scala.concurrent.Future
 
-object TimeoutController extends TimeoutController
+object TimeoutController extends TimeoutController {
+  override def config = new PasscodeVerificationConfig(configuration)
+  override def passcodeAuthenticationProvider = new PasscodeAuthenticationProvider(config)
+}
 
 trait TimeoutController extends FrontendController with PasscodeAuthentication {
 
