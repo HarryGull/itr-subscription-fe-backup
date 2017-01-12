@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 HM Revenue & Customs
+ * Copyright 2017 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,27 +16,25 @@
 
 package testOnly.controllers
 
-import helpers.FakeRequestHelper
+import akka.stream.Materializer
+import common.BaseTestSpec
 import org.mockito.Matchers
 import org.mockito.Mockito._
 import org.mockito.stubbing.OngoingStubbing
-import org.scalatest.mock.MockitoSugar
 import testOnly.connectors.{AuthenticatorConnector, DeEnrolmentConnector}
-import uk.gov.hmrc.play.http.logging.SessionId
 import uk.gov.hmrc.play.http.{HeaderCarrier, HttpResponse}
-import uk.gov.hmrc.play.test.{UnitSpec, WithFakeApplication}
 import play.mvc.Http.Status._
 
 import scala.concurrent.Future
 
-class DeEnrolControllerSpec extends UnitSpec with FakeRequestHelper with WithFakeApplication with MockitoSugar {
+class DeEnrolControllerSpec extends BaseTestSpec {
 
   object TestController extends DeEnrolController {
     override val deEnrolmentConnector = mock[DeEnrolmentConnector]
     override val authenticatorConnector = mock[AuthenticatorConnector]
   }
 
-  implicit val hc: HeaderCarrier = HeaderCarrier(sessionId = Some(SessionId("session1234")))
+  implicit lazy val materializer: Materializer = app.materializer
 
   def mockDeEnrolmentResponse(response: HttpResponse): OngoingStubbing[Future[HttpResponse]] =
     when(TestController.deEnrolmentConnector.deEnrol()(Matchers.any[HeaderCarrier]()))

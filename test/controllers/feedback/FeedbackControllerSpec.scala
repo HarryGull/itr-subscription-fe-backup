@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 HM Revenue & Customs
+ * Copyright 2017 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,28 +17,24 @@
 package controllers.feedback
 
 import auth.{MockAuthConnector, MockConfig}
-import helpers.AuthHelper._
-import config.AppConfig
-import connectors.KeystoreConnector
-import helpers.FakeRequestHelper
+import common.BaseTestSpec
 import org.mockito.Matchers
 import org.mockito.Mockito._
-import org.scalatest.mock.MockitoSugar
+import play.api.Play._
 import play.api.http.Status
 import play.api.mvc.{AnyContent, Request, RequestHeader, Result}
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import play.twirl.api.Html
+import uk.gov.hmrc.passcode.authentication.{PasscodeAuthenticationProvider, PasscodeVerificationConfig}
 import uk.gov.hmrc.play.frontend.auth.AuthContext
-import uk.gov.hmrc.play.frontend.auth.connectors.AuthConnector
 import uk.gov.hmrc.play.http.ws.WSHttp
 import uk.gov.hmrc.play.http.{HttpGet, HttpPost, HttpResponse}
 import uk.gov.hmrc.play.partials.{CachedStaticHtmlPartialRetriever, FormPartialRetriever, HtmlPartial}
-import uk.gov.hmrc.play.test.{UnitSpec, WithFakeApplication}
 
 import scala.concurrent.Future
 
-class FeedbackControllerSpec extends UnitSpec with MockitoSugar with WithFakeApplication with FakeRequestHelper {
+class FeedbackControllerSpec extends BaseTestSpec {
 
   val mockHttp = mock[WSHttp]
 
@@ -62,6 +58,8 @@ class FeedbackControllerSpec extends UnitSpec with MockitoSugar with WithFakeApp
     override lazy val registeredBusinessCustomerService = mockRegisteredBusinessCustomerService
     override def withVerifiedPasscode(body: => Future[Result])
                                      (implicit request: Request[_], user: AuthContext): Future[Result] = body
+    override def config = new PasscodeVerificationConfig(configuration(app))
+    override def passcodeAuthenticationProvider = new PasscodeAuthenticationProvider(config)
   }
 
   "GET /feedback" should {

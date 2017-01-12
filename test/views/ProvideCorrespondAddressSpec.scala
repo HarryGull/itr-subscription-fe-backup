@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 HM Revenue & Customs
+ * Copyright 2017 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,9 +17,8 @@
 package views
 
 import connectors.KeystoreConnector
-import controllers.routes
 import forms.ProvideCorrespondAddressForm._
-import helpers.FakeRequestHelper
+import utils.{AuthHelper, FakeRequestHelper}
 import models.ProvideCorrespondAddressModel
 import org.jsoup.Jsoup
 import org.scalatest.mock.MockitoSugar
@@ -27,8 +26,10 @@ import play.api.i18n.Messages
 import play.api.test.Helpers._
 import uk.gov.hmrc.play.test.{UnitSpec, WithFakeApplication}
 import views.html.registrationInformation.ProvideCorrespondAddress
+import play.api.i18n.Messages.Implicits._
+import play.api.Play.current
 
-class ProvideCorrespondAddressSpec extends UnitSpec with MockitoSugar with WithFakeApplication with FakeRequestHelper{
+class ProvideCorrespondAddressSpec extends UnitSpec with MockitoSugar with WithFakeApplication with FakeRequestHelper with AuthHelper {
 
   val mockKeystoreConnector = mock[KeystoreConnector]
 
@@ -57,9 +58,9 @@ class ProvideCorrespondAddressSpec extends UnitSpec with MockitoSugar with WithF
     "countryCode" -> ""))
 
   val countriesList : List[(String, String)] = List(("JP","Japan"),("GB","United Kingdom"))
-  lazy val page = ProvideCorrespondAddress(form, countriesList)(authorisedFakeRequest)
-  lazy val emptyPage = ProvideCorrespondAddress(emptyForm, countriesList)(authorisedFakeRequest)
-  lazy val errorPage = ProvideCorrespondAddress(errorForm, countriesList)(authorisedFakeRequest)
+  lazy val page = ProvideCorrespondAddress(form, countriesList)(authorisedFakeRequest, applicationMessages)
+  lazy val emptyPage = ProvideCorrespondAddress(emptyForm, countriesList)(authorisedFakeRequest, applicationMessages)
+  lazy val errorPage = ProvideCorrespondAddress(errorForm, countriesList)(authorisedFakeRequest, applicationMessages)
 
   "The Provide Correspondence Address page" should {
 

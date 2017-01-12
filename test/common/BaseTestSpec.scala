@@ -14,20 +14,20 @@
  * limitations under the License.
  */
 
-package forms
+package common
 
-import models.ContactDetailsSubscriptionModel
-import play.api.data.Form
-import play.api.data.Forms._
+import org.scalatest.BeforeAndAfterEach
+import org.scalatestplus.play.OneAppPerSuite
+import uk.gov.hmrc.http.cache.client.SessionCache
+import uk.gov.hmrc.play.http.HeaderCarrier
+import uk.gov.hmrc.play.http.logging.SessionId
+import uk.gov.hmrc.play.test.UnitSpec
+import utils.{FakeRequestHelper, KeystoreHelper}
 
-object ContactDetailsSubscriptionForm {
-  val contactDetailsSubscriptionForm = Form(
-    mapping(
-      "firstName" -> nonEmptyText,
-      "lastName" -> nonEmptyText,
-      "landline" -> optional(utils.Validation.optionalTelephoneNumberCheck),
-      "mobile" -> optional(utils.Validation.optionalTelephoneNumberCheck),
-      "email" -> utils.Validation.emailCheck
-    )(ContactDetailsSubscriptionModel.apply)(ContactDetailsSubscriptionModel.unapply)
-  )
+trait BaseTestSpec extends UnitSpec with OneAppPerSuite with BeforeAndAfterEach with FakeRequestHelper with KeystoreHelper {
+
+  implicit val hc: HeaderCarrier = HeaderCarrier(sessionId = Some(SessionId(sessionId.toString)))
+
+  val mockSessionCache = mock[SessionCache]
+
 }

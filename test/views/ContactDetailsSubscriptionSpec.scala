@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 HM Revenue & Customs
+ * Copyright 2017 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,18 +16,18 @@
 
 package views
 
-import controllers.routes
 import models.ContactDetailsSubscriptionModel
 import org.jsoup.Jsoup
 import org.scalatest.mock.MockitoSugar
 import play.api.i18n.Messages
 import uk.gov.hmrc.play.test.{UnitSpec, WithFakeApplication}
 import forms.ContactDetailsSubscriptionForm._
-import helpers.FakeRequestHelper
+import utils.{AuthHelper, FakeRequestHelper}
 import views.html.registrationInformation.ContactDetailsSubscription
+import play.api.i18n.Messages.Implicits._
+import play.api.Play.current
 
-
-class ContactDetailsSubscriptionSpec extends UnitSpec with WithFakeApplication with MockitoSugar with FakeRequestHelper{
+class ContactDetailsSubscriptionSpec extends UnitSpec with WithFakeApplication with MockitoSugar with FakeRequestHelper with AuthHelper {
 
   "The Contact Details page" should {
 
@@ -37,7 +37,7 @@ class ContactDetailsSubscriptionSpec extends UnitSpec with WithFakeApplication w
         "First","Last",Some("00000 000000"), Some("00000000000"), "test@test.com"
       )
       lazy val form = contactDetailsSubscriptionForm.fill(contactDetailsSubscriptionModel)
-      lazy val page = ContactDetailsSubscription(form)(authorisedFakeRequest)
+      lazy val page = ContactDetailsSubscription(form)(authorisedFakeRequest, applicationMessages)
       lazy val document = Jsoup.parse(page.body)
 
       document.title() shouldBe Messages("page.registrationInformation.ContactDetailsSubscription.title")
@@ -54,7 +54,7 @@ class ContactDetailsSubscriptionSpec extends UnitSpec with WithFakeApplication w
     "Verify that the contact details page contains the correct elements when a valid (empty) ContactDetailsSubscriptionModel is passed" in {
 
       val emptyForm = contactDetailsSubscriptionForm.fill(new ContactDetailsSubscriptionModel("", "" , None, None, ""))
-      lazy val page = ContactDetailsSubscription(emptyForm)(authorisedFakeRequest)
+      lazy val page = ContactDetailsSubscription(emptyForm)(authorisedFakeRequest, applicationMessages)
       lazy val document = Jsoup.parse(page.body)
 
       document.title() shouldBe Messages("page.registrationInformation.ContactDetailsSubscription.title")
@@ -71,7 +71,7 @@ class ContactDetailsSubscriptionSpec extends UnitSpec with WithFakeApplication w
     "Verify that the proposed investment page contains the correct elements (error elements) when an invalid ContactDetailsSubscriptionModel is submitted" in {
 
       val emptyForm = contactDetailsSubscriptionForm.bind(Map("firstname" -> "", "lastname" -> "", "telephone" -> "", "telephone2" -> "", "email" -> ""))
-      lazy val emptyPage = ContactDetailsSubscription(emptyForm)(authorisedFakeRequest)
+      lazy val emptyPage = ContactDetailsSubscription(emptyForm)(authorisedFakeRequest, applicationMessages)
       lazy val document = Jsoup.parse(emptyPage.body)
 
       document.title() shouldBe Messages("page.registrationInformation.ContactDetailsSubscription.title")

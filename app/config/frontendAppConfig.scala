@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 HM Revenue & Customs
+ * Copyright 2017 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -28,6 +28,7 @@ trait AppConfig {
   val ggSignInUrl: String
   val introductionUrl: String
   val businessCustomerUrl: String
+  val subscriptionUrl: String
   val submissionUrl: String
   val contactFormServiceIdentifier: String
   val contactFrontendService: String
@@ -46,6 +47,7 @@ object FrontendAppConfig extends AppConfig with ServicesConfig {
   override lazy val ggSignInUrl = configuration.getString("government-gateway-sign-in.host").getOrElse("")
   override lazy val introductionUrl = configuration.getString("introduction.url").getOrElse("")
   override lazy val businessCustomerUrl = configuration.getString("business-customer.url").getOrElse("")
+  override lazy val subscriptionUrl = baseUrl("investment-tax-relief-subscription")
   override lazy val submissionUrl = configuration.getString("submission.url").getOrElse("")
 
   override lazy val contactFrontendService = loadConfig("contact-frontend.url")

@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 HM Revenue & Customs
+ * Copyright 2017 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,9 +16,7 @@
 
 package views
 
-import helpers.FakeRequestHelper
-import helpers.AuthHelper._
-import controllers.routes
+import utils.{AuthHelper, FakeRequestHelper}
 import models.{ContactDetailsSubscriptionModel, ProvideCorrespondAddressModel, ReviewCompanyDetailsModel}
 import org.jsoup.Jsoup
 import org.scalatest.mock.MockitoSugar
@@ -26,8 +24,10 @@ import play.api.i18n.Messages
 import play.api.test.Helpers._
 import uk.gov.hmrc.play.test.{UnitSpec, WithFakeApplication}
 import views.html.registrationInformation.ReviewCompanyDetails
+import play.api.i18n.Messages.Implicits._
+import play.api.Play.current
 
-class ReviewCompanyDetailsSpec extends UnitSpec with MockitoSugar with WithFakeApplication with FakeRequestHelper {
+class ReviewCompanyDetailsSpec extends UnitSpec with MockitoSugar with WithFakeApplication with FakeRequestHelper with AuthHelper {
 
   val maxAddress = ProvideCorrespondAddressModel("addressline1","addressline2",Some("addressline3"),Some("addressline4"),Some("AA1 1AA"),"GB")
   val maxContact = ContactDetailsSubscriptionModel("firstname","lastname",Some("00000000000"),Some("00000000000"),"test@test.com")
@@ -35,8 +35,8 @@ class ReviewCompanyDetailsSpec extends UnitSpec with MockitoSugar with WithFakeA
   val minAddress = ProvideCorrespondAddressModel("addressline1","addressline2",None,None,None,"AB")
   val minContact = ContactDetailsSubscriptionModel("firstname","lastname",None,None,"test@test.com")
   val minDetails = ReviewCompanyDetailsModel(validModel,minAddress,minContact)
-  lazy val pageMax = ReviewCompanyDetails(maxDetails)(authorisedFakeRequest)
-  lazy val pageMin = ReviewCompanyDetails(minDetails)(authorisedFakeRequest)
+  lazy val pageMax = ReviewCompanyDetails(maxDetails)(authorisedFakeRequest, applicationMessages)
+  lazy val pageMin = ReviewCompanyDetails(minDetails)(authorisedFakeRequest, applicationMessages)
 
   "Review Company Details page" when {
 

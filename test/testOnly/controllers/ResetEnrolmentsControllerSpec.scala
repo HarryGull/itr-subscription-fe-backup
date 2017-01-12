@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 HM Revenue & Customs
+ * Copyright 2017 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,24 +16,29 @@
 
 package testOnly.controllers
 
-import helpers.FakeRequestHelper
+import akka.stream.Materializer
 import org.mockito.Matchers
 import org.mockito.Mockito._
 import org.mockito.stubbing.OngoingStubbing
 import org.scalatest.mock.MockitoSugar
+import org.scalatestplus.play.OneAppPerSuite
 import testOnly.connectors.{AuthenticatorConnector, GgStubsConnector}
 import uk.gov.hmrc.play.http.logging.SessionId
 import uk.gov.hmrc.play.http.{HeaderCarrier, HttpResponse}
-import uk.gov.hmrc.play.test.{UnitSpec, WithFakeApplication}
+import uk.gov.hmrc.play.test.UnitSpec
 import play.mvc.Http.Status._
+import utils.FakeRequestHelper
+
 import scala.concurrent.Future
 
-class ResetEnrolmentsControllerSpec extends UnitSpec with FakeRequestHelper with WithFakeApplication with MockitoSugar {
+class ResetEnrolmentsControllerSpec extends UnitSpec with FakeRequestHelper with OneAppPerSuite with MockitoSugar {
 
   object TestResetEnrolmentsController extends ResetEnrolmentsController {
     override val ggStubsConnector = mock[GgStubsConnector]
     override val authenticatorConnector = mock[AuthenticatorConnector]
   }
+
+  implicit lazy val materializer: Materializer = app.materializer
 
   implicit val hc: HeaderCarrier = HeaderCarrier(sessionId = Some(SessionId("session1234")))
 

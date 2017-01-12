@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 HM Revenue & Customs
+ * Copyright 2017 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,25 +17,23 @@
 package controllers
 
 import auth.{MockAuthConnector, MockConfig}
+import common.BaseTestSpec
 import config.{FrontendAppConfig, FrontendAuthConnector}
-import helpers.FakeRequestHelper
 import connectors.KeystoreConnector
-import helpers.AuthHelper._
-import helpers.KeystoreHelper._
 import play.api.test.Helpers._
 import common.Encoder._
 import org.mockito.Matchers
 import org.mockito.Mockito._
-import org.scalatest.mock.MockitoSugar
+import play.api.Play._
 import play.api.mvc.{Request, Result}
 import services.{RegisteredBusinessCustomerService, SubscriptionService}
+import uk.gov.hmrc.passcode.authentication.{PasscodeAuthenticationProvider, PasscodeVerificationConfig}
 import uk.gov.hmrc.play.frontend.auth.AuthContext
 import uk.gov.hmrc.play.http.HttpResponse
-import uk.gov.hmrc.play.test.{UnitSpec, WithFakeApplication}
 
 import scala.concurrent.Future
 
-class ReviewCompanyDetailsControllerSpec extends UnitSpec with FakeRequestHelper with MockitoSugar with WithFakeApplication {
+class ReviewCompanyDetailsControllerSpec extends BaseTestSpec {
 
   lazy val mockSubscriptionService = mock[SubscriptionService]
 
@@ -47,6 +45,8 @@ class ReviewCompanyDetailsControllerSpec extends UnitSpec with FakeRequestHelper
     override lazy val subscriptionService = mockSubscriptionService
     override def withVerifiedPasscode(body: => Future[Result])
                                      (implicit request: Request[_], user: AuthContext): Future[Result] = body
+    override def config = new PasscodeVerificationConfig(configuration(app))
+    override def passcodeAuthenticationProvider = new PasscodeAuthenticationProvider(config)
   }
 
   "ReviewCompanyDetailsController" should {

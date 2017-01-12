@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 HM Revenue & Customs
+ * Copyright 2017 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,31 +17,25 @@
 package controllers
 
 import auth.{MockAuthConnector, MockConfig}
-import helpers.AuthHelper._
-import common.{Constants, KeystoreKeys}
+import common.{BaseTestSpec, Constants, KeystoreKeys}
 import common.Encoder._
 import config.{FrontendAppConfig, FrontendAuthConnector}
-import helpers.FakeRequestHelper
 import connectors.{DataCacheConnector, KeystoreConnector}
-import models.{CompanyRegistrationReviewDetailsModel, ConfirmCorrespondAddressModel}
+import models.ConfirmCorrespondAddressModel
 import org.mockito.Matchers
 import org.mockito.Mockito._
-import org.scalatest.BeforeAndAfterEach
-import org.scalatest.mock.MockitoSugar
-import org.scalatestplus.play.OneServerPerSuite
+import play.api.Play._
 import play.api.libs.json.Json
 import play.api.mvc.{Request, Result}
 import play.api.test.Helpers._
 import services.RegisteredBusinessCustomerService
 import uk.gov.hmrc.http.cache.client.CacheMap
-import uk.gov.hmrc.passcode.authentication.AuthorisationConnector
+import uk.gov.hmrc.passcode.authentication.{PasscodeAuthenticationProvider, PasscodeVerificationConfig}
 import uk.gov.hmrc.play.frontend.auth.AuthContext
-import uk.gov.hmrc.play.http.HeaderCarrier
-import uk.gov.hmrc.play.test.UnitSpec
 
 import scala.concurrent.Future
 
-class ConfirmCorrespondAddressControllerSpec extends UnitSpec with MockitoSugar with BeforeAndAfterEach with OneServerPerSuite with FakeRequestHelper{
+class ConfirmCorrespondAddressControllerSpec extends BaseTestSpec {
 
   val mockKeyStoreConnector = mock[KeystoreConnector]
   val mockDataCacheConnector = mock[DataCacheConnector]
@@ -55,14 +49,13 @@ class ConfirmCorrespondAddressControllerSpec extends UnitSpec with MockitoSugar 
     val dataCacheConnector: DataCacheConnector = mockDataCacheConnector
     override def withVerifiedPasscode(body: => Future[Result])
                             (implicit request: Request[_], user: AuthContext): Future[Result] = body
+    override def config = new PasscodeVerificationConfig(configuration(app))
+    override def passcodeAuthenticationProvider = new PasscodeAuthenticationProvider(config)
   }
 
   val confirmCorrespondAddressModel = ConfirmCorrespondAddressModel(Constants.StandardRadioButtonYesValue)
   val confirmCorrespondAddressCacheMap: CacheMap = CacheMap("", Map("" -> Json.toJson(confirmCorrespondAddressModel)))
   val keyStoreSavedConfirmCorrespondAddress = ConfirmCorrespondAddressModel(Constants.StandardRadioButtonYesValue)
-
-
-  implicit val hc = HeaderCarrier()
 
   override def beforeEach() {
     reset(mockKeyStoreConnector)

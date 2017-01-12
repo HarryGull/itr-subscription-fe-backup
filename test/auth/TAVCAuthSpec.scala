@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 HM Revenue & Customs
+ * Copyright 2017 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,15 +18,29 @@ package auth
 
 import java.net.URLEncoder
 
+import common.BaseTestSpec
 import controllers.routes
+import play.api.Play._
 import play.api.test.FakeRequest
 import play.api.http.Status
-import uk.gov.hmrc.play.frontend.auth.AuthenticationProviderIds
-import uk.gov.hmrc.play.test.{UnitSpec, WithFakeApplication}
+import play.api.mvc.{Request, Result}
+import uk.gov.hmrc.play.frontend.auth.{AuthContext, AuthenticationProviderIds}
 import play.api.test.Helpers._
-import helpers.AuthHelper._
+import uk.gov.hmrc.passcode.authentication.{PasscodeAuthenticationProvider, PasscodeVerificationConfig}
 
-class TAVCAuthSpec extends UnitSpec with WithFakeApplication {
+import scala.concurrent.Future
+
+class TAVCAuthSpec extends BaseTestSpec {
+
+  object AuthTestController extends AuthTestController {
+    override lazy val applicationConfig = MockConfig
+    override lazy val authConnector = mockAuthConnector
+    override lazy val registeredBusinessCustomerService = mockRegisteredBusinessCustomerService
+    override def withVerifiedPasscode(body: => Future[Result])
+                                     (implicit request: Request[_], user: AuthContext): Future[Result] = body
+    override def config = new PasscodeVerificationConfig(configuration(app))
+    override def passcodeAuthenticationProvider = new PasscodeAuthenticationProvider(config)
+  }
 
   "Government Gateway Provider" should {
     "have an account type additional parameter set to organisation" in {

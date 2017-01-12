@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 HM Revenue & Customs
+ * Copyright 2017 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,21 +16,9 @@
 
 package auth
 
-import helpers.AuthHelper._
-import play.api.mvc.{Request, Result}
-import uk.gov.hmrc.play.frontend.auth.AuthContext
 import uk.gov.hmrc.play.frontend.controller.FrontendController
 
 import scala.concurrent.Future
-
-object AuthTestController extends AuthTestController {
-
-  override lazy val applicationConfig = mockConfig
-  override lazy val authConnector = mockAuthConnector
-  override lazy val registeredBusinessCustomerService = mockRegisteredBusinessCustomerService
-  override def withVerifiedPasscode(body: => Future[Result])
-                                   (implicit request: Request[_], user: AuthContext): Future[Result] = body
-}
 
 trait AuthTestController extends FrontendController with AuthorisedForTAVC {
 

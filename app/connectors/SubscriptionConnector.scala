@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 HM Revenue & Customs
+ * Copyright 2017 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,7 +16,7 @@
 
 package connectors
 
-import config.WSHttp
+import config.{FrontendAppConfig, WSHttp}
 import models.etmp.SubscriptionTypeModel
 import play.api.libs.json.{JsValue, Json}
 import uk.gov.hmrc.play.config.ServicesConfig
@@ -24,9 +24,9 @@ import uk.gov.hmrc.play.http.{HeaderCarrier, HttpPost, HttpResponse}
 
 import scala.concurrent.Future
 
-object SubscriptionConnector extends SubscriptionConnector with ServicesConfig {
+object SubscriptionConnector extends SubscriptionConnector {
   override val http = WSHttp
-  override val serviceUrl = baseUrl("investment-tax-relief-subscription")
+  override val serviceUrl = FrontendAppConfig.subscriptionUrl
 }
 
 trait SubscriptionConnector {

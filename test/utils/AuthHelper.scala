@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 HM Revenue & Customs
+ * Copyright 2017 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,22 +14,21 @@
  * limitations under the License.
  */
 
-package helpers
+package utils
 
-import auth._
+import auth.{MockAuthConnector, MockConfig}
 import config.AppConfig
 import models.{AddressModel, CompanyRegistrationReviewDetailsModel}
 import org.mockito.Matchers
-import org.scalatest.mock.MockitoSugar
-import org.mockito.stubbing.OngoingStubbing
 import org.mockito.Mockito._
+import org.scalatest.mock.MockitoSugar
 import play.api.libs.json.Json
 import services.RegisteredBusinessCustomerService
 import uk.gov.hmrc.play.http.HeaderCarrier
 
 import scala.concurrent.Future
 
-object AuthHelper extends MockitoSugar {
+trait AuthHelper extends MockitoSugar {
 
   val mockConfig: AppConfig = MockConfig
   val mockAuthConnector = MockAuthConnector

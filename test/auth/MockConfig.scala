@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 HM Revenue & Customs
+ * Copyright 2017 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -27,6 +27,7 @@ object MockConfig extends AppConfig {
   override val ggSignInUrl: String = "/gg/sign-in"
   override val introductionUrl: String = "http://localhost:9637/investment-tax-relief-subscription/"
   override val businessCustomerUrl: String = "http://localhost:9923/business-customer/investment-tax-relief"
+  override val subscriptionUrl: String = ""
   override val submissionUrl: String = "/investment-tax-relief/"
   override val contactFrontendService: String = "/contact"
   override val contactFormServiceIdentifier: String = ""
