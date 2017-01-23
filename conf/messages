@@ -83,7 +83,7 @@ page.registrationInformation.ContactDetailsSubscription.email.label= Email
 page.registrationInformation.ReviewCompanyDetails.heading= Confirm the contact details for your company
 page.registrationInformation.ReviewCompanyDetails.hint= This should be the company you wish to register for this service.
 page.registrationInformation.ReviewCompanyDetails.title= Review company details
-page.registrationInformation.ReviewCompanyDetails.button.continue= Continue
+page.registrationInformation.ReviewCompanyDetails.button.continue= Confirm and Register
 page.registrationInformation.ReviewCompanyDetails.correspondenceAddress= Correspondence address
 page.registrationInformation.ReviewCompanyDetails.companyContact= Company contact
 
