@@ -65,7 +65,7 @@ class ReviewCompanyDetailsSpec extends UnitSpec with MockitoSugar with WithFakeA
         document.body.getElementById("landline").text shouldBe maxContact.telephoneNumber.get
         document.body.getElementById("mobile").text shouldBe maxContact.telephoneNumber2.get
         document.body.getElementById("email").text shouldBe maxContact.email
-        document.getElementById("submit").text() shouldBe Messages("page.registrationInformation.ReviewCompanyDetails.button.continue")
+        document.getElementById("submit").text() shouldBe Messages("page.registrationInformation.ReviewCompanyDetails.button.confirm.and.register")
         document.body.getElementById("get-help-action").text shouldBe Messages("common.error.help.text")
       }
 
@@ -91,7 +91,7 @@ class ReviewCompanyDetailsSpec extends UnitSpec with MockitoSugar with WithFakeA
         document.body.getElementById("companyContact-answer").children().size() shouldBe 2
         document.body.getElementById("name").text shouldBe s"${minContact.firstName} ${minContact.lastName}"
         document.body.getElementById("email").text shouldBe minContact.email
-        document.getElementById("submit").text() shouldBe Messages("page.registrationInformation.ReviewCompanyDetails.button.continue")
+        document.getElementById("submit").text() shouldBe Messages("page.registrationInformation.ReviewCompanyDetails.button.confirm.and.register")
         document.body.getElementById("get-help-action").text shouldBe Messages("common.error.help.text")
       }
 
