@@ -17,7 +17,6 @@
 package utils
 
 import common.KeystoreKeys
-import connectors.KeystoreConnector
 import models.{ContactDetailsSubscriptionModel, ProvideCorrespondAddressModel}
 import org.mockito.Matchers
 import org.mockito.Mockito._
@@ -25,7 +24,6 @@ import scala.concurrent.Future
 
 trait KeystoreHelper extends AuthHelper {
 
-  lazy val mockKeystoreConnector = mock[KeystoreConnector]
   val provideModel = ProvideCorrespondAddressModel("test1","test2",Some("test3"),Some("test4"),Some("test5"),"test6")
   val contactDetailsModel = ContactDetailsSubscriptionModel("test1","test2",Some("test3"),Some("test4"),"test5")
 

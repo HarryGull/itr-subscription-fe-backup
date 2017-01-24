@@ -44,7 +44,6 @@ object ReviewCompanyDetailsController extends ReviewCompanyDetailsController {
 
 trait ReviewCompanyDetailsController extends FrontendController with AuthorisedForTAVC {
 
-  val keystoreConnector: KeystoreConnector
   val subscriptionService: SubscriptionService
 
   val show = Authorised.async { implicit user => implicit request =>

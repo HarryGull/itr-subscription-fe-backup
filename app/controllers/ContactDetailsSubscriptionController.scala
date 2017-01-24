@@ -37,17 +37,15 @@ object ContactDetailsSubscriptionController extends ContactDetailsSubscriptionCo
   override lazy val applicationConfig = FrontendAppConfig
   override lazy val authConnector = FrontendAuthConnector
   override lazy val registeredBusinessCustomerService = RegisteredBusinessCustomerService
-  override val keyStoreConnector = KeystoreConnector
+  override lazy val keystoreConnector = KeystoreConnector
   override def config = new PasscodeVerificationConfig(configuration)
   override def passcodeAuthenticationProvider = new PasscodeAuthenticationProvider(config)
 }
 
 trait ContactDetailsSubscriptionController extends FrontendController with AuthorisedForTAVC {
 
-  val keyStoreConnector: KeystoreConnector
-
   val show = Authorised.async { implicit user => implicit request =>
-    keyStoreConnector.fetchAndGetFormData[ContactDetailsSubscriptionModel](KeystoreKeys.contactDetailsSubscription).map {
+    keystoreConnector.fetchAndGetFormData[ContactDetailsSubscriptionModel](KeystoreKeys.contactDetailsSubscription).map {
       case Some(data) => Ok(ContactDetailsSubscription(contactDetailsSubscriptionForm.fill(data)))
       case None => Ok(ContactDetailsSubscription(contactDetailsSubscriptionForm))
     }
@@ -59,7 +57,7 @@ trait ContactDetailsSubscriptionController extends FrontendController with Autho
         Future.successful(BadRequest(ContactDetailsSubscription(formWithErrors)))
       },
       validFormData => {
-        keyStoreConnector.saveFormData(KeystoreKeys.contactDetailsSubscription, validFormData)
+        keystoreConnector.saveFormData(KeystoreKeys.contactDetailsSubscription, validFormData)
         Future.successful(Redirect(routes.ReviewCompanyDetailsController.show()))
       }
     )

@@ -31,8 +31,6 @@ import play.api.Play.current
 
 class ProvideCorrespondAddressSpec extends UnitSpec with MockitoSugar with WithFakeApplication with FakeRequestHelper with AuthHelper {
 
-  val mockKeystoreConnector = mock[KeystoreConnector]
-
   val provideCorrespondAddressModel = new ProvideCorrespondAddressModel("Line 1","Line 2",countryCode = "JP")
   val emptyProvideCorrespondAddressModel = new ProvideCorrespondAddressModel("","",countryCode = "")
 

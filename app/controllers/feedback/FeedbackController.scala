@@ -64,6 +64,8 @@ object FeedbackController extends FeedbackController with PartialRetriever {
 
   override def config = new PasscodeVerificationConfig(configuration)
   override def passcodeAuthenticationProvider = new PasscodeAuthenticationProvider(config)
+
+  override lazy val keystoreConnector = KeystoreConnector
 }
 
 trait FeedbackController extends FrontendController with AuthorisedForTAVC {

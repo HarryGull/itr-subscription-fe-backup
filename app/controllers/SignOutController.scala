@@ -18,6 +18,7 @@ package controllers
 
 import auth.AuthorisedForTAVC
 import config.{FrontendAppConfig, FrontendAuthConnector}
+import connectors.KeystoreConnector
 import play.api.mvc.{Action, AnyContent}
 import services.RegisteredBusinessCustomerService
 import uk.gov.hmrc.play.frontend.controller.FrontendController
@@ -31,7 +32,8 @@ import scala.concurrent.Future
 object SignOutController extends SignOutController {
   override lazy val applicationConfig = FrontendAppConfig
   override lazy val authConnector = FrontendAuthConnector
-  override val registeredBusinessCustomerService = RegisteredBusinessCustomerService
+  override lazy val registeredBusinessCustomerService = RegisteredBusinessCustomerService
+  override lazy val keystoreConnector = KeystoreConnector
   override def config = new PasscodeVerificationConfig(configuration)
   override def passcodeAuthenticationProvider = new PasscodeAuthenticationProvider(config)
 }

@@ -17,7 +17,9 @@
 package utils
 
 import auth.{MockAuthConnector, MockConfig}
+import common.KeystoreKeys
 import config.AppConfig
+import connectors.KeystoreConnector
 import models.{AddressModel, CompanyRegistrationReviewDetailsModel}
 import org.mockito.Matchers
 import org.mockito.Mockito._
@@ -33,6 +35,7 @@ trait AuthHelper extends MockitoSugar {
   val mockConfig: AppConfig = MockConfig
   val mockAuthConnector = MockAuthConnector
   val mockRegisteredBusinessCustomerService = mock[RegisteredBusinessCustomerService]
+  val mockKeystoreConnector = mock[KeystoreConnector]
 
   val validJson = Json.parse(
     """{
@@ -91,9 +94,13 @@ trait AuthHelper extends MockitoSugar {
 
   def withRegDetails(): Unit = {
     when(mockRegisteredBusinessCustomerService.getReviewBusinessCustomerDetails(Matchers.any[HeaderCarrier]())).thenReturn(Future.successful(Some(validModel)))
+    when(mockKeystoreConnector.fetchAndGetFormData[String](Matchers.eq(KeystoreKeys.otacToken))(Matchers.any(), Matchers.any()))
+      .thenReturn(Future.successful(None))
   }
 
   def noRegDetails(): Unit = {
     when(mockRegisteredBusinessCustomerService.getReviewBusinessCustomerDetails(Matchers.any[HeaderCarrier]())).thenReturn(Future.successful(None))
+    when(mockKeystoreConnector.fetchAndGetFormData[String](Matchers.eq(KeystoreKeys.otacToken))(Matchers.any(), Matchers.any()))
+      .thenReturn(Future.successful(None))
   }
 }

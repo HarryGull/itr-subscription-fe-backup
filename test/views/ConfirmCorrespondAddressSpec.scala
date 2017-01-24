@@ -33,8 +33,6 @@ import play.api.Play.current
 
 class ConfirmCorrespondAddressSpec extends UnitSpec with MockitoSugar with WithFakeApplication with FakeRequestHelper with AuthHelper {
 
-  val mockKeystoreConnector = mock[KeystoreConnector]
-
   val confirmCorrespondAddressModel = new ConfirmCorrespondAddressModel(Constants.StandardRadioButtonYesValue)
   val emptyConfirmCorrespondAddressModel = new ConfirmCorrespondAddressModel("")
 

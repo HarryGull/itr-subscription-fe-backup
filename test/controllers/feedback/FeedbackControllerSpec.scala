@@ -55,6 +55,7 @@ class FeedbackControllerSpec extends BaseTestSpec {
     override def contactFormReferer(implicit request: Request[AnyContent]): String = request.headers.get(REFERER).getOrElse("")
     override lazy val applicationConfig = MockConfig
     override lazy val authConnector = MockAuthConnector
+    override lazy val keystoreConnector = mockKeystoreConnector
     override lazy val registeredBusinessCustomerService = mockRegisteredBusinessCustomerService
     override def withVerifiedPasscode(body: => Future[Result])
                                      (implicit request: Request[_], user: AuthContext): Future[Result] = body

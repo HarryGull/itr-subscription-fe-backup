@@ -36,12 +36,10 @@ import scala.concurrent.Future
 
 class ContactDetailsSubscriptionControllerSpec extends BaseTestSpec {
 
-  val mockKeyStoreConnector = mock[KeystoreConnector]
-
   object ContactDetailsSubscriptionControllerTest extends ContactDetailsSubscriptionController {
     override lazy val applicationConfig = FrontendAppConfig
     override lazy val authConnector = MockAuthConnector
-    val keyStoreConnector: KeystoreConnector = mockKeyStoreConnector
+    override lazy val keystoreConnector: KeystoreConnector = mockKeystoreConnector
     override lazy val registeredBusinessCustomerService = mockRegisteredBusinessCustomerService
     override def withVerifiedPasscode(body: => Future[Result])
                                      (implicit request: Request[_], user: AuthContext): Future[Result] = body
@@ -54,12 +52,12 @@ class ContactDetailsSubscriptionControllerSpec extends BaseTestSpec {
   val keyStoreSavedContactDetailsSubscription = ContactDetailsSubscriptionModel("First","Last",Some("86"),Some("86"),"test@test.com")
 
   override def beforeEach() {
-    reset(mockKeyStoreConnector)
+    reset(mockKeystoreConnector)
   }
 
   "ContactDetailsSubscriptionController" should {
     "use the correct keystore connector" in {
-      ContactDetailsSubscriptionController.keyStoreConnector shouldBe KeystoreConnector
+      ContactDetailsSubscriptionController.keystoreConnector shouldBe KeystoreConnector
     }
   }
 
@@ -72,8 +70,8 @@ class ContactDetailsSubscriptionControllerSpec extends BaseTestSpec {
   "Sending a GET request to ContactDetailsSubscriptionController" should {
     "return a 200 when something is fetched from keystore" in {
       withRegDetails()
-      when(mockKeyStoreConnector.saveFormData(Matchers.any(), Matchers.any())(Matchers.any(), Matchers.any())).thenReturn(cacheMap)
-      when(mockKeyStoreConnector.fetchAndGetFormData[ContactDetailsSubscriptionModel](Matchers.any())(Matchers.any(), Matchers.any()))
+      when(mockKeystoreConnector.saveFormData(Matchers.any(), Matchers.any())(Matchers.any(), Matchers.any())).thenReturn(cacheMap)
+      when(mockKeystoreConnector.fetchAndGetFormData[ContactDetailsSubscriptionModel](Matchers.any())(Matchers.any(), Matchers.any()))
         .thenReturn(Future.successful(Option(keyStoreSavedContactDetailsSubscription)))
       showWithSessionAndAuth(ContactDetailsSubscriptionControllerTest.show)(
         result => status(result) shouldBe OK
@@ -82,8 +80,8 @@ class ContactDetailsSubscriptionControllerSpec extends BaseTestSpec {
 
     "provide an empty model and return a 200 when nothing is fetched using keystore" in {
       withRegDetails()
-      when(mockKeyStoreConnector.saveFormData(Matchers.any(), Matchers.any())(Matchers.any(), Matchers.any())).thenReturn(cacheMap)
-      when(mockKeyStoreConnector.fetchAndGetFormData[ContactDetailsSubscriptionModel](Matchers.any())(Matchers.any(), Matchers.any()))
+      when(mockKeystoreConnector.saveFormData(Matchers.any(), Matchers.any())(Matchers.any(), Matchers.any())).thenReturn(cacheMap)
+      when(mockKeystoreConnector.fetchAndGetFormData[ContactDetailsSubscriptionModel](Matchers.any())(Matchers.any(), Matchers.any()))
         .thenReturn(Future.successful(None))
       showWithSessionAndAuth(ContactDetailsSubscriptionControllerTest.show)(
         result => status(result) shouldBe OK

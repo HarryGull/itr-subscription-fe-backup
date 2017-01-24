@@ -35,6 +35,7 @@ class SignOutControllerSpec extends BaseTestSpec {
     override lazy val applicationConfig = MockConfig
     override lazy val authConnector = MockAuthConnector
     override lazy val registeredBusinessCustomerService = mockRegisteredBusinessCustomerService
+    override lazy val keystoreConnector = mockKeystoreConnector
     override def withVerifiedPasscode(body: => Future[Result])
                                      (implicit request: Request[_], user: AuthContext): Future[Result] = body
     override def PasscodeAuthenticatedActionAsync(body: => AsyncPlayRequest) = Action.async(body)

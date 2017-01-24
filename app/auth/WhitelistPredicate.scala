@@ -16,25 +16,23 @@
 
 package auth
 
-import services.RegisteredBusinessCustomerService
+import common.KeystoreKeys
 import play.api.mvc.{AnyContent, Request}
-import play.api.mvc.Results.Redirect
-import uk.gov.hmrc.play.frontend.auth._
-import uk.gov.hmrc.play.http.HeaderCarrier
-
-import scala.concurrent.ExecutionContext.Implicits.global
+import uk.gov.hmrc.play.frontend.auth.{AuthContext, PageIsVisible, PageVisibilityPredicate, PageVisibilityResult}
+import connectors.KeystoreConnector
+import uk.gov.hmrc.play.http.{HeaderCarrier, SessionKeys}
 
 import scala.concurrent.Future
 
-class BusinessCustomerPredicate(businessCustomerFrontendUri:String, rbcService: RegisteredBusinessCustomerService) extends PageVisibilityPredicate {
+class WhitelistPredicate(keystoreConnector: KeystoreConnector) extends PageVisibilityPredicate {
+
   override def apply(authContext: AuthContext, request: Request[AnyContent]): Future[PageVisibilityResult] = {
     implicit val hc = HeaderCarrier.fromHeadersAndSession(request.headers, Some(request.session))
-    println("BUSINESSCUSTOMERPREDICATE")
-    rbcService.getReviewBusinessCustomerDetails.map {
-      case Some(companyRegistrationReviewDetailsModel) => PageIsVisible
-      case _ => PageBlocked(needsBusinessCustomerDetails)
+    request.getQueryString("p").fold(Future.successful(PageIsVisible)) {
+      token =>
+        keystoreConnector.saveFormData[String](KeystoreKeys.otacToken, token)
+        Future.successful(PageIsVisible)
     }
   }
 
-  private val needsBusinessCustomerDetails = Future.successful(Redirect(businessCustomerFrontendUri))
 }

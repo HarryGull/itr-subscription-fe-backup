@@ -35,6 +35,7 @@ class TAVCAuthSpec extends BaseTestSpec {
   object AuthTestController extends AuthTestController {
     override lazy val applicationConfig = MockConfig
     override lazy val authConnector = mockAuthConnector
+    override lazy val keystoreConnector = mockKeystoreConnector
     override lazy val registeredBusinessCustomerService = mockRegisteredBusinessCustomerService
     override def withVerifiedPasscode(body: => Future[Result])
                                      (implicit request: Request[_], user: AuthContext): Future[Result] = body
