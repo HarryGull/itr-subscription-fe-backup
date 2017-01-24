@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 HM Revenue & Customs
+ * Copyright 2017 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -43,16 +43,11 @@ import scala.concurrent.Future
 
 class ConfirmCorrespondAddressControllerSpec extends UnitSpec with MockitoSugar with BeforeAndAfterEach with OneServerPerSuite with FakeRequestHelper{
 
-  val mockKeyStoreConnector = mock[KeystoreConnector]
-  val mockDataCacheConnector = mock[DataCacheConnector]
-
-
   object ConfirmCorrespondAddressControllerTest extends ConfirmCorrespondAddressController {
     override lazy val applicationConfig = FrontendAppConfig
     override lazy val authConnector = MockAuthConnector
     override lazy val registeredBusinessCustomerService: RegisteredBusinessCustomerService = mockRegisteredBusinessCustomerService
-    val keyStoreConnector: KeystoreConnector = mockKeyStoreConnector
-    val dataCacheConnector: DataCacheConnector = mockDataCacheConnector
+    override lazy val keystoreConnector: KeystoreConnector = mockKeystoreConnector
     override def withVerifiedPasscode(body: => Future[Result])
                             (implicit request: Request[_], user: AuthContext): Future[Result] = body
   }
@@ -65,12 +60,12 @@ class ConfirmCorrespondAddressControllerSpec extends UnitSpec with MockitoSugar 
   implicit val hc = HeaderCarrier()
 
   override def beforeEach() {
-    reset(mockKeyStoreConnector)
+    reset(mockKeystoreConnector)
   }
 
   "ConfirmCorrespondAddressController" should {
     "use the correct keystore connector" in {
-      ConfirmCorrespondAddressController.keyStoreConnector shouldBe KeystoreConnector
+      ConfirmCorrespondAddressController.keystoreConnector shouldBe KeystoreConnector
     }
   }
 
@@ -83,8 +78,8 @@ class ConfirmCorrespondAddressControllerSpec extends UnitSpec with MockitoSugar 
   "Sending a GET request to ConfirmCorrespondAddressController" should {
     "return a 200 when something is fetched from keystore" in {
       withRegDetails()
-      when(mockKeyStoreConnector.saveFormData(Matchers.any(), Matchers.any())(Matchers.any(), Matchers.any())).thenReturn(confirmCorrespondAddressCacheMap)
-      when(mockKeyStoreConnector.fetchAndGetFormData[ConfirmCorrespondAddressModel](Matchers.eq(KeystoreKeys.confirmContactAddress))
+      when(mockKeystoreConnector.saveFormData(Matchers.any(), Matchers.any())(Matchers.any(), Matchers.any())).thenReturn(confirmCorrespondAddressCacheMap)
+      when(mockKeystoreConnector.fetchAndGetFormData[ConfirmCorrespondAddressModel](Matchers.eq(KeystoreKeys.confirmContactAddress))
         (Matchers.any(), Matchers.any())).thenReturn(Future.successful(Option(keyStoreSavedConfirmCorrespondAddress)))
       showWithSessionAndAuth(ConfirmCorrespondAddressControllerTest.show)(
         result => status(result) shouldBe OK
@@ -93,8 +88,8 @@ class ConfirmCorrespondAddressControllerSpec extends UnitSpec with MockitoSugar 
 
     "provide an empty confirmCorrespondAddressModel and return a 200 when nothing is fetched using keystore" in {
       withRegDetails()
-      when(mockKeyStoreConnector.saveFormData(Matchers.any(), Matchers.any())(Matchers.any(), Matchers.any())).thenReturn(confirmCorrespondAddressCacheMap)
-      when(mockKeyStoreConnector.fetchAndGetFormData[ConfirmCorrespondAddressModel](Matchers.any())(Matchers.any(), Matchers.any()))
+      when(mockKeystoreConnector.saveFormData(Matchers.any(), Matchers.any())(Matchers.any(), Matchers.any())).thenReturn(confirmCorrespondAddressCacheMap)
+      when(mockKeystoreConnector.fetchAndGetFormData[ConfirmCorrespondAddressModel](Matchers.any())(Matchers.any(), Matchers.any()))
         .thenReturn(Future.successful(None))
       showWithSessionAndAuth(ConfirmCorrespondAddressControllerTest.show)(
         result => status(result) shouldBe OK
@@ -187,7 +182,7 @@ class ConfirmCorrespondAddressControllerSpec extends UnitSpec with MockitoSugar 
   "Sending an empty invalid form submission with validation errors to the ConfirmCorrespondAddressController" should {
     "redirect to itself" in {
       withRegDetails()
-      when(mockKeyStoreConnector.fetchAndGetFormData[ConfirmCorrespondAddressModel](Matchers.eq(KeystoreKeys.confirmContactAddress))
+      when(mockKeystoreConnector.fetchAndGetFormData[ConfirmCorrespondAddressModel](Matchers.eq(KeystoreKeys.confirmContactAddress))
         (Matchers.any(), Matchers.any())).thenReturn(Future.successful(Option(keyStoreSavedConfirmCorrespondAddress)))
       val formInput = "contactAddressUse" -> ""
 

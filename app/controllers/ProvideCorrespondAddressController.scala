@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 HM Revenue & Customs
+ * Copyright 2017 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -36,17 +36,15 @@ object ProvideCorrespondAddressController extends ProvideCorrespondAddressContro
   override lazy val applicationConfig = FrontendAppConfig
   override lazy val authConnector = FrontendAuthConnector
   override lazy val registeredBusinessCustomerService = RegisteredBusinessCustomerService
-  override val keyStoreConnector = KeystoreConnector
+  override lazy val keystoreConnector = KeystoreConnector
 }
 
 trait ProvideCorrespondAddressController extends FrontendController with AuthorisedForTAVC {
 
-  val keyStoreConnector: KeystoreConnector
-
   lazy val countriesList = CountriesHelper.getIsoCodeTupleList
 
   val show = Authorised.async { implicit user => implicit request =>
-    keyStoreConnector.fetchAndGetFormData[ProvideCorrespondAddressModel](KeystoreKeys.provideCorrespondAddress).map {
+    keystoreConnector.fetchAndGetFormData[ProvideCorrespondAddressModel](KeystoreKeys.provideCorrespondAddress).map {
       case Some(data) => Ok(ProvideCorrespondAddress(provideCorrespondAddressForm.fill(data), countriesList))
       case None => Ok(ProvideCorrespondAddress(provideCorrespondAddressForm.fill(ProvideCorrespondAddressModel("","")), countriesList))
     }
@@ -61,7 +59,7 @@ trait ProvideCorrespondAddressController extends FrontendController with Authori
 
       },
       validFormData => {
-        keyStoreConnector.saveFormData(KeystoreKeys.provideCorrespondAddress, validFormData)
+        keystoreConnector.saveFormData(KeystoreKeys.provideCorrespondAddress, validFormData)
         Future.successful(Redirect(routes.ContactDetailsSubscriptionController.show()))
       }
     )

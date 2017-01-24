@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 HM Revenue & Customs
+ * Copyright 2017 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,6 +18,7 @@ package controllers
 
 import auth.AuthorisedForTAVC
 import config.{FrontendAppConfig, FrontendAuthConnector}
+import connectors.KeystoreConnector
 import play.api.mvc.{Action, AnyContent}
 import services.RegisteredBusinessCustomerService
 import uk.gov.hmrc.play.frontend.controller.FrontendController
@@ -28,7 +29,8 @@ import scala.concurrent.Future
 object SignOutController extends SignOutController {
   override lazy val applicationConfig = FrontendAppConfig
   override lazy val authConnector = FrontendAuthConnector
-  override val registeredBusinessCustomerService = RegisteredBusinessCustomerService
+  override lazy val registeredBusinessCustomerService = RegisteredBusinessCustomerService
+  override lazy val keystoreConnector = KeystoreConnector
 }
 
 trait SignOutController extends FrontendController with AuthorisedForTAVC {

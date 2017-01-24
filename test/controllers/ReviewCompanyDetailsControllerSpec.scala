@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 HM Revenue & Customs
+ * Copyright 2017 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -42,7 +42,7 @@ class ReviewCompanyDetailsControllerSpec extends UnitSpec with FakeRequestHelper
   object TestController extends ReviewCompanyDetailsController {
     override lazy val applicationConfig = FrontendAppConfig
     override lazy val authConnector = MockAuthConnector
-    override val keystoreConnector = mockKeystoreConnector
+    override lazy val keystoreConnector = mockKeystoreConnector
     override lazy val registeredBusinessCustomerService = mockRegisteredBusinessCustomerService
     override lazy val subscriptionService = mockSubscriptionService
     override def withVerifiedPasscode(body: => Future[Result])

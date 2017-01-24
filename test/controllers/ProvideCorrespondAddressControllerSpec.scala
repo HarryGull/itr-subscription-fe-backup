@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 HM Revenue & Customs
+ * Copyright 2017 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -40,13 +40,10 @@ import scala.concurrent.Future
 
 class ProvideCorrespondAddressControllerSpec extends UnitSpec with MockitoSugar with BeforeAndAfterEach with OneServerPerSuite with FakeRequestHelper{
 
-  val mockKeyStoreConnector = mock[KeystoreConnector]
-
-
   object ProvideCorrespondAddressControllerTest extends ProvideCorrespondAddressController {
     override lazy val applicationConfig = FrontendAppConfig
     override lazy val authConnector = MockAuthConnector
-    val keyStoreConnector: KeystoreConnector = mockKeyStoreConnector
+    override lazy val keystoreConnector: KeystoreConnector = mockKeystoreConnector
     override lazy val registeredBusinessCustomerService = mockRegisteredBusinessCustomerService
     override def withVerifiedPasscode(body: => Future[Result])
                                      (implicit request: Request[_], user: AuthContext): Future[Result] = body
@@ -59,12 +56,12 @@ class ProvideCorrespondAddressControllerSpec extends UnitSpec with MockitoSugar 
   implicit val hc = HeaderCarrier()
 
   override def beforeEach() {
-    reset(mockKeyStoreConnector)
+    reset(mockKeystoreConnector)
   }
 
   "ProvideCorrespondAddressController" should {
     "use the correct keystore connector" in {
-      ProvideCorrespondAddressController.keyStoreConnector shouldBe KeystoreConnector
+      ProvideCorrespondAddressController.keystoreConnector shouldBe KeystoreConnector
     }
   }
 
@@ -77,8 +74,8 @@ class ProvideCorrespondAddressControllerSpec extends UnitSpec with MockitoSugar 
   "Sending a GET request to ProvideCorrespondAddressController" should {
     "return a 200 when something is fetched from keystore" in {
       withRegDetails()
-      when(mockKeyStoreConnector.saveFormData(Matchers.any(), Matchers.any())(Matchers.any(), Matchers.any())).thenReturn(cacheMap)
-      when(mockKeyStoreConnector.fetchAndGetFormData[ProvideCorrespondAddressModel](Matchers.any())(Matchers.any(), Matchers.any()))
+      when(mockKeystoreConnector.saveFormData(Matchers.any(), Matchers.any())(Matchers.any(), Matchers.any())).thenReturn(cacheMap)
+      when(mockKeystoreConnector.fetchAndGetFormData[ProvideCorrespondAddressModel](Matchers.any())(Matchers.any(), Matchers.any()))
         .thenReturn(Future.successful(Option(keyStoreSavedProvideCorrespondAddress)))
       showWithSessionAndAuth(ProvideCorrespondAddressControllerTest.show)(
         result => status(result) shouldBe OK
@@ -87,8 +84,8 @@ class ProvideCorrespondAddressControllerSpec extends UnitSpec with MockitoSugar 
 
     "provide an empty model and return a 200 when nothing is fetched using keystore" in {
       withRegDetails()
-      when(mockKeyStoreConnector.saveFormData(Matchers.any(), Matchers.any())(Matchers.any(), Matchers.any())).thenReturn(cacheMap)
-      when(mockKeyStoreConnector.fetchAndGetFormData[ProvideCorrespondAddressModel](Matchers.any())(Matchers.any(), Matchers.any()))
+      when(mockKeystoreConnector.saveFormData(Matchers.any(), Matchers.any())(Matchers.any(), Matchers.any())).thenReturn(cacheMap)
+      when(mockKeystoreConnector.fetchAndGetFormData[ProvideCorrespondAddressModel](Matchers.any())(Matchers.any(), Matchers.any()))
         .thenReturn(Future.successful(None))
       showWithSessionAndAuth(ProvideCorrespondAddressControllerTest.show)(
         result => status(result) shouldBe OK

@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 HM Revenue & Customs
+ * Copyright 2017 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -34,15 +34,13 @@ object ContactDetailsSubscriptionController extends ContactDetailsSubscriptionCo
   override lazy val applicationConfig = FrontendAppConfig
   override lazy val authConnector = FrontendAuthConnector
   override lazy val registeredBusinessCustomerService = RegisteredBusinessCustomerService
-  override val keyStoreConnector = KeystoreConnector
+  override lazy val keystoreConnector = KeystoreConnector
 }
 
 trait ContactDetailsSubscriptionController extends FrontendController with AuthorisedForTAVC {
 
-  val keyStoreConnector: KeystoreConnector
-
   val show = Authorised.async { implicit user => implicit request =>
-    keyStoreConnector.fetchAndGetFormData[ContactDetailsSubscriptionModel](KeystoreKeys.contactDetailsSubscription).map {
+    keystoreConnector.fetchAndGetFormData[ContactDetailsSubscriptionModel](KeystoreKeys.contactDetailsSubscription).map {
       case Some(data) => Ok(ContactDetailsSubscription(contactDetailsSubscriptionForm.fill(data)))
       case None => Ok(ContactDetailsSubscription(contactDetailsSubscriptionForm))
     }
@@ -54,7 +52,7 @@ trait ContactDetailsSubscriptionController extends FrontendController with Autho
         Future.successful(BadRequest(ContactDetailsSubscription(formWithErrors)))
       },
       validFormData => {
-        keyStoreConnector.saveFormData(KeystoreKeys.contactDetailsSubscription, validFormData)
+        keystoreConnector.saveFormData(KeystoreKeys.contactDetailsSubscription, validFormData)
         Future.successful(Redirect(routes.ReviewCompanyDetailsController.show()))
       }
     )

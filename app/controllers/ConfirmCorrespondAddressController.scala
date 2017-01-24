@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 HM Revenue & Customs
+ * Copyright 2017 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -35,12 +35,10 @@ object ConfirmCorrespondAddressController extends ConfirmCorrespondAddressContro
   override lazy val applicationConfig = FrontendAppConfig
   override lazy val authConnector = FrontendAuthConnector
   override lazy val registeredBusinessCustomerService = RegisteredBusinessCustomerService
-  override val keyStoreConnector = KeystoreConnector
+  override lazy val keystoreConnector = KeystoreConnector
 }
 
 trait ConfirmCorrespondAddressController extends FrontendController with AuthorisedForTAVC {
-
-  val keyStoreConnector: KeystoreConnector
 
   def redirect(): Action[AnyContent] = Authorised.async { implicit user => implicit request =>
     Future.successful(Redirect(routes.ConfirmCorrespondAddressController.show().url))
@@ -49,7 +47,7 @@ trait ConfirmCorrespondAddressController extends FrontendController with Authori
   private def getConfirmCorrespondenceModels(implicit headerCarrier: HeaderCarrier) : Future[(Option[ConfirmCorrespondAddressModel],
     CompanyRegistrationReviewDetailsModel)] = {
     for {
-      confirmCorrespondAddress <- keyStoreConnector.fetchAndGetFormData[ConfirmCorrespondAddressModel](KeystoreKeys.confirmContactAddress)
+      confirmCorrespondAddress <- keystoreConnector.fetchAndGetFormData[ConfirmCorrespondAddressModel](KeystoreKeys.confirmContactAddress)
       companyDetails <- registeredBusinessCustomerService.getReviewBusinessCustomerDetails
     } yield (confirmCorrespondAddress, companyDetails.get)
   }
@@ -72,15 +70,15 @@ trait ConfirmCorrespondAddressController extends FrontendController with Authori
         }
       },
       validFormData => {
-        keyStoreConnector.saveFormData(KeystoreKeys.confirmContactAddress, validFormData)
+        keystoreConnector.saveFormData(KeystoreKeys.confirmContactAddress, validFormData)
 
         validFormData.contactAddressUse match {
           case Constants.StandardRadioButtonYesValue => {
             registeredBusinessCustomerService.getReviewBusinessCustomerDetails.map(companyDetails => {
-              keyStoreConnector.saveFormData(KeystoreKeys.provideCorrespondAddress,
+              keystoreConnector.saveFormData(KeystoreKeys.provideCorrespondAddress,
                 Json.toJson(companyDetails.get.businessAddress).as[ProvideCorrespondAddressModel])
             })
-            keyStoreConnector.saveFormData(KeystoreKeys.backLinkConfirmCorrespondAddress,
+            keystoreConnector.saveFormData(KeystoreKeys.backLinkConfirmCorrespondAddress,
               routes.ConfirmCorrespondAddressController.show().url)
             Future.successful(Redirect(routes.ContactDetailsSubscriptionController.show()))
           }

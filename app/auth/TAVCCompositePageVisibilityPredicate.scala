@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 HM Revenue & Customs
+ * Copyright 2017 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,15 +16,18 @@
 
 package auth
 
+import connectors.KeystoreConnector
 import services.RegisteredBusinessCustomerService
 import uk.gov.hmrc.play.frontend.auth.connectors.domain.ConfidenceLevel.L50
 import uk.gov.hmrc.play.frontend.auth.{CompositePageVisibilityPredicate, NonNegotiableIdentityConfidencePredicate, PageVisibilityPredicate}
-import uk.gov.hmrc.play.http.HeaderCarrier
 
 class TAVCCompositePageVisibilityPredicate(businessCustomerFrontendUrl: String,
-                                           rbcService: RegisteredBusinessCustomerService) extends CompositePageVisibilityPredicate {
+                                           rbcService: RegisteredBusinessCustomerService,
+                                           keystoreConnector: KeystoreConnector) extends CompositePageVisibilityPredicate {
   override def children: Seq[PageVisibilityPredicate] = Seq (
     new NonNegotiableIdentityConfidencePredicate(L50),
-    new BusinessCustomerPredicate(businessCustomerFrontendUrl, rbcService)
+    new WhitelistPredicate(keystoreConnector),
+    new BusinessCustomerPredicate(businessCustomerFrontendUrl, rbcService),
+    new SecondWhitelistPredicate(keystoreConnector)
   )
 }
