@@ -4,7 +4,7 @@
 @import uk.gov.hmrc.play.views.html.helpers.form
 @import views.html.helpers.{errorSummary, formInputRadioGroup, textWithConstErrors, backButtonWithProgress}
 
-@(confirmCorrespondAddressForm: Form[ConfirmCorrespondAddressModel], companyDetails: CompanyRegistrationReviewDetailsModel)(implicit request: Request[_], messages: Messages)
+@(confirmCorrespondAddressForm: Form[ConfirmCorrespondAddressModel], companyDetails: CompanyRegistrationReviewDetailsModel)(implicit request: Request[_], messages: Messages, appConfig: config.AppConfig, countriesHelper: CountriesHelper)
 
 @main_template(Messages("page.registrationInformation.ConfirmCorrespondAddress.title")){
 
@@ -29,7 +29,7 @@
             @if(companyDetails.businessAddress.postcode.isDefined){
             <span id="postcode" class="form-hint">@companyDetails.businessAddress.postcode</span>
             }
-            <span id="country" class="form-hint">@CountriesHelper.getSelectedCountry(companyDetails.businessAddress.country)</span>
+            <span id="country" class="form-hint">@countriesHelper.getSelectedCountry(companyDetails.businessAddress.country)</span>
         </div>
 
         @form(action = controllers.routes.ConfirmCorrespondAddressController.submit()) {
