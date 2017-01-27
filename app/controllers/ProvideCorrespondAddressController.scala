@@ -16,47 +16,40 @@
 
 package controllers
 
-import auth.AuthorisedForTAVC
+import auth.AuthorisedActions
+import com.google.inject.{Inject, Singleton}
 import common.KeystoreKeys
-import config.{FrontendAppConfig, FrontendAuthConnector}
+import config.AppConfig
 import connectors.KeystoreConnector
-import play.api.mvc.Action
 import models.ProvideCorrespondAddressModel
-import forms.ProvideCorrespondAddressForm._
-import play.api.i18n.Messages
-import services.RegisteredBusinessCustomerService
+import forms.ProvideCorrespondAddressForm
+import play.api.i18n.{I18nSupport, Messages, MessagesApi}
+import play.api.mvc.{Action, AnyContent}
 import uk.gov.hmrc.play.frontend.controller.FrontendController
 import views.html.registrationInformation.ProvideCorrespondAddress
-import utils._
-import play.api.i18n.Messages.Implicits._
-import play.api.Play._
-import uk.gov.hmrc.passcode.authentication.{PasscodeAuthenticationProvider, PasscodeVerificationConfig}
+import utils.CountriesHelper
 
 import scala.concurrent.Future
 
-object ProvideCorrespondAddressController extends ProvideCorrespondAddressController
-{
-  override lazy val applicationConfig = FrontendAppConfig
-  override lazy val authConnector = FrontendAuthConnector
-  override lazy val registeredBusinessCustomerService = RegisteredBusinessCustomerService
-  override lazy val keystoreConnector = KeystoreConnector
-  override def config = new PasscodeVerificationConfig(configuration)
-  override def passcodeAuthenticationProvider = new PasscodeAuthenticationProvider(config)
-}
+@Singleton
+class ProvideCorrespondAddressController @Inject()(authorised: AuthorisedActions,
+                                                   keystoreConnector: KeystoreConnector,
+                                                   provideCorrespondAddressForm: ProvideCorrespondAddressForm,
+                                                   countriesHelper: CountriesHelper,
+                                                   val messagesApi: MessagesApi,
+                                                   implicit val applicationConfig: AppConfig) extends FrontendController with I18nSupport {
 
-trait ProvideCorrespondAddressController extends FrontendController with AuthorisedForTAVC {
+  lazy val countriesList = countriesHelper.getIsoCodeTupleList
 
-  lazy val countriesList = CountriesHelper.getIsoCodeTupleList
-
-  val show = Authorised.async { implicit user => implicit request =>
+  def show: Action[AnyContent] = authorised.async { implicit user => implicit request =>
     keystoreConnector.fetchAndGetFormData[ProvideCorrespondAddressModel](KeystoreKeys.provideCorrespondAddress).map {
-      case Some(data) => Ok(ProvideCorrespondAddress(provideCorrespondAddressForm.fill(data), countriesList))
-      case None => Ok(ProvideCorrespondAddress(provideCorrespondAddressForm.fill(ProvideCorrespondAddressModel("","")), countriesList))
+      case Some(data) => Ok(ProvideCorrespondAddress(provideCorrespondAddressForm.form.fill(data), countriesList))
+      case None => Ok(ProvideCorrespondAddress(provideCorrespondAddressForm.form.fill(ProvideCorrespondAddressModel("","")), countriesList))
     }
   }
 
-  val submit = Authorised.async { implicit user => implicit request =>
-    provideCorrespondAddressForm.bindFromRequest().fold(
+  val submit = authorised.async { implicit user => implicit request =>
+    provideCorrespondAddressForm.form.bindFromRequest().fold(
       formWithErrors => {
         Future.successful(BadRequest(ProvideCorrespondAddress(if(formWithErrors.hasGlobalErrors)
           formWithErrors.discardingErrors.withError("postcode", Messages("validation.error.countrypostcode"))

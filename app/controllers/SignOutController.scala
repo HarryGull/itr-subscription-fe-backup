@@ -16,31 +16,28 @@
 
 package controllers
 
-import auth.AuthorisedForTAVC
-import config.{FrontendAppConfig, FrontendAuthConnector}
-import connectors.KeystoreConnector
+import auth.AuthorisedActions
+import com.google.inject.{Inject, Singleton}
+import config.AppConfig
+import play.api.Configuration
+import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent}
-import services.RegisteredBusinessCustomerService
 import uk.gov.hmrc.play.frontend.controller.FrontendController
 import views.html.signout.SignedOut
-import play.api.i18n.Messages.Implicits._
-import play.api.Play._
-import uk.gov.hmrc.passcode.authentication.{PasscodeAuthenticationProvider, PasscodeVerificationConfig}
+import uk.gov.hmrc.passcode.authentication.{PasscodeAuthentication, PasscodeAuthenticationProvider, PasscodeVerificationConfig}
 
 import scala.concurrent.Future
 
-object SignOutController extends SignOutController {
-  override lazy val applicationConfig = FrontendAppConfig
-  override lazy val authConnector = FrontendAuthConnector
-  override lazy val registeredBusinessCustomerService = RegisteredBusinessCustomerService
-  override lazy val keystoreConnector = KeystoreConnector
-  override def config = new PasscodeVerificationConfig(configuration)
-  override def passcodeAuthenticationProvider = new PasscodeAuthenticationProvider(config)
-}
+@Singleton
+class SignOutController @Inject()(authorised: AuthorisedActions,
+                                  implicit val applicationConfig: AppConfig,
+                                  configuration: Configuration,
+                                  val messagesApi: MessagesApi) extends FrontendController with PasscodeAuthentication with I18nSupport {
 
-trait SignOutController extends FrontendController with AuthorisedForTAVC {
+  override def config: PasscodeVerificationConfig = new PasscodeVerificationConfig(configuration)
+  override def passcodeAuthenticationProvider: PasscodeAuthenticationProvider = new PasscodeAuthenticationProvider(config)
 
-  def signout(): Action[AnyContent] = Authorised.async { implicit user => implicit request =>
+  def signout(): Action[AnyContent] = authorised.async { implicit user => implicit request =>
     Future.successful(Redirect(s"${applicationConfig.ggSignOutUrl}?continue=${applicationConfig.signOutPageUrl}"))
   }
 

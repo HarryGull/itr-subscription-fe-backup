@@ -16,43 +16,36 @@
 
 package controllers
 
-import auth.AuthorisedForTAVC
+import auth.AuthorisedActions
+import com.google.inject.{Inject, Singleton}
 import common.KeystoreKeys
-import config.{FrontendAppConfig, FrontendAuthConnector}
+import config.AppConfig
 import connectors.KeystoreConnector
-import play.api.mvc.Action
+import forms.ContactDetailsSubscriptionForm
 import models.ContactDetailsSubscriptionModel
-import forms.ContactDetailsSubscriptionForm._
-import services.RegisteredBusinessCustomerService
 import uk.gov.hmrc.play.frontend.controller.FrontendController
 import views.html.registrationInformation.ContactDetailsSubscription
-import play.api.i18n.Messages.Implicits._
-import play.api.Play._
-import uk.gov.hmrc.passcode.authentication.{PasscodeAuthenticationProvider, PasscodeVerificationConfig}
+import play.api.i18n.{I18nSupport, MessagesApi}
+import play.api.mvc.{Action, AnyContent}
 
 import scala.concurrent.Future
 
-object ContactDetailsSubscriptionController extends ContactDetailsSubscriptionController
-{
-  override lazy val applicationConfig = FrontendAppConfig
-  override lazy val authConnector = FrontendAuthConnector
-  override lazy val registeredBusinessCustomerService = RegisteredBusinessCustomerService
-  override lazy val keystoreConnector = KeystoreConnector
-  override def config = new PasscodeVerificationConfig(configuration)
-  override def passcodeAuthenticationProvider = new PasscodeAuthenticationProvider(config)
-}
+@Singleton
+class ContactDetailsSubscriptionController @Inject()(authorised: AuthorisedActions,
+                                                     keystoreConnector: KeystoreConnector,
+                                                     val messagesApi: MessagesApi,
+                                                     contactDetailsSubscriptionForm: ContactDetailsSubscriptionForm,
+                                                     implicit val applicationConfig: AppConfig) extends FrontendController with I18nSupport {
 
-trait ContactDetailsSubscriptionController extends FrontendController with AuthorisedForTAVC {
-
-  val show = Authorised.async { implicit user => implicit request =>
+  def show: Action[AnyContent] = authorised.async { implicit user => implicit request =>
     keystoreConnector.fetchAndGetFormData[ContactDetailsSubscriptionModel](KeystoreKeys.contactDetailsSubscription).map {
-      case Some(data) => Ok(ContactDetailsSubscription(contactDetailsSubscriptionForm.fill(data)))
-      case None => Ok(ContactDetailsSubscription(contactDetailsSubscriptionForm))
+      case Some(data) => Ok(ContactDetailsSubscription(contactDetailsSubscriptionForm.form.fill(data)))
+      case None => Ok(ContactDetailsSubscription(contactDetailsSubscriptionForm.form))
     }
   }
 
-  val submit = Authorised.async { implicit user => implicit request =>
-    contactDetailsSubscriptionForm.bindFromRequest().fold(
+  def submit: Action[AnyContent] = authorised.async { implicit user => implicit request =>
+    contactDetailsSubscriptionForm.form.bindFromRequest().fold(
       formWithErrors => {
         Future.successful(BadRequest(ContactDetailsSubscription(formWithErrors)))
       },

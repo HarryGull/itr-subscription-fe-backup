@@ -16,36 +16,35 @@
 
 package controllers
 
-import auth.AuthorisedForTAVC
+import auth.AuthorisedActions
+import com.google.inject.{Inject, Singleton}
 import common.{Constants, KeystoreKeys}
-import config.{FrontendAppConfig, FrontendAuthConnector}
+import config.AppConfig
 import connectors.KeystoreConnector
-import forms.ConfirmCorrespondAddressForm._
-import models.{AddressModel, CompanyRegistrationReviewDetailsModel, ConfirmCorrespondAddressModel, ProvideCorrespondAddressModel}
+import forms.ConfirmCorrespondAddressForm
+import models.{CompanyRegistrationReviewDetailsModel, ConfirmCorrespondAddressModel, ProvideCorrespondAddressModel}
 import play.api.libs.json.Json
 import play.api.mvc.{Action, AnyContent}
 import services.RegisteredBusinessCustomerService
 import uk.gov.hmrc.play.frontend.controller.FrontendController
 import uk.gov.hmrc.play.http.HeaderCarrier
 import views.html.registrationInformation.ConfirmCorrespondAddress
-import play.api.i18n.Messages.Implicits._
-import play.api.Play._
-import uk.gov.hmrc.passcode.authentication.{PasscodeAuthenticationProvider, PasscodeVerificationConfig}
+import play.api.i18n.{I18nSupport, MessagesApi}
+import utils.CountriesHelper
 
 import scala.concurrent.Future
 
-object ConfirmCorrespondAddressController extends ConfirmCorrespondAddressController{
-  override lazy val applicationConfig = FrontendAppConfig
-  override lazy val authConnector = FrontendAuthConnector
-  override lazy val registeredBusinessCustomerService = RegisteredBusinessCustomerService
-  override lazy val keystoreConnector = KeystoreConnector
-  override def config = new PasscodeVerificationConfig(configuration)
-  override def passcodeAuthenticationProvider = new PasscodeAuthenticationProvider(config)
-}
+@Singleton
+class ConfirmCorrespondAddressController @Inject()(authorised: AuthorisedActions,
+                                                   keystoreConnector: KeystoreConnector,
+                                                   registeredBusinessCustomerService: RegisteredBusinessCustomerService,
+                                                   confirmCorrespondAddressForm: ConfirmCorrespondAddressForm,
+                                                   implicit val countriesHelper: CountriesHelper,
+                                                   val messagesApi: MessagesApi,
+                                                   implicit val applicationConfig: AppConfig)
+  extends FrontendController with I18nSupport {
 
-trait ConfirmCorrespondAddressController extends FrontendController with AuthorisedForTAVC {
-
-  def redirect(): Action[AnyContent] = Authorised.async { implicit user => implicit request =>
+  def redirect(): Action[AnyContent] = authorised.async { implicit user => implicit request =>
     Future.successful(Redirect(routes.ConfirmCorrespondAddressController.show().url))
   }
 
@@ -58,17 +57,17 @@ trait ConfirmCorrespondAddressController extends FrontendController with Authori
   }
 
 
-  val show = Authorised.async { implicit user => implicit request =>
+  def show: Action[AnyContent] = authorised.async { implicit user => implicit request =>
 
     getConfirmCorrespondenceModels.map {
       case (Some(confirmCorrespondAddress),companyDetails) =>
-        Ok(ConfirmCorrespondAddress(confirmCorrespondAddressForm.fill(confirmCorrespondAddress),companyDetails))
-      case (None,companyDetails) => Ok(ConfirmCorrespondAddress(confirmCorrespondAddressForm,companyDetails))
+        Ok(ConfirmCorrespondAddress(confirmCorrespondAddressForm.form.fill(confirmCorrespondAddress),companyDetails))
+      case (None,companyDetails) => Ok(ConfirmCorrespondAddress(confirmCorrespondAddressForm.form,companyDetails))
     }
   }
 
-  val submit = Authorised.async { implicit user => implicit request =>
-    confirmCorrespondAddressForm.bindFromRequest().fold(
+  def submit: Action[AnyContent] = authorised.async { implicit user => implicit request =>
+    confirmCorrespondAddressForm.form.bindFromRequest().fold(
       formWithErrors => {
         getConfirmCorrespondenceModels.map {
           case (_,companyDetails) => BadRequest(ConfirmCorrespondAddress(formWithErrors,companyDetails))
