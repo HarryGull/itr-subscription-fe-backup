@@ -16,21 +16,21 @@
 
 package forms
 
+import com.google.inject.Inject
 import models.ProvideCorrespondAddressModel
-import utils.Validation._
+import utils.Validation
 import play.api.data.Form
 import play.api.data.Forms._
-import uk.gov.voa.play.form.ConditionalMappings._
 
-object ProvideCorrespondAddressForm {
-  val provideCorrespondAddressForm = Form(
+class ProvideCorrespondAddressForm @Inject()(validation: Validation) {
+  val form = Form(
     mapping(
-      "addressline1" -> mandatoryAddressLineCheck,
-      "addressline2" -> mandatoryAddressLineCheck,
-      "addressline3" -> optional(optionalAddressLineCheck),
-      "addressline4" -> optional(addressLineFourCheck),
-      "postcode" -> optional(postcodeCheck),
-      "countryCode" -> countryCodeCheck
-    )(ProvideCorrespondAddressModel.apply)(ProvideCorrespondAddressModel.unapply).verifying(postcodeCountryCheckConstraint)
+      "addressline1" -> validation.mandatoryAddressLineCheck,
+      "addressline2" -> validation.mandatoryAddressLineCheck,
+      "addressline3" -> optional(validation.optionalAddressLineCheck),
+      "addressline4" -> optional(validation.addressLineFourCheck),
+      "postcode" -> optional(validation.postcodeCheck),
+      "countryCode" -> validation.countryCodeCheck
+    )(ProvideCorrespondAddressModel.apply)(ProvideCorrespondAddressModel.unapply).verifying(validation.postcodeCountryCheckConstraint)
   )
 }
