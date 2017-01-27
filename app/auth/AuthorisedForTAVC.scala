@@ -16,58 +16,59 @@
 
 package auth
 
+import com.google.inject.{Inject, Singleton}
 import play.api.mvc._
 import config.AppConfig
 import services.RegisteredBusinessCustomerService
-import uk.gov.hmrc.passcode.authentication.PasscodeAuthentication
+import uk.gov.hmrc.passcode.authentication.{PasscodeAuthentication, PasscodeAuthenticationProvider, PasscodeVerificationConfig}
 import connectors.KeystoreConnector
+import play.api.Configuration
+import uk.gov.hmrc.play.frontend.auth.connectors.AuthConnector
 import uk.gov.hmrc.play.frontend.auth.{Actions, AuthenticationProvider, TaxRegime}
 import uk.gov.hmrc.play.frontend.auth.connectors.domain.Accounts
 import uk.gov.hmrc.play.http.HeaderCarrier
 
 import scala.concurrent.Future
 
-trait AuthorisedForTAVC extends Actions with PasscodeAuthentication {
+@Singleton
+class AuthorisedForTAVC @Inject()(val authConnector: AuthConnector,
+                                  configuration: Configuration,
+                                  applicationConfig: AppConfig,
+                                  registeredBusinessCustomerService: RegisteredBusinessCustomerService,
+                                  keystoreConnector: KeystoreConnector) extends AuthorisedActions with Actions with PasscodeAuthentication {
 
-  val applicationConfig: AppConfig
-  val registeredBusinessCustomerService: RegisteredBusinessCustomerService
-  val keystoreConnector: KeystoreConnector
-  val postSignInRedirectUrl: String = applicationConfig.introductionUrl
+  lazy val postSignInRedirectUrl: String = applicationConfig.introductionUrl
+
+  override def config: PasscodeVerificationConfig = new PasscodeVerificationConfig(configuration)
+  override def passcodeAuthenticationProvider: PasscodeAuthenticationProvider = new PasscodeAuthenticationProvider(config)
 
   // $COVERAGE-OFF$
   implicit private def hc(implicit request: Request[_]): HeaderCarrier = HeaderCarrier.fromHeadersAndSession(request.headers, Some(request.session))
   // $COVERAGE-ON$
-  lazy val visibilityPredicate = new TAVCCompositePageVisibilityPredicate(
+
+  private lazy val visibilityPredicate = new TAVCCompositePageVisibilityPredicate(
     applicationConfig.businessCustomerUrl,
     registeredBusinessCustomerService,
     keystoreConnector
   )
 
-  private type PlayRequest = Request[AnyContent] => Result
-  private type UserRequest = TAVCUser => PlayRequest
-  private type AsyncPlayRequest = Request[AnyContent] => Future[Result]
-  private type AsyncUserRequest = TAVCUser => AsyncPlayRequest
-
-  class AuthorisedBy(regime: TaxRegime) {
-    def async(action: AsyncUserRequest): Action[AnyContent] = {
-      AuthorisedFor(regime, visibilityPredicate).async {
-        implicit user => implicit request =>
-          withVerifiedPasscode(action(TAVCUser(user))(request))
-      }
+  def async(action: TAVCUser => Request[AnyContent] => Future[Result]): Action[AnyContent] = {
+    AuthorisedFor(TAVCRegime, visibilityPredicate).async {
+      implicit user => implicit request =>
+        withVerifiedPasscode(action(TAVCUser(user))(request))
     }
-    // $COVERAGE-OFF$
-    def apply(action: UserRequest): Action[AnyContent] = async(user => request => Future.successful(action(user)(request)))
-    // $COVERAGE-ON$
   }
-
-  object Authorised extends AuthorisedBy(TAVCRegime)
-
-  val tavcAuthProvider: GovernmentGatewayProvider = new GovernmentGatewayProvider(postSignInRedirectUrl, applicationConfig.ggSignInUrl)
 
   trait TAVCRegime extends TaxRegime {
     override def isAuthorised(accounts: Accounts): Boolean = true
-    override def authenticationType: AuthenticationProvider = tavcAuthProvider
+    override def authenticationType: AuthenticationProvider = new GovernmentGatewayProvider(postSignInRedirectUrl, applicationConfig.ggSignInUrl)
   }
 
   object TAVCRegime extends TAVCRegime
+}
+
+trait AuthorisedActions {
+
+  def async(action: TAVCUser => Request[AnyContent] => Future[Result]): Action[AnyContent]
+
 }

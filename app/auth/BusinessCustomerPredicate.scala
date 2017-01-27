@@ -29,7 +29,6 @@ import scala.concurrent.Future
 class BusinessCustomerPredicate(businessCustomerFrontendUri:String, rbcService: RegisteredBusinessCustomerService) extends PageVisibilityPredicate {
   override def apply(authContext: AuthContext, request: Request[AnyContent]): Future[PageVisibilityResult] = {
     implicit val hc = HeaderCarrier.fromHeadersAndSession(request.headers, Some(request.session))
-    println("BUSINESSCUSTOMERPREDICATE")
     rbcService.getReviewBusinessCustomerDetails.map {
       case Some(companyRegistrationReviewDetailsModel) => PageIsVisible
       case _ => PageBlocked(needsBusinessCustomerDetails)
