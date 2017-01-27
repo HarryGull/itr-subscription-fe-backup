@@ -20,16 +20,16 @@
   */
 package testOnly.controllers
 
-import play.api.mvc.Action
+import com.google.inject.{Inject, Singleton}
+import play.api.mvc.{Action, AnyContent}
 import testOnly.connectors.{AuthenticatorConnector, DeEnrolmentConnector}
 import uk.gov.hmrc.play.frontend.controller.FrontendController
 
-trait DeEnrolController extends FrontendController {
+@Singleton
+class DeEnrolController @Inject()(deEnrolmentConnector: DeEnrolmentConnector,
+                                  authenticatorConnector: AuthenticatorConnector) extends FrontendController {
 
-  val deEnrolmentConnector: DeEnrolmentConnector
-  val authenticatorConnector: AuthenticatorConnector
-
-  val deEnrol = Action.async { implicit request =>
+  def deEnrol: Action[AnyContent] = Action.async { implicit request =>
     for {
       ggStubResponse <- deEnrolmentConnector.deEnrol()
       authRefreshed = authenticatorConnector.refreshProfile()
@@ -38,9 +38,5 @@ trait DeEnrolController extends FrontendController {
       case _ => BadRequest("Failed to De-enrol")
     }
   }
-}
 
-object DeEnrolController extends DeEnrolController {
-  override lazy val deEnrolmentConnector = DeEnrolmentConnector
-  override lazy val authenticatorConnector = AuthenticatorConnector
 }

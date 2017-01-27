@@ -20,16 +20,16 @@
   */
 package testOnly.controllers
 
+import com.google.inject.{Inject, Singleton}
 import play.api.mvc.{Action, AnyContent}
 import testOnly.connectors.{AuthenticatorConnector, GgStubsConnector}
 import uk.gov.hmrc.play.frontend.controller.FrontendController
 
-trait ResetEnrolmentsController extends FrontendController {
+@Singleton
+class ResetEnrolmentsController @Inject()(ggStubsConnector: GgStubsConnector,
+                                          authenticatorConnector: AuthenticatorConnector) extends FrontendController {
 
-  val ggStubsConnector: GgStubsConnector
-  val authenticatorConnector: AuthenticatorConnector
-
-  val resetEnrolments = Action.async { implicit request =>
+  def resetEnrolments: Action[AnyContent] = Action.async { implicit request =>
     for {
       ggStubResponse <- ggStubsConnector.resetEnrolments()
       authRefreshed = authenticatorConnector.refreshProfile().isCompleted
@@ -38,9 +38,5 @@ trait ResetEnrolmentsController extends FrontendController {
       case _ => BadRequest("Failed to Reset Enrolments")
     }
   }
-}
 
-object ResetEnrolmentsController extends ResetEnrolmentsController {
-  override val ggStubsConnector = GgStubsConnector
-  override val authenticatorConnector = AuthenticatorConnector
 }
