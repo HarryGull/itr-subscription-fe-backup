@@ -20,26 +20,28 @@
   */
 package testOnly.connectors
 
-import config.WSHttp
+import com.google.inject.{Inject, Singleton}
 import play.api.libs.json.{JsValue, Json}
 import uk.gov.hmrc.play.config.ServicesConfig
 import uk.gov.hmrc.play.http._
+import uk.gov.hmrc.play.http.ws.WSHttp
 
 import scala.concurrent.Future
 
-trait DeEnrolmentConnector extends ServicesConfig with RawResponseReads {
+@Singleton
+class DeEnrolmentConnectorImpl @Inject()(http: WSHttp) extends DeEnrolmentConnector with ServicesConfig with RawResponseReads {
 
-  val serviceURL: String
-  val deEnrolURI: String
-  val http: HttpGet with HttpPost
+  lazy val serviceURL = baseUrl("tax-enrolments")
+  val deEnrolURI = "tax-enrolments/de-enrol/HMRC-TAVC-ORG"
 
   def deEnrol()(implicit hc: HeaderCarrier): Future[HttpResponse] = {
     http.POST[JsValue, HttpResponse](s"$serviceURL/$deEnrolURI", Json.parse("""{"keepAgentAllocations": true}"""))
   }
+
 }
 
-object DeEnrolmentConnector extends DeEnrolmentConnector {
-  val serviceURL = baseUrl("tax-enrolments")
-  val deEnrolURI = "tax-enrolments/de-enrol/HMRC-TAVC-ORG"
-  val http = WSHttp
+trait DeEnrolmentConnector extends ServicesConfig with RawResponseReads {
+
+  def deEnrol()(implicit hc: HeaderCarrier): Future[HttpResponse]
+
 }
