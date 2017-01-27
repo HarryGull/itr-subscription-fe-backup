@@ -17,7 +17,7 @@
 package connectors
 
 import common.BaseTestSpec
-import models.ConfirmCorrespondAddressModel
+import models.{CompanyRegistrationReviewDetailsModel, ConfirmCorrespondAddressModel}
 import org.mockito.Matchers
 import org.mockito.Mockito._
 import play.api.libs.json.Json
@@ -28,30 +28,27 @@ import play.api.test.Helpers._
 import scala.concurrent.Future
 
 class KeystoreConnectorSpec extends BaseTestSpec {
-
-  object TestKeyStoreConnector extends KeystoreConnector {
-    override val sessionCache = mockSessionCache
-  }
+  
+  val testConnector = new KeystoreConnectorImpl(mockSessionCache, mockSessionCache)
+  val confirmCorrespondAddressModel = ConfirmCorrespondAddressModel("test")
 
   "fetchAndGetFormData" should {
 
     "fetch and get from keystore" in {
-      val testModel = ConfirmCorrespondAddressModel("test")
       when(mockSessionCache.fetchAndGetEntry[ConfirmCorrespondAddressModel](Matchers.anyString())(Matchers.any(), Matchers.any()))
-        .thenReturn(Future.successful(Option(testModel)))
-      val result = TestKeyStoreConnector.fetchAndGetFormData[ConfirmCorrespondAddressModel]("test")
-      await(result) shouldBe Some(testModel)
+        .thenReturn(Future.successful(Option(confirmCorrespondAddressModel)))
+      val result = testConnector.fetchAndGetFormData[ConfirmCorrespondAddressModel]("test")
+      await(result) shouldBe Some(confirmCorrespondAddressModel)
     }
   }
 
   "saveFormData" should {
 
     "save data to keystore" in {
-      val testModel = ConfirmCorrespondAddressModel("test")
-      val returnedCacheMap = CacheMap("test", Map("data" -> Json.toJson(testModel)))
+      val returnedCacheMap = CacheMap("test", Map("data" -> Json.toJson(confirmCorrespondAddressModel)))
       when(mockSessionCache.cache[ConfirmCorrespondAddressModel](Matchers.anyString(), Matchers.any())(Matchers.any(), Matchers.any()))
         .thenReturn(Future.successful(returnedCacheMap))
-      val result = TestKeyStoreConnector.saveFormData("test", testModel)
+      val result = testConnector.saveFormData("test", confirmCorrespondAddressModel)
       await(result) shouldBe returnedCacheMap
     }
   }
@@ -60,8 +57,20 @@ class KeystoreConnectorSpec extends BaseTestSpec {
 
     "clear the data from keystore" in {
       when(mockSessionCache.remove()(Matchers.any[HeaderCarrier]())).thenReturn(Future.successful(HttpResponse(OK)))
-      val result = TestKeyStoreConnector.clearKeystore()
+      val result = testConnector.clearKeystore()
       await(result).status shouldBe OK
+    }
+
+  }
+
+  "fetchAndGetReviewDetailsForSession" should {
+
+    "convert review details json to CompanyRegistrationReviewDetailsModel" in {
+      when(mockSessionCache.fetchAndGetEntry[CompanyRegistrationReviewDetailsModel]
+        (Matchers.anyString())(Matchers.any[HeaderCarrier](),Matchers.any()))
+        .thenReturn(Future.successful(Some(validModel)))
+      val result = testConnector.fetchAndGetReviewDetailsForSession
+      await(result) shouldBe Some(validModel)
     }
 
   }

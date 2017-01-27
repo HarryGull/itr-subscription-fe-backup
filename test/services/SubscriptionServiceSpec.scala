@@ -17,7 +17,7 @@
 package services
 
 import common.BaseTestSpec
-import connectors.{KeystoreConnector, SubscriptionConnector}
+import connectors.SubscriptionConnector
 import models.etmp.{IntermediateCorrespondenceDetailsModel, IntermediateSubscriptionTypeModel, SubscriptionTypeModel}
 import org.mockito.Matchers
 import org.mockito.Mockito._
@@ -26,47 +26,28 @@ import play.api.test.Helpers._
 import uk.gov.hmrc.play.http.HttpResponse
 
 import scala.concurrent.Future
+import scala.concurrent.ExecutionContext.Implicits.global
 
 class SubscriptionServiceSpec extends BaseTestSpec {
 
-  lazy val mockSubConnector = mock[SubscriptionConnector]
+  val mockSubscriptionConnector = mock[SubscriptionConnector]
   val subscriptionModel = Json.parse(
     Json.toJson(
       IntermediateSubscriptionTypeModel(IntermediateCorrespondenceDetailsModel(provideModel,contactDetailsModel))
     ).toString()
   ).as[SubscriptionTypeModel]
 
-  object TestService extends SubscriptionService {
-    override lazy val subscriptionConnector = mockSubConnector
-    override lazy val keystoreConnector = mockKeystoreConnector
-    override lazy val registeredBusinessCustomerService = mockRegisteredBusinessCustomerService
-  }
-
-  "SubscriptionService" should {
-
-    "Use SubscriptionConnector" in {
-      SubscriptionService.subscriptionConnector shouldBe SubscriptionConnector
-    }
-
-    "Use KeystoreConnector" in {
-      SubscriptionService.keystoreConnector shouldBe KeystoreConnector
-    }
-
-    "Use RegisteredBusinessCustomerService" in {
-      SubscriptionService.registeredBusinessCustomerService shouldBe RegisteredBusinessCustomerService
-    }
-
-  }
+  val testService = new SubscriptionServiceImpl(mockSubscriptionConnector, mockKeystoreConnector, mockRegisteredBusinessCustomerService)
 
   "subscribe" when {
 
     "All details can be retrieved from keystore" should {
 
-      lazy val result = TestService.subscribe
+      lazy val result = testService.subscribe
 
       "Make a successful request to the subscription backend" in {
         allDetails()
-        when(mockSubConnector.subscribe(Matchers.eq(subscriptionModel),Matchers.eq(validModel.safeId),
+        when(mockSubscriptionConnector.subscribe(Matchers.eq(subscriptionModel),Matchers.eq(validModel.safeId),
           Matchers.eq(validModel.businessAddress.postcode.get.replace(" ","")))(Matchers.any()))
           .thenReturn(Future.successful(HttpResponse(OK)))
         await(result).status shouldBe OK
@@ -75,7 +56,7 @@ class SubscriptionServiceSpec extends BaseTestSpec {
 
     "Not all details can be retrieved from keystore" should {
 
-      lazy val result = TestService.subscribe
+      lazy val result = testService.subscribe
 
       "Make no request to the subscription backend" in {
         notAllDetails()
@@ -85,7 +66,7 @@ class SubscriptionServiceSpec extends BaseTestSpec {
 
     "No details can be retrieved from keystore" should {
 
-      lazy val result = TestService.subscribe
+      lazy val result = testService.subscribe
 
       "Make no request to the subscription backend" in {
         noDetails()

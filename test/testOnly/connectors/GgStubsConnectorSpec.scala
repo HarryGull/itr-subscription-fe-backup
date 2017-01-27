@@ -21,31 +21,26 @@ import org.mockito.Matchers
 import org.mockito.Mockito._
 import play.api.libs.json.Json
 import play.api.test.Helpers._
-import uk.gov.hmrc.play.http.ws.WSHttp
 import uk.gov.hmrc.play.http.HttpResponse
 
 import scala.concurrent.Future
 
 class GgStubsConnectorSpec extends BaseTestSpec {
-
-  object TestGgStubsConnector extends GgStubsConnector {
-    val serviceURL = "government-gateway-stubs"
-    val resetURI = "test-only/with-refreshed-enrolments/false"
-    val http = mock[WSHttp]
-  }
+  
+  val testConnector = new GgStubsConnectorImpl(mockHttp)
 
   val jsonError = Json.parse("""{"Message": "Error"}""")
 
   "Calling resetEnrolments" when {
 
     "receiving an OK response" should {
-      lazy val result = TestGgStubsConnector.resetEnrolments()
+      lazy val result = testConnector.resetEnrolments()
       lazy val response = await(result)
       "Return OK" in {
-        when(TestGgStubsConnector.http.POSTEmpty[HttpResponse]
-          (Matchers.eq(s"${TestGgStubsConnector.serviceURL}/${TestGgStubsConnector.resetURI}"))(Matchers.any(), Matchers.eq(hc)))
+        when(mockHttp.POSTEmpty[HttpResponse]
+          (Matchers.eq(s"${testConnector.serviceURL}/${testConnector.resetURI}"))(Matchers.any(), Matchers.eq(hc)))
           .thenReturn(Future.successful(HttpResponse(OK)))
-        val result = TestGgStubsConnector.resetEnrolments()
+        val result = testConnector.resetEnrolments()
         val response = await(result)
         response.status shouldBe OK
       }
@@ -53,19 +48,19 @@ class GgStubsConnectorSpec extends BaseTestSpec {
   }
 
   "receiving a response other than OK" should {
-    lazy val result = TestGgStubsConnector.resetEnrolments()
+    lazy val result = testConnector.resetEnrolments()
     lazy val response = await(result)
 
     "Return OK" in {
-      when(TestGgStubsConnector.http.POSTEmpty[HttpResponse]
-        (Matchers.eq(s"${TestGgStubsConnector.serviceURL}/${TestGgStubsConnector.resetURI}"))(Matchers.any(), Matchers.eq(hc)))
+      when(mockHttp.POSTEmpty[HttpResponse]
+        (Matchers.eq(s"${testConnector.serviceURL}/${testConnector.resetURI}"))(Matchers.any(), Matchers.eq(hc)))
         .thenReturn(Future.successful(HttpResponse(BAD_REQUEST, Some(jsonError))))
       response.status shouldBe BAD_REQUEST
     }
 
     "Return a JSON response" in {
-      when(TestGgStubsConnector.http.POSTEmpty[HttpResponse]
-        (Matchers.eq(s"${TestGgStubsConnector.serviceURL}/${TestGgStubsConnector.resetURI}"))(Matchers.any(), Matchers.eq(hc)))
+      when(mockHttp.POSTEmpty[HttpResponse]
+        (Matchers.eq(s"${testConnector.serviceURL}/${testConnector.resetURI}"))(Matchers.any(), Matchers.eq(hc)))
         .thenReturn(Future.successful(HttpResponse(BAD_REQUEST, Some(jsonError))))
       Json.parse(response.body) shouldBe jsonError
     }

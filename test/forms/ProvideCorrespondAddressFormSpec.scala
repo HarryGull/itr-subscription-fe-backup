@@ -17,15 +17,13 @@
 package forms
 
 import common.BaseTestSpec
-import forms.ProvideCorrespondAddressForm._
 import models.ProvideCorrespondAddressModel
 import play.api.i18n.Messages
-import play.api.i18n.Messages.Implicits._
 
 class ProvideCorrespondAddressFormSpec extends BaseTestSpec {
 
   "Creating a form using an empty model" should {
-    lazy val form = provideCorrespondAddressForm
+    lazy val form = provideCorrespondAddressForm.form
     "return an empty string for addressline1, addressline2, telephone number and email" in {
       form.data.isEmpty shouldBe true
     }
@@ -34,7 +32,7 @@ class ProvideCorrespondAddressFormSpec extends BaseTestSpec {
   "Creating a form using a valid model" should {
     "return a form with the data specified in the model" in {
       val model = ProvideCorrespondAddressModel("Line 1","Line 2",None,None,None,"JP")
-      val form = provideCorrespondAddressForm.fill(model)
+      val form = provideCorrespondAddressForm.form.fill(model)
 
       form.data("addressline1") shouldBe "Line 1"
       form.data("addressline2") shouldBe "Line 2"
@@ -46,7 +44,7 @@ class ProvideCorrespondAddressFormSpec extends BaseTestSpec {
 
   "Creating a form using an invalid post" when {
     "supplied with no data for addressline1" should {
-      lazy val form = provideCorrespondAddressForm.bind(Map(
+      lazy val form = provideCorrespondAddressForm.form.bind(Map(
         "addressline1" -> "",
         "addressline2" -> "Line 2",
         "addressline3" -> "",
@@ -71,7 +69,7 @@ class ProvideCorrespondAddressFormSpec extends BaseTestSpec {
 
   "Creating a form using an invalid post" when {
     "supplied with no data for addressline2" should {
-      lazy val form = provideCorrespondAddressForm.bind(Map(
+      lazy val form = provideCorrespondAddressForm.form.bind(Map(
         "addressline1" -> "Line 1",
         "addressline2" -> "",
         "addressline3" -> "",
@@ -94,7 +92,7 @@ class ProvideCorrespondAddressFormSpec extends BaseTestSpec {
 
   "Creating a form using an invalid post" when {
     "supplied with no data for country" should {
-      lazy val form = provideCorrespondAddressForm.bind(Map(
+      lazy val form = provideCorrespondAddressForm.form.bind(Map(
         "addressline1" -> "Line 1",
         "addressline2" -> "Line 2",
         "addressline3" -> "",
@@ -117,7 +115,7 @@ class ProvideCorrespondAddressFormSpec extends BaseTestSpec {
 
   "Creating a form using an invalid post" when {
     "supplied with no data for addressline1 and addressline2" should {
-      lazy val form = provideCorrespondAddressForm.bind(Map(
+      lazy val form = provideCorrespondAddressForm.form.bind(Map(
         "addressline1" -> "",
         "addressline2" -> "",
         "addressline3" -> "",
@@ -142,7 +140,7 @@ class ProvideCorrespondAddressFormSpec extends BaseTestSpec {
 
   "Creating a form using an invalid post" when {
     "supplied with no data for addressline2 and country" should {
-      lazy val form = provideCorrespondAddressForm.bind(Map(
+      lazy val form = provideCorrespondAddressForm.form.bind(Map(
         "addressline1" -> "Line 1",
         "addressline2" -> "",
         "addressline3" -> "",
@@ -167,7 +165,7 @@ class ProvideCorrespondAddressFormSpec extends BaseTestSpec {
 
   "Creating a form using an invalid post" when {
     "supplied with no data for addressline1, addressline2 or country" should {
-      lazy val form = provideCorrespondAddressForm.bind(Map(
+      lazy val form = provideCorrespondAddressForm.form.bind(Map(
         "addressline1" -> "",
         "addressline2" -> "",
         "addressline3" -> "",
@@ -193,7 +191,7 @@ class ProvideCorrespondAddressFormSpec extends BaseTestSpec {
   }
 
   "supplied with empty space for addressline1" should {
-    lazy val form = provideCorrespondAddressForm.bind(Map(
+    lazy val form = provideCorrespondAddressForm.form.bind(Map(
       "addressline1" -> "   ",
       "addressline2" -> "Line 2",
       "addressline3" -> "",
@@ -214,7 +212,7 @@ class ProvideCorrespondAddressFormSpec extends BaseTestSpec {
   }
 
   "supplied with empty space for addressline2" should {
-    lazy val form = provideCorrespondAddressForm.bind(Map(
+    lazy val form = provideCorrespondAddressForm.form.bind(Map(
       "addressline1" -> "Line 1",
       "addressline2" -> "   ",
       "addressline3" -> "",
@@ -235,7 +233,7 @@ class ProvideCorrespondAddressFormSpec extends BaseTestSpec {
   }
 
   "supplied with empty space for addressline3" should {
-    lazy val form = provideCorrespondAddressForm.bind(Map(
+    lazy val form = provideCorrespondAddressForm.form.bind(Map(
       "addressline1" -> "Line 1",
       "addressline2" -> "Line 2",
       "addressline3" -> "   ",
@@ -256,7 +254,7 @@ class ProvideCorrespondAddressFormSpec extends BaseTestSpec {
   }
 
   "supplied with empty space for addressline4" should {
-    lazy val form = provideCorrespondAddressForm.bind(Map(
+    lazy val form = provideCorrespondAddressForm.form.bind(Map(
       "addressline1" -> "Line 1",
       "addressline2" -> "Line 2",
       "addressline3" -> "",
@@ -277,7 +275,7 @@ class ProvideCorrespondAddressFormSpec extends BaseTestSpec {
   }
 
   "supplied with empty space for country" should {
-    lazy val form = provideCorrespondAddressForm.bind(Map(
+    lazy val form = provideCorrespondAddressForm.form.bind(Map(
       "addressline1" -> "Line 1",
       "addressline2" -> "Line 2",
       "addressline3" -> "",
@@ -297,7 +295,7 @@ class ProvideCorrespondAddressFormSpec extends BaseTestSpec {
   }
 
   "supplied with empty space for postcode" should {
-    lazy val form = provideCorrespondAddressForm.bind(Map(
+    lazy val form = provideCorrespondAddressForm.form.bind(Map(
       "addressline1" -> "Line 1",
       "addressline2" -> "Line 2",
       "addressline3" -> "",
@@ -317,7 +315,7 @@ class ProvideCorrespondAddressFormSpec extends BaseTestSpec {
   }
 
   "supplied with numeric input for addressline1" should {
-    lazy val form = provideCorrespondAddressForm.bind(Map(
+    lazy val form = provideCorrespondAddressForm.form.bind(Map(
       "addressline1" -> "Line 1",
       "addressline2" -> "Line 2",
       "addressline3" -> "",
@@ -334,7 +332,7 @@ class ProvideCorrespondAddressFormSpec extends BaseTestSpec {
   }
 
   "supplied with numeric input for addressline2" should {
-    lazy val form = provideCorrespondAddressForm.bind(Map(
+    lazy val form = provideCorrespondAddressForm.form.bind(Map(
       "addressline1" -> "Line 1",
       "addressline2" -> "Line 2",
       "addressline3" -> "",
@@ -351,7 +349,7 @@ class ProvideCorrespondAddressFormSpec extends BaseTestSpec {
   }
 
   "supplied with numeric input for addressline3" should {
-    lazy val form = provideCorrespondAddressForm.bind(Map(
+    lazy val form = provideCorrespondAddressForm.form.bind(Map(
       "addressline1" -> "Line 1",
       "addressline2" -> "Line 2",
       "addressline3" -> "86",
@@ -368,7 +366,7 @@ class ProvideCorrespondAddressFormSpec extends BaseTestSpec {
   }
 
   "supplied with numeric input for addressline4" should {
-    lazy val form = provideCorrespondAddressForm.bind(Map(
+    lazy val form = provideCorrespondAddressForm.form.bind(Map(
       "addressline1" -> "Line 1",
       "addressline2" -> "Line 2",
       "addressline3" -> "",
@@ -385,7 +383,7 @@ class ProvideCorrespondAddressFormSpec extends BaseTestSpec {
   }
 
   "supplied with numeric input for postcode" should {
-    lazy val form = provideCorrespondAddressForm.bind(Map(
+    lazy val form = provideCorrespondAddressForm.form.bind(Map(
       "addressline1" -> "Line 1",
       "addressline2" -> "Line 2",
       "addressline3" -> "",
@@ -406,7 +404,7 @@ class ProvideCorrespondAddressFormSpec extends BaseTestSpec {
   }
 
   "supplied with alphanumeric input for country" should {
-    lazy val form = provideCorrespondAddressForm.bind(Map(
+    lazy val form = provideCorrespondAddressForm.form.bind(Map(
       "addressline1" -> "Line 1",
       "addressline2" -> "Line 2",
       "addressline3" -> "",
@@ -429,7 +427,7 @@ class ProvideCorrespondAddressFormSpec extends BaseTestSpec {
   //  BVA
 
   "addressline1 value supplied with the minimum allowed" should {
-    lazy val form = provideCorrespondAddressForm.bind(Map(
+    lazy val form = provideCorrespondAddressForm.form.bind(Map(
       "addressline1" -> "A",
       "addressline2" -> "Line 2",
       "addressline3" -> "",
@@ -446,7 +444,7 @@ class ProvideCorrespondAddressFormSpec extends BaseTestSpec {
   }
 
   "addressline2 value supplied with the minimum allowed" should {
-    lazy val form = provideCorrespondAddressForm.bind(Map(
+    lazy val form = provideCorrespondAddressForm.form.bind(Map(
       "addressline1" -> "Line 1",
       "addressline2" -> "M",
       "addressline3" -> "",
@@ -463,7 +461,7 @@ class ProvideCorrespondAddressFormSpec extends BaseTestSpec {
   }
 
   "addressline3 value supplied with the minimum allowed" should {
-    lazy val form = provideCorrespondAddressForm.bind(Map(
+    lazy val form = provideCorrespondAddressForm.form.bind(Map(
       "addressline1" -> "Line 1",
       "addressline2" -> "Line 2",
       "addressline3" -> "A",
@@ -480,7 +478,7 @@ class ProvideCorrespondAddressFormSpec extends BaseTestSpec {
   }
 
   "addressline4 value supplied with the minimum allowed" should {
-    lazy val form = provideCorrespondAddressForm.bind(Map(
+    lazy val form = provideCorrespondAddressForm.form.bind(Map(
       "addressline1" -> "Line 1",
       "addressline2" -> "Line 2",
       "addressline3" -> "",
@@ -497,7 +495,7 @@ class ProvideCorrespondAddressFormSpec extends BaseTestSpec {
   }
 
   "country value supplied with the minimum allowed" should {
-    lazy val form = provideCorrespondAddressForm.bind(Map(
+    lazy val form = provideCorrespondAddressForm.form.bind(Map(
       "addressline1" -> "Line 1",
       "addressline2" -> "Line 2",
       "addressline3" -> "",
@@ -514,7 +512,7 @@ class ProvideCorrespondAddressFormSpec extends BaseTestSpec {
   }
 
   "addressline1 value supplied with the maximum allowed (on the boundary)" should {
-    lazy val form = provideCorrespondAddressForm.bind(Map(
+    lazy val form = provideCorrespondAddressForm.form.bind(Map(
       "addressline1" -> "Line 1          ",
       "addressline2" -> "Line 2",
       "addressline3" -> "",
@@ -531,7 +529,7 @@ class ProvideCorrespondAddressFormSpec extends BaseTestSpec {
   }
 
   "addressline2 value supplied with the maximum allowed (on the boundary)" should {
-    lazy val form = provideCorrespondAddressForm.bind(Map(
+    lazy val form = provideCorrespondAddressForm.form.bind(Map(
       "addressline1" -> "Line 1",
       "addressline2" -> "Line 2                  ",
       "addressline3" -> "",
@@ -548,7 +546,7 @@ class ProvideCorrespondAddressFormSpec extends BaseTestSpec {
   }
 
   "addressline3 value supplied with the maximum allowed (on the boundary)" should {
-    lazy val form = provideCorrespondAddressForm.bind(Map(
+    lazy val form = provideCorrespondAddressForm.form.bind(Map(
       "addressline1" -> "Line 1",
       "addressline2" -> "Line 2",
       "addressline3" -> "A                          ",
@@ -565,7 +563,7 @@ class ProvideCorrespondAddressFormSpec extends BaseTestSpec {
   }
 
   "addressline4 value supplied with the maximum allowed (on the boundary)" should {
-    lazy val form = provideCorrespondAddressForm.bind(Map(
+    lazy val form = provideCorrespondAddressForm.form.bind(Map(
       "addressline1" -> "Line 1",
       "addressline2" -> "Line 2",
       "addressline3" -> "",
@@ -582,7 +580,7 @@ class ProvideCorrespondAddressFormSpec extends BaseTestSpec {
   }
 
   "postcode value supplied with the maximum allowed (on the boundary)" should {
-    lazy val form = provideCorrespondAddressForm.bind(Map(
+    lazy val form = provideCorrespondAddressForm.form.bind(Map(
       "addressline1" -> "Line 1",
       "addressline2" -> "Line 2",
       "addressline3" -> "",
@@ -599,7 +597,7 @@ class ProvideCorrespondAddressFormSpec extends BaseTestSpec {
   }
 
   "country value supplied with the maximum allowed (on the boundary)" should {
-    lazy val form = provideCorrespondAddressForm.bind(Map(
+    lazy val form = provideCorrespondAddressForm.form.bind(Map(
       "addressline1" -> "Line 1",
       "addressline2" -> "Line 2",
       "addressline3" -> "",
@@ -616,7 +614,7 @@ class ProvideCorrespondAddressFormSpec extends BaseTestSpec {
   }
 
   "country value supplied over the maximum allowed (over the boundary)" should {
-    lazy val form = provideCorrespondAddressForm.bind(Map(
+    lazy val form = provideCorrespondAddressForm.form.bind(Map(
       "addressline1" -> "Line 1",
       "addressline2" -> "Line 2",
       "addressline3" -> "",
@@ -637,7 +635,7 @@ class ProvideCorrespondAddressFormSpec extends BaseTestSpec {
   }
 
   "addressline1 value supplied over the maximum allowed (over the boundary)" should {
-    lazy val form = provideCorrespondAddressForm.bind(Map(
+    lazy val form = provideCorrespondAddressForm.form.bind(Map(
       "addressline1" -> "1234567890123456789012345678901234567890",
       "addressline2" -> "Line 2",
       "addressline3" -> "",
@@ -658,7 +656,7 @@ class ProvideCorrespondAddressFormSpec extends BaseTestSpec {
   }
 
   "addressline2 value supplied over the maximum allowed (over the boundary)" should {
-    lazy val form = provideCorrespondAddressForm.bind(Map(
+    lazy val form = provideCorrespondAddressForm.form.bind(Map(
       "addressline1" -> "Line 1",
       "addressline2" -> "1234567890123456789012345678901234567890",
       "addressline3" -> "",
@@ -679,7 +677,7 @@ class ProvideCorrespondAddressFormSpec extends BaseTestSpec {
   }
 
   "addressline3 value supplied over the maximum allowed (over the boundary)" should {
-    lazy val form = provideCorrespondAddressForm.bind(Map(
+    lazy val form = provideCorrespondAddressForm.form.bind(Map(
       "addressline1" -> "Line 1",
       "addressline2" -> "Line 2",
       "addressline3" -> "1234567890123456789012345678901234567890",
@@ -700,7 +698,7 @@ class ProvideCorrespondAddressFormSpec extends BaseTestSpec {
   }
 
   "addressline4 value supplied over the maximum allowed (over the boundary)" should {
-    lazy val form = provideCorrespondAddressForm.bind(Map(
+    lazy val form = provideCorrespondAddressForm.form.bind(Map(
       "addressline1" -> "Line 1",
       "addressline2" -> "Line 2",
       "addressline3" -> "",
@@ -721,7 +719,7 @@ class ProvideCorrespondAddressFormSpec extends BaseTestSpec {
   }
 
   "postcode value supplied over the maximum allowed (over the boundary) incluses whitespace in the count" should {
-    lazy val form = provideCorrespondAddressForm.bind(Map(
+    lazy val form = provideCorrespondAddressForm.form.bind(Map(
       "addressline1" -> "Line 1",
       "addressline2" -> "Line 2",
       "addressline3" -> "",
@@ -742,7 +740,7 @@ class ProvideCorrespondAddressFormSpec extends BaseTestSpec {
   }
 
   "country value supplied over the maximum allowed (over the boundary) includes whitespace in the count" should {
-    lazy val form = provideCorrespondAddressForm.bind(Map(
+    lazy val form = provideCorrespondAddressForm.form.bind(Map(
       "addressline1" -> "Line 1",
       "addressline2" -> "Line 2",
       "addressline3" -> "",
@@ -765,7 +763,7 @@ class ProvideCorrespondAddressFormSpec extends BaseTestSpec {
   //Postcode Regex
 
   "postcode value supplied with multiple white space" should {
-    lazy val form = provideCorrespondAddressForm.bind(Map(
+    lazy val form = provideCorrespondAddressForm.form.bind(Map(
       "addressline1" -> "Line 1",
       "addressline2" -> "Line 2",
       "addressline3" -> "",
@@ -786,7 +784,7 @@ class ProvideCorrespondAddressFormSpec extends BaseTestSpec {
   }
 
   "postcode value supplied with brackets" should {
-    lazy val form = provideCorrespondAddressForm.bind(Map(
+    lazy val form = provideCorrespondAddressForm.form.bind(Map(
       "addressline1" -> "Line 1",
       "addressline2" -> "Line 2",
       "addressline3" -> "",
@@ -807,7 +805,7 @@ class ProvideCorrespondAddressFormSpec extends BaseTestSpec {
   }
 
   "postcode value supplied with /" should {
-    lazy val form = provideCorrespondAddressForm.bind(Map(
+    lazy val form = provideCorrespondAddressForm.form.bind(Map(
       "addressline1" -> "Line 1",
       "addressline2" -> "Line 2",
       "addressline3" -> "",
@@ -828,7 +826,7 @@ class ProvideCorrespondAddressFormSpec extends BaseTestSpec {
   }
 
   "postcode value supplied with lowercase" should {
-    lazy val form = provideCorrespondAddressForm.bind(Map(
+    lazy val form = provideCorrespondAddressForm.form.bind(Map(
       "addressline1" -> "Line 1",
       "addressline2" -> "Line 2",
       "addressline3" -> "",
@@ -845,7 +843,7 @@ class ProvideCorrespondAddressFormSpec extends BaseTestSpec {
   }
 
   "postcode value supplied with no spaces" should {
-    lazy val form = provideCorrespondAddressForm.bind(Map(
+    lazy val form = provideCorrespondAddressForm.form.bind(Map(
       "addressline1" -> "Line 1",
       "addressline2" -> "Line 2",
       "addressline3" -> "",
@@ -866,7 +864,7 @@ class ProvideCorrespondAddressFormSpec extends BaseTestSpec {
   }
 
   "country value supplied with '" should {
-    lazy val form = provideCorrespondAddressForm.bind(Map(
+    lazy val form = provideCorrespondAddressForm.form.bind(Map(
       "addressline1" -> "Line 1",
       "addressline2" -> "Line 2",
       "addressline3" -> "",
@@ -887,7 +885,7 @@ class ProvideCorrespondAddressFormSpec extends BaseTestSpec {
   }
 
   "country value supplied with -" should {
-    lazy val form = provideCorrespondAddressForm.bind(Map(
+    lazy val form = provideCorrespondAddressForm.form.bind(Map(
       "addressline1" -> "Line 1",
       "addressline2" -> "Line 2",
       "addressline3" -> "",
@@ -908,7 +906,7 @@ class ProvideCorrespondAddressFormSpec extends BaseTestSpec {
   }
 
   "country value supplied with ." should {
-    lazy val form = provideCorrespondAddressForm.bind(Map(
+    lazy val form = provideCorrespondAddressForm.form.bind(Map(
       "addressline1" -> "Line 1",
       "addressline2" -> "Line 2",
       "addressline3" -> "",
@@ -929,7 +927,7 @@ class ProvideCorrespondAddressFormSpec extends BaseTestSpec {
   }
 
   "country value supplied with a trailing space" should {
-    lazy val form = provideCorrespondAddressForm.bind(Map(
+    lazy val form = provideCorrespondAddressForm.form.bind(Map(
       "addressline1" -> "Line 1",
       "addressline2" -> "Line 2",
       "addressline3" -> "",
@@ -946,7 +944,7 @@ class ProvideCorrespondAddressFormSpec extends BaseTestSpec {
   }
 
   "country value supplied with #" should {
-    lazy val form = provideCorrespondAddressForm.bind(Map(
+    lazy val form = provideCorrespondAddressForm.form.bind(Map(
       "addressline1" -> "Line 1",
       "addressline2" -> "Line 2",
       "addressline3" -> "",

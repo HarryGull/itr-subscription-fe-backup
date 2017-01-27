@@ -16,39 +16,29 @@
 
 package views
 
-import utils.{AuthHelper, CountriesHelper, FakeRequestHelper}
-import common.Constants
-import connectors.KeystoreConnector
-import forms.ConfirmCorrespondAddressForm._
-import models.ConfirmCorrespondAddressModel
+import auth.MockConfig
+import common.{BaseTestSpec, Constants}
 import org.jsoup.Jsoup
-import org.scalatest.mock.MockitoSugar
 import play.api.i18n.Messages
-import play.api.test.Helpers._
-import uk.gov.hmrc.play.test.{UnitSpec, WithFakeApplication}
 import views.html.registrationInformation.ConfirmCorrespondAddress
-import play.api.i18n.Messages.Implicits._
-import play.api.Play.current
 
 
-class ConfirmCorrespondAddressSpec extends UnitSpec with MockitoSugar with WithFakeApplication with FakeRequestHelper with AuthHelper {
+class ConfirmCorrespondAddressSpec extends BaseTestSpec {
 
-  val confirmCorrespondAddressModel = new ConfirmCorrespondAddressModel(Constants.StandardRadioButtonYesValue)
-  val emptyConfirmCorrespondAddressModel = new ConfirmCorrespondAddressModel("")
-
-  lazy val form = confirmCorrespondAddressForm.bind(Map("contactAddressUse" -> Constants.StandardRadioButtonYesValue))
-  lazy val emptyForm = confirmCorrespondAddressForm.bind(Map("contactAddressUse" -> ""))
-  lazy val pageMax = ConfirmCorrespondAddress(form,validModel)(authorisedFakeRequest, applicationMessages)
-  lazy val pageMin = ConfirmCorrespondAddress(form,validModelMin)(authorisedFakeRequest, applicationMessages)
-  lazy val emptyPage = ConfirmCorrespondAddress(emptyForm,validModel)(authorisedFakeRequest, applicationMessages)
+  val form = confirmCorrespondAddressForm.form.bind(Map("contactAddressUse" -> Constants.StandardRadioButtonYesValue))
+  val emptyForm = confirmCorrespondAddressForm.form.bind(Map("contactAddressUse" -> ""))
+  lazy val pageMax = ConfirmCorrespondAddress(form,validModel)(authenticatedFakeRequest(), request2Messages(authenticatedFakeRequest()),
+    MockConfig, countriesHelper)
+  lazy val pageMin = ConfirmCorrespondAddress(form,validModelMin)(authenticatedFakeRequest(), request2Messages(authenticatedFakeRequest()),
+    MockConfig, countriesHelper)
+  lazy val emptyPage = ConfirmCorrespondAddress(emptyForm,validModel)(authenticatedFakeRequest(), request2Messages(authenticatedFakeRequest()),
+    MockConfig, countriesHelper)
 
   "The Confirm Correspondence Address page" should {
 
     "Verify that the Confirm Correspondence Address page contains the correct elements when a valid ConfirmCorrespondAddressModel " +
       "and a maximum Company details review model is passed" in {
-      lazy val document = {
-        Jsoup.parse(contentAsString(pageMax))
-      }
+      val document = Jsoup.parse(pageMax.body)
 
       document.title() shouldBe Messages("page.registrationInformation.ConfirmCorrespondAddress.title")
       document.getElementById("main-heading").text() shouldBe Messages("page.registrationInformation.ConfirmCorrespondAddress.heading")
@@ -63,16 +53,14 @@ class ConfirmCorrespondAddressSpec extends UnitSpec with MockitoSugar with WithF
       document.body.getElementById("businessAddress3").text shouldBe validModel.businessAddress.line_3.get
       document.body.getElementById("businessAddress4").text shouldBe validModel.businessAddress.line_4.get
       document.body.getElementById("postcode").text shouldBe validModel.businessAddress.postcode.get
-      document.body.getElementById("country").text shouldBe CountriesHelper.getSelectedCountry(validModel.businessAddress.country)
+      document.body.getElementById("country").text shouldBe countriesHelper.getSelectedCountry(validModel.businessAddress.country)
       document.body.getElementById("storedAddressDiv").children().size() shouldBe 7
       document.body.getElementById("get-help-action").text shouldBe Messages("common.error.help.text")
     }
 
     "Verify that the Confirm Correspondence Address page contains the correct elements when a valid ConfirmCorrespondAddressModel " +
       "and a minimal Company details review model is passed" in {
-      lazy val document = {
-        Jsoup.parse(contentAsString(pageMin))
-      }
+      val document = Jsoup.parse(pageMin.body)
 
       document.title() shouldBe Messages("page.registrationInformation.ConfirmCorrespondAddress.title")
       document.getElementById("main-heading").text() shouldBe Messages("page.registrationInformation.ConfirmCorrespondAddress.heading")
@@ -82,15 +70,13 @@ class ConfirmCorrespondAddressSpec extends UnitSpec with MockitoSugar with WithF
       document.body.select("#contactAddressUse-yes").size() shouldBe 1
       document.body.select("#contactAddressUse-no").size() shouldBe 1
       document.body.getElementById("storedAddressDiv").children().size() shouldBe 4
-      document.body.getElementById("country").text shouldBe CountriesHelper.getSelectedCountry(validModelMin.businessAddress.country)
+      document.body.getElementById("country").text shouldBe countriesHelper.getSelectedCountry(validModelMin.businessAddress.country)
       document.body.getElementById("get-help-action").text shouldBe Messages("common.error.help.text")
     }
 
     "Verify that the Confirm Correspondence Address page contains the correct elements " +
       "when an invalid ConfirmCorrespondAddressModel is passed" in {
-      lazy val document = {
-        Jsoup.parse(contentAsString(emptyPage))
-      }
+      val document = Jsoup.parse(emptyPage.body)
 
       document.title() shouldBe Messages("page.registrationInformation.ConfirmCorrespondAddress.title")
       document.getElementById("main-heading").text() shouldBe Messages("page.registrationInformation.ConfirmCorrespondAddress.heading")
@@ -105,7 +91,7 @@ class ConfirmCorrespondAddressSpec extends UnitSpec with MockitoSugar with WithF
       document.body.getElementById("businessAddress3").text shouldBe validModel.businessAddress.line_3.get
       document.body.getElementById("businessAddress4").text shouldBe validModel.businessAddress.line_4.get
       document.body.getElementById("postcode").text shouldBe validModel.businessAddress.postcode.get
-      document.body.getElementById("country").text shouldBe CountriesHelper.getSelectedCountry(validModel.businessAddress.country)
+      document.body.getElementById("country").text shouldBe countriesHelper.getSelectedCountry(validModel.businessAddress.country)
       document.body.getElementById("get-help-action").text shouldBe  Messages("common.error.help.text")
       document.getElementById("error-summary-display").hasClass("error-summary--show")
     }

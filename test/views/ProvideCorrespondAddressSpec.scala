@@ -16,57 +16,31 @@
 
 package views
 
-import connectors.KeystoreConnector
-import forms.ProvideCorrespondAddressForm._
-import utils.{AuthHelper, FakeRequestHelper}
+import auth.MockConfig
+import common.BaseTestSpec
 import models.ProvideCorrespondAddressModel
 import org.jsoup.Jsoup
-import org.scalatest.mock.MockitoSugar
 import play.api.i18n.Messages
-import play.api.test.Helpers._
-import uk.gov.hmrc.play.test.{UnitSpec, WithFakeApplication}
 import views.html.registrationInformation.ProvideCorrespondAddress
-import play.api.i18n.Messages.Implicits._
-import play.api.Play.current
 
-class ProvideCorrespondAddressSpec extends UnitSpec with MockitoSugar with WithFakeApplication with FakeRequestHelper with AuthHelper {
+class ProvideCorrespondAddressSpec extends BaseTestSpec {
 
   val provideCorrespondAddressModel = new ProvideCorrespondAddressModel("Line 1","Line 2",countryCode = "JP")
-  val emptyProvideCorrespondAddressModel = new ProvideCorrespondAddressModel("","",countryCode = "")
-
-  lazy val form = provideCorrespondAddressForm.bind(Map("addressline1" -> "Line 1",
-                                                        "addressline2" -> "Line 2",
-                                                        "addressline3" -> "",
-                                                        "addressline4" -> "",
-                                                        "postcode" -> "",
-                                                        "countryCode" -> "JP"))
-
-  lazy val emptyForm = provideCorrespondAddressForm.bind(Map("addressline1" -> "",
-                                                        "addressline2" -> "",
-                                                        "addressline3" -> "",
-                                                        "addressline4" -> "",
-                                                        "postcode" -> "",
-                                                        "countryCode" -> ""))
-
-  lazy val errorForm = provideCorrespondAddressForm.bind(Map("addressline1" -> "Line 1",
-    "addressline2" -> "Line 2",
-    "addressline3" -> "",
-    "addressline4" -> "",
-    "postcode" -> "",
-    "countryCode" -> ""))
-
+  val form = provideCorrespondAddressForm.form.bind(Map("addressline1" -> "Line 1", "addressline2" -> "Line 2",
+    "addressline3" -> "", "addressline4" -> "", "postcode" -> "", "countryCode" -> "JP"))
+  val emptyForm = provideCorrespondAddressForm.form.bind(Map("addressline1" -> "", "addressline2" -> "", "addressline3" -> "",
+    "addressline4" -> "", "postcode" -> "", "countryCode" -> ""))
+  val errorForm = provideCorrespondAddressForm.form.bind(Map("addressline1" -> "Line 1", "addressline2" -> "Line 2",
+    "addressline3" -> "", "addressline4" -> "", "postcode" -> "", "countryCode" -> ""))
   val countriesList : List[(String, String)] = List(("JP","Japan"),("GB","United Kingdom"))
-  lazy val page = ProvideCorrespondAddress(form, countriesList)(authorisedFakeRequest, applicationMessages)
-  lazy val emptyPage = ProvideCorrespondAddress(emptyForm, countriesList)(authorisedFakeRequest, applicationMessages)
-  lazy val errorPage = ProvideCorrespondAddress(errorForm, countriesList)(authorisedFakeRequest, applicationMessages)
+  lazy val page = ProvideCorrespondAddress(form, countriesList)(authenticatedFakeRequest(), request2Messages(authenticatedFakeRequest()), MockConfig)
+  lazy val emptyPage = ProvideCorrespondAddress(emptyForm, countriesList)(authenticatedFakeRequest(), request2Messages(authenticatedFakeRequest()), MockConfig)
+  lazy val errorPage = ProvideCorrespondAddress(errorForm, countriesList)(authenticatedFakeRequest(), request2Messages(authenticatedFakeRequest()), MockConfig)
 
   "The Provide Correspondence Address page" should {
 
     "Verify that the Provide Correspondence Address page contains the correct elements when a valid ProvideCorrespondAddressModel is passed" in {
-
-      lazy val document = {
-        Jsoup.parse(contentAsString(page))
-      }
+      val document = Jsoup.parse(page.body)
 
       document.title() shouldBe Messages("page.registrationInformation.ProvideCorrespondAddress.title")
       document.getElementById("main-heading").text() shouldBe Messages("page.registrationInformation.ProvideCorrespondAddress.heading")
@@ -79,12 +53,8 @@ class ProvideCorrespondAddressSpec extends UnitSpec with MockitoSugar with WithF
       document.body.getElementById("get-help-action").text shouldBe Messages("common.error.help.text")
     }
 
-    "Verify that the Provide Correspondence Address page contains the correct elements " +
-      "when an empty ProvideCorrespondAddressModel is passed" in {
-
-      lazy val document = {
-        Jsoup.parse(contentAsString(emptyPage))
-      }
+    "Verify that the Provide Correspondence Address page contains the correct elements when an empty ProvideCorrespondAddressModel is passed" in {
+      val document = Jsoup.parse(emptyPage.body)
 
       document.title() shouldBe Messages("page.registrationInformation.ProvideCorrespondAddress.title")
       document.getElementById("main-heading").text() shouldBe Messages("page.registrationInformation.ProvideCorrespondAddress.heading")
@@ -96,12 +66,9 @@ class ProvideCorrespondAddressSpec extends UnitSpec with MockitoSugar with WithF
       document.getElementById("addressline2-error-summary").text should include(Messages("validation.error.mandatoryaddresssline"))
     }
 
-    "Verify that the Provide Correspondence Address page contains the correct elements " +
-      "when an invalid ProvideCorrespondAddressModel is passed" in {
+    "Verify that the Provide Correspondence Address page contains the correct elements when an invalid ProvideCorrespondAddressModel is passed" in {
+      val document = Jsoup.parse(errorPage.body)
 
-      lazy val document = {
-        Jsoup.parse(contentAsString(errorPage))
-      }
       document.title() shouldBe Messages("page.registrationInformation.ProvideCorrespondAddress.title")
       document.getElementById("main-heading").text() shouldBe Messages("page.registrationInformation.ProvideCorrespondAddress.heading")
       document.getElementById("next").text() shouldBe Messages("common.button.continue")

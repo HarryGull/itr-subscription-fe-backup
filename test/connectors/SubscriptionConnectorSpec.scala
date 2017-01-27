@@ -16,48 +16,29 @@
 
 package connectors
 
+import auth.MockConfig
 import common.BaseTestSpec
-import config.{FrontendAppConfig, WSHttp}
 import models.etmp.{CorrespondenceDetailsModel, SubscriptionTypeModel}
 import org.mockito.Matchers
 import org.mockito.Mockito._
 import play.api.libs.json.JsValue
 import uk.gov.hmrc.play.http.HttpResponse
-import uk.gov.hmrc.play.http.ws.WSHttp
 import play.api.test.Helpers._
 
 class SubscriptionConnectorSpec extends BaseTestSpec {
 
-  lazy val mockHttp = mock[WSHttp]
   val safeID = "ABC123"
   val postcode = "AB11AB"
-  val url = "localhost"
   val subscriptionModel = SubscriptionTypeModel(CorrespondenceDetailsModel(None,None,None))
 
-  object TestConnector extends SubscriptionConnector {
-    override lazy val http = mockHttp
-    override lazy val serviceUrl = url
-  }
-
-  "SubscriptionConnector" should {
-
-    "Use WSHttp" in {
-      SubscriptionConnector.http shouldBe WSHttp
-    }
-
-    "Use base url for investment-tax-relief-subscription" in {
-      SubscriptionConnector.serviceUrl shouldBe FrontendAppConfig.subscriptionUrl
-    }
-
-  }
+  val testConnector = new SubscriptionConnectorImpl(mockHttp, MockConfig)
 
   "subscribe" should {
 
-    lazy val result = TestConnector.subscribe(subscriptionModel,safeID,postcode)
-
     "create a url using the safeID and postcode" in {
-      when(mockHttp.POST[JsValue, HttpResponse](Matchers.eq(s"$url/investment-tax-relief-subscription/$safeID/$postcode/subscribe"),
+      when(mockHttp.POST[JsValue, HttpResponse](Matchers.eq(s"${testConnector.serviceUrl}/investment-tax-relief-subscription/$safeID/$postcode/subscribe"),
         Matchers.any(),Matchers.any())(Matchers.any(),Matchers.any(),Matchers.any())).thenReturn(HttpResponse(OK))
+      val result = testConnector.subscribe(subscriptionModel,safeID,postcode)
       await(result).status shouldBe OK
     }
 

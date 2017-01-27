@@ -16,19 +16,19 @@
 
 package auth
 
-import config.WSHttp
+import org.scalatest.mock.MockitoSugar
 import uk.gov.hmrc.play.frontend.auth.connectors.AuthConnector
 import uk.gov.hmrc.play.frontend.auth.connectors.domain.ConfidenceLevel
-import uk.gov.hmrc.play.frontend.auth.connectors.domain.ConfidenceLevel.{L50, L500}
-import uk.gov.hmrc.play.frontend.auth.connectors.domain.{Accounts, Authority, CredentialStrength, PayeAccount}
+import uk.gov.hmrc.play.frontend.auth.connectors.domain.{Accounts, Authority, CredentialStrength}
 import uk.gov.hmrc.play.http.{HeaderCarrier, HttpGet}
 
 import scala.concurrent.Future
 
+object MockAuthConnector extends AuthConnector with MockitoSugar {
 
-object MockAuthConnector extends AuthConnector {
-  override val http : HttpGet = WSHttp
+  override val http : HttpGet = mock[HttpGet]
   override val serviceUrl: String = ""
+
   override def currentAuthority(implicit hc: HeaderCarrier): Future[Option[Authority]] = {
     Future.successful(strongStrengthUser)
   }
@@ -46,29 +46,4 @@ object MockAuthConnector extends AuthConnector {
       "0000000000"
     ))
 
-  private def weakStrengthUser: Option[Authority] =
-    Some(Authority("/auth/oid/mockuser",
-      Accounts(),
-      None,
-      None,
-      CredentialStrength.Weak,
-      ConfidenceLevel.L50,
-      None,
-      None,
-      None,
-      "0000000000"
-    ))
-
-  private def noStrengthUser: Option[Authority] =
-    Some(Authority("/auth/oid/mockuser",
-      Accounts(),
-      None,
-      None,
-      CredentialStrength.None,
-      ConfidenceLevel.L50,
-      None,
-      None,
-      None,
-      "0000000000"
-    ))
 }

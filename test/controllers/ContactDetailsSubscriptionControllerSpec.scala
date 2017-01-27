@@ -16,128 +16,36 @@
 
 package controllers
 
-import auth.{MockAuthConnector, MockConfig, TAVCUser}
+import auth.MockConfig
 import common.BaseTestSpec
-import common.Encoder._
-import config.{FrontendAppConfig, FrontendAuthConnector}
-import connectors.KeystoreConnector
 import models.ContactDetailsSubscriptionModel
 import org.mockito.Matchers
 import org.mockito.Mockito._
-import play.api.Play._
-import play.api.libs.json.Json
-import play.api.mvc.{Request, Result}
 import play.api.test.Helpers._
-import uk.gov.hmrc.http.cache.client.CacheMap
-import uk.gov.hmrc.passcode.authentication.{PasscodeAuthenticationProvider, PasscodeVerificationConfig}
-import uk.gov.hmrc.play.frontend.auth.AuthContext
 
 import scala.concurrent.Future
 
 class ContactDetailsSubscriptionControllerSpec extends BaseTestSpec {
+  
+  val testController = new ContactDetailsSubscriptionController(mockAuthorisedActions, mockKeystoreConnector, messagesApi,
+    contactDetailsSubscriptionForm, MockConfig)
 
-  object ContactDetailsSubscriptionControllerTest extends ContactDetailsSubscriptionController {
-    override lazy val applicationConfig = FrontendAppConfig
-    override lazy val authConnector = MockAuthConnector
-    override lazy val keystoreConnector: KeystoreConnector = mockKeystoreConnector
-    override lazy val registeredBusinessCustomerService = mockRegisteredBusinessCustomerService
-    override def withVerifiedPasscode(body: => Future[Result])
-                                     (implicit request: Request[_], user: AuthContext): Future[Result] = body
-    override def config = new PasscodeVerificationConfig(configuration(app))
-    override def passcodeAuthenticationProvider = new PasscodeAuthenticationProvider(config)
-  }
-
-  val model = ContactDetailsSubscriptionModel("First","Last",Some("86"),Some("86"),"test@test.com")
-  val cacheMap: CacheMap = CacheMap("", Map("" -> Json.toJson(model)))
-  val keyStoreSavedContactDetailsSubscription = ContactDetailsSubscriptionModel("First","Last",Some("86"),Some("86"),"test@test.com")
-
-  override def beforeEach() {
-    reset(mockKeystoreConnector)
-  }
-
-  "ContactDetailsSubscriptionController" should {
-    "use the correct keystore connector" in {
-      ContactDetailsSubscriptionController.keystoreConnector shouldBe KeystoreConnector
-    }
-  }
-
-  "ContactDetailsSubscriptionController" should {
-    "use the correct auth connector" in {
-      ContactDetailsSubscriptionController.authConnector shouldBe FrontendAuthConnector
-    }
-  }
+  val contactDetailsSubscriptionModel = ContactDetailsSubscriptionModel("First","Last",Some("86"),Some("86"),"test@test.com")
 
   "Sending a GET request to ContactDetailsSubscriptionController" should {
     "return a 200 when something is fetched from keystore" in {
-      withRegDetails()
-      when(mockKeystoreConnector.saveFormData(Matchers.any(), Matchers.any())(Matchers.any(), Matchers.any())).thenReturn(cacheMap)
       when(mockKeystoreConnector.fetchAndGetFormData[ContactDetailsSubscriptionModel](Matchers.any())(Matchers.any(), Matchers.any()))
-        .thenReturn(Future.successful(Option(keyStoreSavedContactDetailsSubscription)))
-      showWithSessionAndAuth(ContactDetailsSubscriptionControllerTest.show)(
+        .thenReturn(Future.successful(Option(contactDetailsSubscriptionModel)))
+      showWithSessionAndAuth(testController.show)(
         result => status(result) shouldBe OK
       )
     }
 
     "provide an empty model and return a 200 when nothing is fetched using keystore" in {
-      withRegDetails()
-      when(mockKeystoreConnector.saveFormData(Matchers.any(), Matchers.any())(Matchers.any(), Matchers.any())).thenReturn(cacheMap)
       when(mockKeystoreConnector.fetchAndGetFormData[ContactDetailsSubscriptionModel](Matchers.any())(Matchers.any(), Matchers.any()))
         .thenReturn(Future.successful(None))
-      showWithSessionAndAuth(ContactDetailsSubscriptionControllerTest.show)(
+      showWithSessionAndAuth(testController.show)(
         result => status(result) shouldBe OK
-      )
-    }
-  }
-
-  "Sending a GET request to ContactDetailsSubscriptionController and no business customer details are not in keystore" should {
-    "return a 303" in {
-      noRegDetails()
-      showWithSessionAndAuth(ContactDetailsSubscriptionControllerTest.show)(
-        result => status(result) shouldBe SEE_OTHER
-      )
-    }
-
-    "redirect to business customer frontend" in {
-      noRegDetails()
-      showWithSessionAndAuth(ContactDetailsSubscriptionControllerTest.show)(
-        result => redirectLocation(result) shouldBe Some(FrontendAppConfig.businessCustomerUrl)
-      )
-    }
-  }
-
-  "Sending an Unauthenticated request with a session to ContactDetailsSubscriptionController" should {
-    "return a 303 and redirect to GG login" in {
-      showWithSessionWithoutAuth(ContactDetailsSubscriptionControllerTest.show())(
-        result => {
-          status(result) shouldBe SEE_OTHER
-          redirectLocation(result) shouldBe Some(s"${FrontendAppConfig.ggSignInUrl}?continue=${
-            encode(MockConfig.introductionUrl)
-          }&origin=investment-tax-relief-subscription-frontend&accountType=organisation")
-        }
-      )
-    }
-  }
-
-  "Sending a request with no session to ContactDetailsSubscriptionController" should {
-    "return a 303 and redirect to GG login" in {
-      showWithoutSession(ContactDetailsSubscriptionControllerTest.show())(
-        result => {
-          status(result) shouldBe SEE_OTHER
-          redirectLocation(result) shouldBe Some(s"${FrontendAppConfig.ggSignInUrl}?continue=${
-            encode(MockConfig.introductionUrl)
-          }&origin=investment-tax-relief-subscription-frontend&accountType=organisation")
-        }
-      )
-    }
-  }
-
-  "Sending a timed-out request to ContactDetailsSubscriptionController" should {
-    "return a 303 and redirect to the timeout page" in {
-      showWithTimeout(ContactDetailsSubscriptionControllerTest.show())(
-        result => {
-          status(result) shouldBe SEE_OTHER
-          redirectLocation(result) shouldBe Some(routes.TimeoutController.timeout().url)
-        }
       )
     }
   }
@@ -151,8 +59,7 @@ class ContactDetailsSubscriptionControllerSpec extends BaseTestSpec {
       "email" -> "test@test.com")
 
     "return a 303" in {
-      withRegDetails()
-      submitWithSessionAndAuth(ContactDetailsSubscriptionControllerTest.submit,formInput:_*)(
+      submitWithSessionAndAuth(testController.submit,formInput:_*)(
         result => {
           status(result) shouldBe SEE_OTHER
         }
@@ -160,8 +67,7 @@ class ContactDetailsSubscriptionControllerSpec extends BaseTestSpec {
     }
 
     "redirect to the Review Company Details Controller page" in {
-      withRegDetails()
-      submitWithSessionAndAuth(ContactDetailsSubscriptionControllerTest.submit,formInput:_*)(
+      submitWithSessionAndAuth(testController.submit,formInput:_*)(
         result => {
           redirectLocation(result) shouldBe Some(routes.ReviewCompanyDetailsController.show().url)
         }
@@ -171,7 +77,6 @@ class ContactDetailsSubscriptionControllerSpec extends BaseTestSpec {
 
   "Sending an invalid form submission with validation errors to the ContactDetailsSubscriptionController" should {
     "redirect with a bad request" in {
-      withRegDetails()
       val formInput =
         Seq("firstName" -> "First",
         "lastName" -> "Last",
@@ -179,7 +84,7 @@ class ContactDetailsSubscriptionControllerSpec extends BaseTestSpec {
         "telephoneNumber2" -> "",
         "email" -> "")
 
-      submitWithSessionAndAuth(ContactDetailsSubscriptionControllerTest.submit,formInput:_*)(
+      submitWithSessionAndAuth(testController.submit,formInput:_*)(
         result => {
           status(result) shouldBe BAD_REQUEST
         }
@@ -189,124 +94,10 @@ class ContactDetailsSubscriptionControllerSpec extends BaseTestSpec {
 
   "Sending an empty invalid form submission with validation errors to the ContactDetailsSubscriptionController" should {
     "redirect to itself" in {
-      withRegDetails()
       val formInput = "addressline1" -> "Line 1"
-      submitWithSessionAndAuth(ContactDetailsSubscriptionControllerTest.submit,formInput)(
+      submitWithSessionAndAuth(testController.submit,formInput)(
         result => {
           status(result) shouldBe BAD_REQUEST
-        }
-      )
-    }
-  }
-
-  "Sending a valid form submit to the ContactDetailsSubscriptionController and business customer details are not in keystore" should {
-
-    val formInput = Seq("firstName" -> "First",
-      "lastName" -> "Last",
-      "telephoneNumber" -> "00000000000",
-      "telephoneNumber2" -> "",
-      "email" -> "test@test.com")
-
-    "return a 303" in {
-      noRegDetails()
-      submitWithSessionAndAuth(ContactDetailsSubscriptionControllerTest.submit,formInput:_*)(
-        result => {
-          status(result) shouldBe SEE_OTHER
-        }
-      )
-    }
-
-    "redirect to business customer frontend" in {
-      submitWithSessionAndAuth(ContactDetailsSubscriptionControllerTest.submit,formInput:_*)(
-        result => {
-          redirectLocation(result) shouldBe Some(FrontendAppConfig.businessCustomerUrl)
-        }
-      )
-    }
-  }
-
-  "Sending an invalid form submission with validation errors to the ContactDetailsSubscriptionController " +
-    "and business customer details are not in keystore" should {
-
-    val formInput =
-      Seq("firstName" -> "First",
-        "lastName" -> "Last",
-        "telephoneNumber" -> "00000000000",
-        "telephoneNumber2" -> "",
-        "email" -> "")
-
-    "return a 303" in {
-      submitWithSessionAndAuth(ContactDetailsSubscriptionControllerTest.submit,formInput:_*)(
-        result => {
-          status(result) shouldBe SEE_OTHER
-        }
-      )
-    }
-
-    "redirect to business customer frontend" in {
-      submitWithSessionAndAuth(ContactDetailsSubscriptionControllerTest.submit,formInput:_*)(
-        result => {
-          redirectLocation(result) shouldBe Some(FrontendAppConfig.businessCustomerUrl)
-        }
-      )
-    }
-  }
-
-  "Sending an empty invalid form submission with validation errors to the ContactDetailsSubscriptionController " +
-    "and business customer details are not in keystore" should {
-
-    val formInput = "addressline1" -> "Line 1"
-
-    "return a 303" in {
-      noRegDetails()
-      submitWithSessionAndAuth(ContactDetailsSubscriptionControllerTest.submit,formInput)(
-        result => {
-          status(result) shouldBe SEE_OTHER
-        }
-      )
-    }
-
-    "redirect to business customer frontend" in {
-      noRegDetails()
-      submitWithSessionAndAuth(ContactDetailsSubscriptionControllerTest.submit,formInput)(
-        result => {
-          redirectLocation(result) shouldBe Some(FrontendAppConfig.businessCustomerUrl)
-        }
-      )
-    }
-  }
-
-  "Sending a submission to the ContactDetailsSubscriptionController when not authenticated" should {
-
-    "redirect to the GG login page when having a session but not authenticated" in {
-      submitWithSessionWithoutAuth(ContactDetailsSubscriptionControllerTest.submit)(
-        result => {
-          status(result) shouldBe SEE_OTHER
-          redirectLocation(result) shouldBe Some(s"${FrontendAppConfig.ggSignInUrl}?continue=${
-            encode(MockConfig.introductionUrl)
-          }&origin=investment-tax-relief-subscription-frontend&accountType=organisation")
-        }
-      )
-    }
-
-    "redirect to the GG login page with no session" in {
-      submitWithoutSession(ContactDetailsSubscriptionControllerTest.submit)(
-        result => {
-          status(result) shouldBe SEE_OTHER
-          redirectLocation(result) shouldBe Some(s"${FrontendAppConfig.ggSignInUrl}?continue=${
-            encode(MockConfig.introductionUrl)
-          }&origin=investment-tax-relief-subscription-frontend&accountType=organisation")
-        }
-      )
-    }
-  }
-
-  "Sending a submission to the ContactDetailsSubscriptionController when a timeout has occured" should {
-    "redirect to the Timeout page when session has timed out" in {
-      submitWithTimeout(ContactDetailsSubscriptionControllerTest.submit)(
-        result => {
-          status(result) shouldBe SEE_OTHER
-          redirectLocation(result) shouldBe Some(routes.TimeoutController.timeout().url)
         }
       )
     }

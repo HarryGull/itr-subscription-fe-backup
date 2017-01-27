@@ -18,35 +18,17 @@ package forms
 
 import common.{BaseTestSpec, Constants}
 import models.ConfirmCorrespondAddressModel
-import play.api.data.FormError
 import play.api.i18n.Messages
 import play.api.libs.json.Json
-import play.api.mvc.AnyContentAsFormUrlEncoded
-import play.api.test.FakeRequest
-import play.api.i18n.Messages.Implicits._
 
 class ConfirmCorrespondAddressFormSpec extends BaseTestSpec {
-
-  private def bindSuccess(request: FakeRequest[AnyContentAsFormUrlEncoded]) = {
-    ConfirmCorrespondAddressForm.confirmCorrespondAddressForm.bindFromRequest()(request).fold(
-      formWithErrors => None,
-      userData => Some(userData)
-    )
-  }
-
-  private def bindWithError(request: FakeRequest[AnyContentAsFormUrlEncoded]): Option[FormError] = {
-    ConfirmCorrespondAddressForm.confirmCorrespondAddressForm.bindFromRequest()(request).fold(
-      formWithErrors => Some(formWithErrors.errors.head),
-      userData => None
-    )
-  }
 
   val confirmCorrespondAddressJson = """{"contactAddressUse":"Yes"}"""
   val confirmCorrespondAddressModel = ConfirmCorrespondAddressModel(Constants.StandardRadioButtonYesValue)
 
   "The Confirm Correspondence Address Form" should {
     "Return an error if no radio button is selected" in {
-      val form = ConfirmCorrespondAddressForm.confirmCorrespondAddressForm.bind(Map("contactAddressUse" -> ""))
+      val form = confirmCorrespondAddressForm.form.bind(Map("contactAddressUse" -> ""))
       form.hasErrors shouldBe true
       form.errors.length shouldBe 1
       Messages(form.errors.head.message) shouldBe Messages("error.required")
@@ -55,7 +37,7 @@ class ConfirmCorrespondAddressFormSpec extends BaseTestSpec {
 
   "The Confirm Correspondence Address Form" should {
     "not return an error if the 'Yes' option is selected" in {
-      val form = ConfirmCorrespondAddressForm.confirmCorrespondAddressForm.bind(Map("contactAddressUse" -> Constants.StandardRadioButtonYesValue))
+      val form = confirmCorrespondAddressForm.form.bind(Map("contactAddressUse" -> Constants.StandardRadioButtonYesValue))
       form.hasErrors shouldBe false
     }
   }
@@ -65,15 +47,15 @@ class ConfirmCorrespondAddressFormSpec extends BaseTestSpec {
   "The Confirm Correspondence Address Form model" should {
     "call apply correctly on the model" in {
       implicit val formats = Json.format[ConfirmCorrespondAddressModel]
-      val confirmCorrespondAddressForm = ConfirmCorrespondAddressForm.confirmCorrespondAddressForm.fill(confirmCorrespondAddressModel)
-      confirmCorrespondAddressForm.get.contactAddressUse shouldBe Constants.StandardRadioButtonYesValue
+      val form = confirmCorrespondAddressForm.form.fill(confirmCorrespondAddressModel)
+      form.get.contactAddressUse shouldBe Constants.StandardRadioButtonYesValue
     }
 
     // form json to model - unapply
     "call unapply successfully to create expected Json" in {
       implicit val formats = Json.format[ConfirmCorrespondAddressModel]
-      val confirmCorrespondAddressForm = ConfirmCorrespondAddressForm.confirmCorrespondAddressForm.fill(confirmCorrespondAddressModel)
-      val formJson = Json.toJson(confirmCorrespondAddressForm.get).toString()
+      val form = confirmCorrespondAddressForm.form.fill(confirmCorrespondAddressModel)
+      val formJson = Json.toJson(form.get).toString()
       formJson shouldBe confirmCorrespondAddressJson
     }
   }

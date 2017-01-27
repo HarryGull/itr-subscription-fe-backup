@@ -17,47 +17,31 @@
 package testOnly.controllers
 
 import akka.stream.Materializer
+import common.BaseTestSpec
 import org.mockito.Matchers
 import org.mockito.Mockito._
 import org.mockito.stubbing.OngoingStubbing
-import org.scalatest.mock.MockitoSugar
-import org.scalatestplus.play.OneAppPerSuite
 import testOnly.connectors.{AuthenticatorConnector, GgStubsConnector}
-import uk.gov.hmrc.play.http.logging.SessionId
 import uk.gov.hmrc.play.http.{HeaderCarrier, HttpResponse}
-import uk.gov.hmrc.play.test.UnitSpec
 import play.mvc.Http.Status._
-import utils.FakeRequestHelper
 
 import scala.concurrent.Future
 
-class ResetEnrolmentsControllerSpec extends UnitSpec with FakeRequestHelper with OneAppPerSuite with MockitoSugar {
+class ResetEnrolmentsControllerSpec extends BaseTestSpec {
 
-  object TestResetEnrolmentsController extends ResetEnrolmentsController {
-    override val ggStubsConnector = mock[GgStubsConnector]
-    override val authenticatorConnector = mock[AuthenticatorConnector]
-  }
+  val mockGgStubsConnector = mock[GgStubsConnector]
+  val mockAuthenticatorConnector = mock[AuthenticatorConnector]
+  val testController = new ResetEnrolmentsController(mockGgStubsConnector, mockAuthenticatorConnector)
 
   implicit lazy val materializer: Materializer = app.materializer
 
-  implicit val hc: HeaderCarrier = HeaderCarrier(sessionId = Some(SessionId("session1234")))
-
   def mockGgStubsResponse(response: HttpResponse): OngoingStubbing[Future[HttpResponse]] =
-    when(TestResetEnrolmentsController.ggStubsConnector.resetEnrolments()(Matchers.any[HeaderCarrier]()))
+    when(mockGgStubsConnector.resetEnrolments()(Matchers.any[HeaderCarrier]()))
     .thenReturn(Future.successful(response))
 
   def mockAuthenticatorResponse(response: HttpResponse): OngoingStubbing[Future[HttpResponse]] =
-    when(TestResetEnrolmentsController.authenticatorConnector.refreshProfile()(Matchers.any[HeaderCarrier]()))
+    when(mockAuthenticatorConnector.refreshProfile()(Matchers.any[HeaderCarrier]()))
       .thenReturn(Future.successful(response))
-
-  "ResetEnrolmentsController" should {
-    "use the correct GG stubs connector" in {
-      ResetEnrolmentsController.ggStubsConnector shouldBe GgStubsConnector
-    }
-    "use the correct Authenticator connector" in {
-      ResetEnrolmentsController.authenticatorConnector shouldBe AuthenticatorConnector
-    }
-  }
 
   "Calling ResetEnrolmentsController.resetEnrolments" when {
 
@@ -66,14 +50,14 @@ class ResetEnrolmentsControllerSpec extends UnitSpec with FakeRequestHelper with
       "Return status OK (200)" in {
         mockGgStubsResponse(HttpResponse(OK))
         mockAuthenticatorResponse(HttpResponse(OK))
-        val result = TestResetEnrolmentsController.resetEnrolments(fakeRequest)
+        val result = testController.resetEnrolments(fakeRequest)
         status(await(result)) shouldBe OK
       }
 
       "return a message saying 'Successfully Reset Enrolments'" in {
         mockGgStubsResponse(HttpResponse(OK))
         mockAuthenticatorResponse(HttpResponse(OK))
-        val result = TestResetEnrolmentsController.resetEnrolments(fakeRequest)
+        val result = testController.resetEnrolments(fakeRequest)
         bodyOf(await(result)) shouldBe "Successfully Reset Enrolments"
       }
     }
@@ -83,14 +67,14 @@ class ResetEnrolmentsControllerSpec extends UnitSpec with FakeRequestHelper with
       "Return status OK (200)" in {
         mockGgStubsResponse(HttpResponse(OK))
         mockAuthenticatorResponse(HttpResponse(BAD_REQUEST))
-        val result = TestResetEnrolmentsController.resetEnrolments(fakeRequest)
+        val result = testController.resetEnrolments(fakeRequest)
         status(await(result)) shouldBe OK
       }
 
       "return a message saying 'Successfully Reset Enrolments'" in {
         mockGgStubsResponse(HttpResponse(OK))
         mockAuthenticatorResponse(HttpResponse(OK))
-        val result = TestResetEnrolmentsController.resetEnrolments(fakeRequest)
+        val result = testController.resetEnrolments(fakeRequest)
         bodyOf(await(result)) shouldBe "Successfully Reset Enrolments"
       }
     }
@@ -100,14 +84,14 @@ class ResetEnrolmentsControllerSpec extends UnitSpec with FakeRequestHelper with
       "Return status BAD_REQUEST (400)" in {
         mockGgStubsResponse(HttpResponse(BAD_REQUEST))
         mockAuthenticatorResponse(HttpResponse(BAD_REQUEST))
-        val result = TestResetEnrolmentsController.resetEnrolments(fakeRequest)
+        val result = testController.resetEnrolments(fakeRequest)
         status(await(result)) shouldBe BAD_REQUEST
       }
 
       "return a message saying 'Successfully Reset Enrolments'" in {
         mockGgStubsResponse(HttpResponse(BAD_REQUEST))
         mockAuthenticatorResponse(HttpResponse(BAD_REQUEST))
-        val result = TestResetEnrolmentsController.resetEnrolments(fakeRequest)
+        val result = testController.resetEnrolments(fakeRequest)
         bodyOf(await(result)) shouldBe "Failed to Reset Enrolments"
       }
     }
