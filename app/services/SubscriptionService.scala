@@ -16,6 +16,7 @@
 
 package services
 
+import com.google.inject.Inject
 import common.KeystoreKeys
 import connectors.{KeystoreConnector, SubscriptionConnector}
 import models.etmp._
@@ -25,22 +26,13 @@ import play.api.libs.json.Json
 import play.api.http.Status._
 import uk.gov.hmrc.play.http.{HeaderCarrier, HttpResponse}
 
-import scala.concurrent.ExecutionContext.Implicits.global
-import scala.concurrent.Future
+import scala.concurrent.{ExecutionContext, Future}
 
-object SubscriptionService extends SubscriptionService {
-  override val subscriptionConnector = SubscriptionConnector
-  override val keystoreConnector = KeystoreConnector
-  override val registeredBusinessCustomerService = RegisteredBusinessCustomerService
-}
+class SubscriptionServiceImpl @Inject()(subscriptionConnector: SubscriptionConnector,
+                                        keystoreConnector: KeystoreConnector,
+                                        registeredBusinessCustomerService: RegisteredBusinessCustomerService) extends SubscriptionService {
 
-trait SubscriptionService {
-
-  val subscriptionConnector: SubscriptionConnector
-  val keystoreConnector: KeystoreConnector
-  val registeredBusinessCustomerService: RegisteredBusinessCustomerService
-
-  def subscribe(implicit hc: HeaderCarrier): Future[HttpResponse] = {
+  def subscribe(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[HttpResponse] = {
     for {
       registrationReviewDetails <- registeredBusinessCustomerService.getReviewBusinessCustomerDetails
       correspondenceAddress <- keystoreConnector.fetchAndGetFormData[ProvideCorrespondAddressModel](KeystoreKeys.provideCorrespondAddress)
@@ -54,11 +46,11 @@ trait SubscriptionService {
   }
 
   private def createSubscriptionRequestModel(correspondenceAddress: Option[ProvideCorrespondAddressModel],
-                                     contactDetails: Option[ContactDetailsSubscriptionModel]): Option[IntermediateSubscriptionTypeModel] = {
+                                             contactDetails: Option[ContactDetailsSubscriptionModel]): Option[IntermediateSubscriptionTypeModel] = {
     (correspondenceAddress, contactDetails) match {
       case (Some(address), Some(contact)) =>
         Some(IntermediateSubscriptionTypeModel(
-            IntermediateCorrespondenceDetailsModel(address,contact)))
+          IntermediateCorrespondenceDetailsModel(address,contact)))
       case (_,_) => None
     }
   }
@@ -86,5 +78,11 @@ trait SubscriptionService {
       }
     }
   }
+
+}
+
+trait SubscriptionService {
+
+  def subscribe(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[HttpResponse]
 
 }
