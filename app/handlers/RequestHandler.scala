@@ -17,13 +17,16 @@
 package handlers
 
 import com.google.inject.{Inject, Singleton}
+import play.api.Configuration
 import play.api.http.{DefaultHttpRequestHandler, HttpConfiguration, HttpErrorHandler, HttpFilters}
 import play.api.mvc.{Handler, RequestHeader}
 
 @Singleton
-class RequestHandler @Inject()(errorHandler: HttpErrorHandler, configuration: HttpConfiguration, filters: HttpFilters,
-                               router: prod.Routes)
-  extends DefaultHttpRequestHandler(router, errorHandler, configuration, filters) {
+class RequestHandler @Inject()(errorHandler: HttpErrorHandler, httpConfiguration: HttpConfiguration, filters: HttpFilters,
+                               configuration: Configuration, prodRouter: prod.Routes, testRouter: testOnlyDoNotUseInAppConf.Routes)
+  extends DefaultHttpRequestHandler(
+    if(configuration.getString("application.router").getOrElse("").equals("testOnlyDoNotUseInAppConf.Routes")) testRouter else prodRouter,
+    errorHandler, httpConfiguration, filters) {
 
   private def removeTrailingSlash(request: RequestHeader) = {
     super.routeRequest(request).orElse {
