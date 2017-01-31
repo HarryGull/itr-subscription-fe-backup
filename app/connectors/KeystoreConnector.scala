@@ -16,30 +16,45 @@
 
 package connectors
 
-import config.TavcSessionCache
+import com.google.inject.{Inject, Singleton}
+import com.google.inject.name.Named
+import models.CompanyRegistrationReviewDetailsModel
 import play.api.libs.json.Format
 import uk.gov.hmrc.http.cache.client.{CacheMap, SessionCache}
 import uk.gov.hmrc.play.http.{HeaderCarrier, HttpResponse}
 
 import scala.concurrent.Future
 
-object KeystoreConnector extends KeystoreConnector {
-  override val sessionCache = TavcSessionCache
+@Singleton
+class KeystoreConnectorImpl @Inject()(@Named("ITR") itrSessionCache: SessionCache,
+                                      @Named("Business Customer") bcSessionCache: SessionCache) extends KeystoreConnector {
+
+  val bcSourceId = "BC_Business_Details"
+
+  def saveFormData[T](key: String, data : T)(implicit hc: HeaderCarrier, format: Format[T]): Future[CacheMap] = {
+    itrSessionCache.cache[T](key, data)
+  }
+
+  def fetchAndGetFormData[T](key : String)(implicit hc: HeaderCarrier, format: Format[T]): Future[Option[T]] = {
+    itrSessionCache.fetchAndGetEntry(key)
+  }
+
+  def clearKeystore()(implicit hc : HeaderCarrier) : Future[HttpResponse] = {
+    itrSessionCache.remove()
+  }
+
+  def fetchAndGetReviewDetailsForSession(implicit hc: HeaderCarrier): Future[Option[CompanyRegistrationReviewDetailsModel]] = {
+    bcSessionCache.fetchAndGetEntry[CompanyRegistrationReviewDetailsModel](bcSourceId)
+  }
 }
 
 trait KeystoreConnector {
 
-  val sessionCache : SessionCache
+  def saveFormData[T](key: String, data : T)(implicit hc: HeaderCarrier, format: Format[T]): Future[CacheMap]
 
-  def saveFormData[T](key: String, data : T)(implicit hc: HeaderCarrier, format: Format[T]): Future[CacheMap] = {
-    sessionCache.cache[T](key, data)
-  }
+  def fetchAndGetFormData[T](key : String)(implicit hc: HeaderCarrier, format: Format[T]): Future[Option[T]]
 
-  def fetchAndGetFormData[T](key : String)(implicit hc: HeaderCarrier, format: Format[T]): Future[Option[T]] = {
-    sessionCache.fetchAndGetEntry(key)
-  }
+  def clearKeystore()(implicit hc : HeaderCarrier) : Future[HttpResponse]
 
-  def clearKeystore()(implicit hc : HeaderCarrier) : Future[HttpResponse] = {
-    sessionCache.remove()
-  }
+  def fetchAndGetReviewDetailsForSession(implicit hc: HeaderCarrier): Future[Option[CompanyRegistrationReviewDetailsModel]]
 }

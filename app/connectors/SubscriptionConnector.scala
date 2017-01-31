@@ -16,27 +16,26 @@
 
 package connectors
 
-import config.{FrontendAppConfig, WSHttp}
+import com.google.inject.{Inject, Singleton}
+import config.AppConfig
 import models.etmp.SubscriptionTypeModel
 import play.api.libs.json.{JsValue, Json}
-import uk.gov.hmrc.play.config.ServicesConfig
-import uk.gov.hmrc.play.http.{HeaderCarrier, HttpPost, HttpResponse}
+import uk.gov.hmrc.play.http.ws.WSHttp
+import uk.gov.hmrc.play.http.{HeaderCarrier, HttpResponse}
 
 import scala.concurrent.Future
 
-object SubscriptionConnector extends SubscriptionConnector {
-  override val http = WSHttp
-  override val serviceUrl = FrontendAppConfig.subscriptionUrl
+@Singleton
+class SubscriptionConnectorImpl @Inject()(http: WSHttp, applicationConfig: AppConfig) extends SubscriptionConnector {
+  lazy val serviceUrl = applicationConfig.subscriptionUrl
+
+  def subscribe(subscriptionModel: SubscriptionTypeModel, safeID: String, postcode: String)(implicit hc: HeaderCarrier): Future[HttpResponse] = {
+    http.POST[JsValue, HttpResponse](s"$serviceUrl/investment-tax-relief-subscription/$safeID/$postcode/subscribe",Json.toJson(subscriptionModel))
+  }
 }
 
 trait SubscriptionConnector {
 
-  val http: HttpPost
-  val serviceUrl: String
-
-  def subscribe(subscriptionModel: SubscriptionTypeModel, safeID: String, postcode: String)
-               (implicit hc: HeaderCarrier): Future[HttpResponse] = {
-    http.POST[JsValue, HttpResponse](s"$serviceUrl/investment-tax-relief-subscription/$safeID/$postcode/subscribe",Json.toJson(subscriptionModel))
-  }
+  def subscribe(subscriptionModel: SubscriptionTypeModel, safeID: String, postcode: String)(implicit hc: HeaderCarrier): Future[HttpResponse]
 
 }

@@ -16,18 +16,21 @@
 
 package forms
 
+import com.google.inject.Inject
 import models.ContactDetailsSubscriptionModel
 import play.api.data.Form
 import play.api.data.Forms._
+import utils.Validation
 
-object ContactDetailsSubscriptionForm {
-  val contactDetailsSubscriptionForm = Form(
+class ContactDetailsSubscriptionForm @Inject()(validation: Validation) {
+
+  val form = Form(
     mapping(
       "firstName" -> nonEmptyText,
       "lastName" -> nonEmptyText,
-      "landline" -> optional(utils.Validation.optionalTelephoneNumberCheck),
-      "mobile" -> optional(utils.Validation.optionalTelephoneNumberCheck),
-      "email" -> utils.Validation.emailCheck
+      "landline" -> optional(validation.optionalTelephoneNumberCheck),
+      "mobile" -> optional(validation.optionalTelephoneNumberCheck),
+      "email" -> validation.emailCheck
     )(ContactDetailsSubscriptionModel.apply)(ContactDetailsSubscriptionModel.unapply)
   )
 }

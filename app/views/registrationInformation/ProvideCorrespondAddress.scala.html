@@ -2,7 +2,7 @@
 @import uk.gov.hmrc.play.views.html.helpers.form
 @import views.html.helpers.{backButtonWithProgress, input, errorSummary, dropdown}
 
-@(provideCorrespondAddressForm: Form[ProvideCorrespondAddressModel], listOfIsoCode: List[(String, String)])(implicit request: Request[_], messages: Messages)
+@(provideCorrespondAddressForm: Form[ProvideCorrespondAddressModel], listOfIsoCode: List[(String, String)])(implicit request: Request[_], messages: Messages, appConfig: config.AppConfig)
 
 @pageScripts = {
 

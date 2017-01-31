@@ -17,18 +17,31 @@
 package auth
 
 import controllers.routes
+import play.api.Logger
 import play.api.mvc.Results.Redirect
 import play.api.mvc._
-import uk.gov.hmrc.play.frontend.auth.GovernmentGateway
+import uk.gov.hmrc.play.frontend.auth.{AuthContext, GovernmentGateway, UserCredentials}
+import uk.gov.hmrc.play.http.SessionKeys
 
 import scala.concurrent.Future
 
 class GovernmentGatewayProvider(postSignInRedirectUrl: String, loginUrl: String) extends GovernmentGateway {
   override def handleSessionTimeout(implicit request: Request[_]): Future[FailureResult] =
     GovernmentGatewayProvider.handleSessionTimeout(request)
+
   override def additionalLoginParameters: Map[String, Seq[String]] = GovernmentGatewayProvider.additionalLoginParameters
-  override def continueURL: String = postSignInRedirectUrl
+
   override def loginURL: String = this.loginUrl
+
+  override def continueURL: String = postSignInRedirectUrl
+
+  private def loginUrlParameters(whitelistToken: String) = Map(
+    "continue" -> Seq(continueURL + whitelistToken),
+    "origin" -> Seq(origin)) ++ additionalLoginParameters
+
+  override def redirectToLogin(implicit request: Request[_]): Future[Result] = {
+    Future.successful(Redirect(loginURL, loginUrlParameters(request.getQueryString("p").fold("")(token => s"?p=$token"))))
+  }
 }
 
 object GovernmentGatewayProvider {

@@ -21,31 +21,24 @@ import org.mockito.Matchers
 import org.mockito.Mockito._
 import play.api.libs.json.Json
 import play.api.test.Helpers._
-import uk.gov.hmrc.play.http.ws.WSHttp
 import uk.gov.hmrc.play.http.HttpResponse
 
 import scala.concurrent.Future
 
 class AuthenticatorConnectorSpec extends BaseTestSpec {
-
-  object TestAuthenticatorConnector extends AuthenticatorConnector {
-    val serviceURL = "authenticator"
-    val refreshURI = "authenticator/refresh-profile"
-    val http = mock[WSHttp]
-  }
+  
+  val testConnector = new AuthenticatorConnectorImpl(mockHttp)
 
   val jsonError = Json.parse("""{"Message": "Error"}""")
 
   "Calling refreshProfile()" when {
 
     "receiving an OK response" should {
-      lazy val result = TestAuthenticatorConnector.refreshProfile()
-      lazy val response = await(result)
       "Return OK" in {
-        when(TestAuthenticatorConnector.http.POSTEmpty[HttpResponse]
-          (Matchers.eq(s"${TestAuthenticatorConnector.serviceURL}/${TestAuthenticatorConnector.refreshURI}"))(Matchers.any(), Matchers.eq(hc)))
+        when(mockHttp.POSTEmpty[HttpResponse]
+          (Matchers.eq(s"${testConnector.serviceURL}/${testConnector.refreshURI}"))(Matchers.any(), Matchers.eq(hc)))
           .thenReturn(Future.successful(HttpResponse(OK)))
-        val result = TestAuthenticatorConnector.refreshProfile()
+        val result = testConnector.refreshProfile()
         val response = await(result)
         response.status shouldBe OK
       }
@@ -53,19 +46,19 @@ class AuthenticatorConnectorSpec extends BaseTestSpec {
   }
 
   "receiving a response other than OK" should {
-    lazy val result = TestAuthenticatorConnector.refreshProfile()
+    lazy val result = testConnector.refreshProfile()
     lazy val response = await(result)
 
     "Return OK" in {
-      when(TestAuthenticatorConnector.http.POSTEmpty[HttpResponse]
-        (Matchers.eq(s"${TestAuthenticatorConnector.serviceURL}/${TestAuthenticatorConnector.refreshURI}"))(Matchers.any(), Matchers.eq(hc)))
+      when(mockHttp.POSTEmpty[HttpResponse]
+        (Matchers.eq(s"${testConnector.serviceURL}/${testConnector.refreshURI}"))(Matchers.any(), Matchers.eq(hc)))
         .thenReturn(Future.successful(HttpResponse(BAD_REQUEST, Some(jsonError))))
       response.status shouldBe BAD_REQUEST
     }
 
     "Return a JSON response" in {
-      when(TestAuthenticatorConnector.http.POSTEmpty[HttpResponse]
-        (Matchers.eq(s"${TestAuthenticatorConnector.serviceURL}/${TestAuthenticatorConnector.refreshURI}"))(Matchers.any(), Matchers.eq(hc)))
+      when(mockHttp.POSTEmpty[HttpResponse]
+        (Matchers.eq(s"${testConnector.serviceURL}/${testConnector.refreshURI}"))(Matchers.any(), Matchers.eq(hc)))
         .thenReturn(Future.successful(HttpResponse(BAD_REQUEST, Some(jsonError))))
       Json.parse(response.body) shouldBe jsonError
     }

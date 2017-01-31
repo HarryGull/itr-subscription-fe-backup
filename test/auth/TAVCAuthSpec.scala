@@ -20,27 +20,15 @@ import java.net.URLEncoder
 
 import common.BaseTestSpec
 import controllers.routes
-import play.api.Play._
 import play.api.test.FakeRequest
 import play.api.http.Status
-import play.api.mvc.{Request, Result}
-import uk.gov.hmrc.play.frontend.auth.{AuthContext, AuthenticationProviderIds}
+import uk.gov.hmrc.play.frontend.auth.AuthenticationProviderIds
 import play.api.test.Helpers._
-import uk.gov.hmrc.passcode.authentication.{PasscodeAuthenticationProvider, PasscodeVerificationConfig}
-
-import scala.concurrent.Future
 
 class TAVCAuthSpec extends BaseTestSpec {
 
-  object AuthTestController extends AuthTestController {
-    override lazy val applicationConfig = MockConfig
-    override lazy val authConnector = mockAuthConnector
-    override lazy val registeredBusinessCustomerService = mockRegisteredBusinessCustomerService
-    override def withVerifiedPasscode(body: => Future[Result])
-                                     (implicit request: Request[_], user: AuthContext): Future[Result] = body
-    override def config = new PasscodeVerificationConfig(configuration(app))
-    override def passcodeAuthenticationProvider = new PasscodeAuthenticationProvider(config)
-  }
+  val authorisedForTAVC = new AuthorisedForTAVC(MockAuthConnector, configuration, MockConfig, mockRegisteredBusinessCustomerService, mockKeystoreConnector)
+  val testController = new AuthTestController(authorisedForTAVC)
 
   "Government Gateway Provider" should {
     "have an account type additional parameter set to organisation" in {
@@ -74,16 +62,16 @@ class TAVCAuthSpec extends BaseTestSpec {
   }
 
   "Extract previously logged in time of logged in user" should {
-    s"return ${ggUser.previouslyLoggedInAt.get}"  in {
-      val user = TAVCUser(ggUser.allowedAuthContext)
-      user.previouslyLoggedInAt shouldBe ggUser.previouslyLoggedInAt
+    s"return ${previouslyLoggedInAt.get}"  in {
+      val user = TAVCUser(allowedAuthContext)
+      user.previouslyLoggedInAt shouldBe previouslyLoggedInAt
     }
   }
 
   "Calling authenticated async action with no login session" should {
     "result in a redirect to login" in {
 
-      val result = AuthTestController.authorisedAsyncAction(fakeRequest)
+      val result = testController.authorisedAsyncAction(fakeRequest)
       status(result) shouldBe Status.SEE_OTHER
       redirectLocation(result) shouldBe Some(s"/gg/sign-in?continue=${URLEncoder.encode(MockConfig.introductionUrl,"UTF-8")}&origin=investment-tax-relief-subscription-frontend&accountType=organisation")
     }
@@ -92,7 +80,7 @@ class TAVCAuthSpec extends BaseTestSpec {
   "Calling authenticated async action with a default GG login session and business customer details in keystore" should {
     "result in an OK status" in {
       withRegDetails()
-      val result = AuthTestController.authorisedAsyncAction(authenticatedFakeRequest(AuthenticationProviderIds.GovernmentGatewayId))
+      val result = testController.authorisedAsyncAction(authenticatedFakeRequest(AuthenticationProviderIds.GovernmentGatewayId))
       status(result) shouldBe Status.OK
     }
   }
@@ -100,7 +88,7 @@ class TAVCAuthSpec extends BaseTestSpec {
   "Calling authenticated async action with a default GG login session and no business customer details in keystore" should {
     "result in a SEE_OTHER status" in {
       noRegDetails()
-      val result = AuthTestController.authorisedAsyncAction(authenticatedFakeRequest(AuthenticationProviderIds.GovernmentGatewayId))
+      val result = testController.authorisedAsyncAction(authenticatedFakeRequest(AuthenticationProviderIds.GovernmentGatewayId))
       status(result) shouldBe Status.SEE_OTHER
     }
   }

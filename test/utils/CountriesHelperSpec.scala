@@ -17,26 +17,29 @@
 package utils
 
 import org.scalatestplus.play.{OneServerPerSuite, PlaySpec}
+import play.api.Environment
 
 class CountriesHelperSpec extends PlaySpec with OneServerPerSuite {
 
-  "CountriesHelper" must {
+  val countriesHelper = new CountriesHelper(Environment.simple())
+
+  "countriesHelper" must {
 
     "getSelectedCountry" must {
       "bring the correct country from the file" in {
-        CountriesHelper.getSelectedCountry("GB") must be("United Kingdom")
-        CountriesHelper.getSelectedCountry("US") must be("USA")
-        CountriesHelper.getSelectedCountry("VG") must be("British Virgin Islands")
-        CountriesHelper.getSelectedCountry("UG") must be("Uganda")
-        CountriesHelper.getSelectedCountry("zz") must be("zz")
+        countriesHelper.getSelectedCountry("GB") must be("United Kingdom")
+        countriesHelper.getSelectedCountry("US") must be("USA")
+        countriesHelper.getSelectedCountry("VG") must be("British Virgin Islands")
+        countriesHelper.getSelectedCountry("UG") must be("Uganda")
+        countriesHelper.getSelectedCountry("zz") must be("zz")
       }
     }
 
     "getIsoCodeMap" must {
       "return map of country iso-code to country name" in {
-        CountriesHelper.getIsoCodeTupleList must contain(("US" , "USA :United States of America"))
-        CountriesHelper.getIsoCodeTupleList must contain(("GB" , "United Kingdom :UK, GB, Great Britain"))
-        CountriesHelper.getIsoCodeTupleList must contain(("UG" , "Uganda"))
+        countriesHelper.getIsoCodeTupleList must contain(("US" , "USA :United States of America"))
+        countriesHelper.getIsoCodeTupleList must contain(("GB" , "United Kingdom :UK, GB, Great Britain"))
+        countriesHelper.getIsoCodeTupleList must contain(("UG" , "Uganda"))
       }
     }
   }

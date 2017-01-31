@@ -20,24 +20,26 @@
   */
 package testOnly.connectors
 
-import config.WSHttp
+import com.google.inject.{Inject, Singleton}
 import uk.gov.hmrc.play.config.ServicesConfig
+import uk.gov.hmrc.play.http.ws.WSHttp
 import uk.gov.hmrc.play.http.{HeaderCarrier, _}
+
 import scala.concurrent.Future
 
-trait GgStubsConnector extends ServicesConfig with RawResponseReads {
+@Singleton
+class GgStubsConnectorImpl @Inject()(http: WSHttp) extends GgStubsConnector with ServicesConfig with RawResponseReads {
 
-  val serviceURL: String
-  val resetURI: String
-  val http: HttpGet with HttpPost
+  lazy val serviceURL = baseUrl("government-gateway-stubs")
+  val resetURI = "test-only/with-refreshed-enrolments/false"
 
   def resetEnrolments()(implicit hc: HeaderCarrier): Future[HttpResponse] =
     http.POSTEmpty(s"$serviceURL/$resetURI")
 
 }
 
-object GgStubsConnector extends GgStubsConnector {
-  val serviceURL = baseUrl("government-gateway-stubs")
-  val resetURI = "test-only/with-refreshed-enrolments/false"
-  val http = WSHttp
+trait GgStubsConnector {
+
+  def resetEnrolments()(implicit hc: HeaderCarrier): Future[HttpResponse]
+
 }

@@ -4,7 +4,7 @@
   bodyClasses: Option[String] = None,
   mainClass: Option[String] = None,
   scriptElem: Option[Html] = None,
-  userLoggedIn: Boolean = true)(mainContent: Html)(implicit request : Request[_], messages: Messages)
+  userLoggedIn: Boolean = true)(mainContent: Html)(implicit request : Request[_], messages: Messages, appConfig: config.AppConfig)
 
 @import uk.gov.hmrc.play.views.html.layouts
 
@@ -18,7 +18,7 @@
 }
 
 
-@govuk_wrapper(appConfig = config.FrontendAppConfig,
+@govuk_wrapper(appConfig = appConfig,
                title = title,
                mainClass = mainClass,
                bodyClasses = bodyClasses,

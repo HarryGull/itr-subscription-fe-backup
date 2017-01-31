@@ -17,32 +17,24 @@
 package services
 
 import common.BaseTestSpec
-import connectors.{BusinessCustomerDataCacheConnector, DataCacheConnector}
 import org.mockito.Matchers
 import org.mockito.Mockito._
 import uk.gov.hmrc.play.http.HeaderCarrier
 
+import scala.concurrent.ExecutionContext.Implicits.global
 
 class RegisteredBusinessCustomerServiceSpec extends BaseTestSpec {
-
-  object TestService extends RegisteredBusinessCustomerService {
-    override val dataCacheConnector =  mock[DataCacheConnector]
-  }
-
-  "RegisteredBusinessCustomerService" should {
-    "use the correct keystore connector" in {
-      RegisteredBusinessCustomerService.dataCacheConnector shouldBe BusinessCustomerDataCacheConnector
-    }
-  }
+  
+  val testService = new RegisteredBusinessCustomerServiceImpl(mockKeystoreConnector)
 
   "getReviewBusinessCustomerDetails" when {
 
     "dataCacheConnector returns a CompanyRegistrationReviewDetailsModel" should {
 
       "return the data" in {
-        when(TestService.dataCacheConnector.fetchAndGetReviewDetailsForSession(Matchers.any[HeaderCarrier]()))
+        when(mockKeystoreConnector.fetchAndGetReviewDetailsForSession(Matchers.any[HeaderCarrier]()))
           .thenReturn(Some(validModel))
-        val result = TestService.getReviewBusinessCustomerDetails
+        val result = testService.getReviewBusinessCustomerDetails
         await(result) shouldBe Some(validModel)
       }
 
@@ -51,9 +43,9 @@ class RegisteredBusinessCustomerServiceSpec extends BaseTestSpec {
     "dataCacheConnector returns nothing" should {
 
       "return a None" in {
-        when(TestService.dataCacheConnector.fetchAndGetReviewDetailsForSession(Matchers.any[HeaderCarrier]()))
+        when(mockKeystoreConnector.fetchAndGetReviewDetailsForSession(Matchers.any[HeaderCarrier]()))
           .thenReturn(None)
-        val result = TestService.getReviewBusinessCustomerDetails
+        val result = testService.getReviewBusinessCustomerDetails
         await(result) shouldBe None
       }
 

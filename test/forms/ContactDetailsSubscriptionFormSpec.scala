@@ -17,15 +17,13 @@
 package forms
 
 import common.BaseTestSpec
-import forms.ContactDetailsSubscriptionForm._
 import models.ContactDetailsSubscriptionModel
 import play.api.i18n.Messages
-import play.api.i18n.Messages.Implicits._
 
 class ContactDetailsSubscriptionFormSpec extends BaseTestSpec {
 
   "Creating a form using an empty model" should {
-    lazy val form = contactDetailsSubscriptionForm
+    lazy val form = contactDetailsSubscriptionForm.form
     "return an empty string for Name, lastName, telephone number and email" in {
       form.data.isEmpty shouldBe true
     }
@@ -34,7 +32,7 @@ class ContactDetailsSubscriptionFormSpec extends BaseTestSpec {
   "Creating a form using a valid model (with telelphone2)" should {
     "return a form with the data specified in the model" in {
       val model = ContactDetailsSubscriptionModel("Percy", "Montague", Some("06472 778833"), Some("06472 123998"), "harry@wishingwell.com")
-      val form = contactDetailsSubscriptionForm.fill(model)
+      val form = contactDetailsSubscriptionForm.form.fill(model)
       form.data("firstName") shouldBe "Percy"
       form.data("lastName") shouldBe "Montague"
       form.data("landline") shouldBe "06472 778833"
@@ -47,7 +45,7 @@ class ContactDetailsSubscriptionFormSpec extends BaseTestSpec {
   "Creating a form using a valid model (no telelphone2)" should {
     "return a form with the data specified in the model" in {
       val model = ContactDetailsSubscriptionModel("Percy", "Montague", Some("06472 778833"), None, "harry@wishingwell.com")
-      val form = contactDetailsSubscriptionForm.fill(model)
+      val form = contactDetailsSubscriptionForm.form.fill(model)
       form.data("firstName") shouldBe "Percy"
       form.data("lastName") shouldBe "Montague"
       form.data("landline") shouldBe "06472 778833"
@@ -59,7 +57,7 @@ class ContactDetailsSubscriptionFormSpec extends BaseTestSpec {
 
   "Creating a form using an invalid post" when {
     "supplied with no data for Name" should {
-      lazy val form = contactDetailsSubscriptionForm.bind(Map(
+      lazy val form = contactDetailsSubscriptionForm.form.bind(Map(
         "firstName" -> "",
         "lastName" -> "Jones",
         "landline" -> "02738 774893",
@@ -81,7 +79,7 @@ class ContactDetailsSubscriptionFormSpec extends BaseTestSpec {
 
   "Creating a form using an invalid post" when {
     "supplied with no data for lastName" should {
-      lazy val form = contactDetailsSubscriptionForm.bind(Map(
+      lazy val form = contactDetailsSubscriptionForm.form.bind(Map(
         "firstName" -> "Tim",
         "lastName" -> "",
         "landline" -> "02738 774893",
@@ -103,7 +101,7 @@ class ContactDetailsSubscriptionFormSpec extends BaseTestSpec {
 
   "Creating a form using a valid post" when {
     "supplied with no data for landline" should {
-      lazy val form = contactDetailsSubscriptionForm.bind(Map(
+      lazy val form = contactDetailsSubscriptionForm.form.bind(Map(
         "firstName" -> "Tim",
         "lastName" -> "Roth",
         "landline" -> "",
@@ -118,7 +116,7 @@ class ContactDetailsSubscriptionFormSpec extends BaseTestSpec {
 
   "Creating a form using an invalid post" when {
     "supplied with no data for email" should {
-      lazy val form = contactDetailsSubscriptionForm.bind(Map(
+      lazy val form = contactDetailsSubscriptionForm.form.bind(Map(
         "firstName" -> "Tim",
         "lastName" -> "Roth",
         "landline" -> "08746 716283",
@@ -140,7 +138,7 @@ class ContactDetailsSubscriptionFormSpec extends BaseTestSpec {
 
   "Creating a form using an invalid post" when {
     "supplied with no data for Name and lastName" should {
-      lazy val form = contactDetailsSubscriptionForm.bind(Map(
+      lazy val form = contactDetailsSubscriptionForm.form.bind(Map(
         "firstName" -> "",
         "lastName" -> "",
         "landline" -> "01387 563748",
@@ -164,7 +162,7 @@ class ContactDetailsSubscriptionFormSpec extends BaseTestSpec {
 
   "Creating a form using an invalid post" when {
     "supplied with no data for telephone number and email" should {
-      lazy val form = contactDetailsSubscriptionForm.bind(Map(
+      lazy val form = contactDetailsSubscriptionForm.form.bind(Map(
         "firstName" -> "James",
         "lastName" -> "Helix",
         "landline" -> "",
@@ -186,7 +184,7 @@ class ContactDetailsSubscriptionFormSpec extends BaseTestSpec {
 
   "Creating a form using an invalid post" when {
     "supplied with no data for Name, lastName or telephone number" should {
-      lazy val form = contactDetailsSubscriptionForm.bind(Map(
+      lazy val form = contactDetailsSubscriptionForm.form.bind(Map(
         "firstName" -> "",
         "lastName" -> "",
         "landline" -> "",
@@ -209,7 +207,7 @@ class ContactDetailsSubscriptionFormSpec extends BaseTestSpec {
   }
 
   "supplied with empty space for Name" should {
-    lazy val form = contactDetailsSubscriptionForm.bind(Map(
+    lazy val form = contactDetailsSubscriptionForm.form.bind(Map(
       "firstName" -> "    ",
       "lastName" -> "Pivot",
       "landline" -> "02635 789374",
@@ -229,7 +227,7 @@ class ContactDetailsSubscriptionFormSpec extends BaseTestSpec {
   }
 
   "supplied with empty space for lastName" should {
-    lazy val form = contactDetailsSubscriptionForm.bind(Map(
+    lazy val form = contactDetailsSubscriptionForm.form.bind(Map(
       "firstName" -> "Matt",
       "lastName" -> "   ",
       "landline" -> "02635 789374",
@@ -249,7 +247,7 @@ class ContactDetailsSubscriptionFormSpec extends BaseTestSpec {
   }
 
   "supplied with empty space for landline" should {
-    lazy val form = contactDetailsSubscriptionForm.bind(Map(
+    lazy val form = contactDetailsSubscriptionForm.form.bind(Map(
       "firstName" -> "Matt",
       "lastName" -> "Pivot",
       "landline" -> "     ",
@@ -266,7 +264,7 @@ class ContactDetailsSubscriptionFormSpec extends BaseTestSpec {
   }
 
   "supplied with empty space for mobile" should {
-    lazy val form = contactDetailsSubscriptionForm.bind(Map(
+    lazy val form = contactDetailsSubscriptionForm.form.bind(Map(
       "firstName" -> "Matt",
       "lastName" -> "Pivot",
       "landline" -> "01788777627",
@@ -283,7 +281,7 @@ class ContactDetailsSubscriptionFormSpec extends BaseTestSpec {
   }
 
   "supplied with empty space for email" should {
-    lazy val form = contactDetailsSubscriptionForm.bind(Map(
+    lazy val form = contactDetailsSubscriptionForm.form.bind(Map(
       "firstName" -> "Matt",
       "lastName" -> "Pivot",
       "landline" -> "02635 789374",
@@ -303,7 +301,7 @@ class ContactDetailsSubscriptionFormSpec extends BaseTestSpec {
   }
 
   "supplied with numeric input for Name" should {
-    lazy val form = contactDetailsSubscriptionForm.bind(Map(
+    lazy val form = contactDetailsSubscriptionForm.form.bind(Map(
       "firstName" -> "D0ug",
       "lastName" -> "Last",
       "landline" -> "03782 098372",
@@ -319,7 +317,7 @@ class ContactDetailsSubscriptionFormSpec extends BaseTestSpec {
   }
 
   "supplied with numeric input for lastName" should {
-    lazy val form = contactDetailsSubscriptionForm.bind(Map(
+    lazy val form = contactDetailsSubscriptionForm.form.bind(Map(
       "firstName" -> "First",
       "lastName" -> "P3rry",
       "landline" -> "03782 098372",
@@ -335,7 +333,7 @@ class ContactDetailsSubscriptionFormSpec extends BaseTestSpec {
   }
 
   "supplied with alphanumeric input for telephone number" should {
-    lazy val form = contactDetailsSubscriptionForm.bind(Map(
+    lazy val form = contactDetailsSubscriptionForm.form.bind(Map(
       "firstName" -> "First",
       "lastName" -> "Last",
       "landline" -> "OI782 O98372",
@@ -351,7 +349,7 @@ class ContactDetailsSubscriptionFormSpec extends BaseTestSpec {
   }
 
   "supplied with alphanumeric input for telephone number2" should {
-    lazy val form = contactDetailsSubscriptionForm.bind(Map(
+    lazy val form = contactDetailsSubscriptionForm.form.bind(Map(
       "firstName" -> "First",
       "lastName" -> "Last",
       "landline" -> "00000000000",
@@ -367,7 +365,7 @@ class ContactDetailsSubscriptionFormSpec extends BaseTestSpec {
   }
 
   "supplied with alphanumeric input for email" should {
-    lazy val form = contactDetailsSubscriptionForm.bind(Map(
+    lazy val form = contactDetailsSubscriptionForm.form.bind(Map(
       "firstName" -> "First",
       "lastName" -> "Last",
       "landline" -> "00000000000",
@@ -385,7 +383,7 @@ class ContactDetailsSubscriptionFormSpec extends BaseTestSpec {
   //  BVA
 
   "Name value supplied with the minimum allowed" should {
-    lazy val form = contactDetailsSubscriptionForm.bind(Map(
+    lazy val form = contactDetailsSubscriptionForm.form.bind(Map(
       "firstName" -> "D",
       "lastName" -> "Last",
       "landline" -> "00000000000",
@@ -401,7 +399,7 @@ class ContactDetailsSubscriptionFormSpec extends BaseTestSpec {
   }
 
   "lastName value supplied with the minimum allowed" should {
-    lazy val form = contactDetailsSubscriptionForm.bind(Map(
+    lazy val form = contactDetailsSubscriptionForm.form.bind(Map(
       "firstName" -> "First",
       "lastName" -> "P",
       "landline" -> "00000000000",
@@ -417,7 +415,7 @@ class ContactDetailsSubscriptionFormSpec extends BaseTestSpec {
   }
 
   "landline value supplied with the minimum allowed" should {
-    lazy val form = contactDetailsSubscriptionForm.bind(Map(
+    lazy val form = contactDetailsSubscriptionForm.form.bind(Map(
       "firstName" -> "First",
       "lastName" -> "Last",
       "landline" -> "0",
@@ -433,7 +431,7 @@ class ContactDetailsSubscriptionFormSpec extends BaseTestSpec {
   }
 
   "email value supplied with the minimum allowed" should {
-    lazy val form = contactDetailsSubscriptionForm.bind(Map(
+    lazy val form = contactDetailsSubscriptionForm.form.bind(Map(
       "firstName" -> "First",
       "lastName" -> "Last",
       "landline" -> "00000000000",
@@ -449,7 +447,7 @@ class ContactDetailsSubscriptionFormSpec extends BaseTestSpec {
   }
 
   "Name value supplied with the maximum allowed (on the boundary)" should {
-    lazy val form = contactDetailsSubscriptionForm.bind(Map(
+    lazy val form = contactDetailsSubscriptionForm.form.bind(Map(
       "firstName" -> "Thisnameisthirtyfivecharacterslongg",
       "lastName" -> "Last",
       "landline" -> "00000000000",
@@ -465,7 +463,7 @@ class ContactDetailsSubscriptionFormSpec extends BaseTestSpec {
   }
 
   "lastName value supplied with the maximum allowed (on the boundary)" should {
-    lazy val form = contactDetailsSubscriptionForm.bind(Map(
+    lazy val form = contactDetailsSubscriptionForm.form.bind(Map(
       "firstName" -> "First",
       "lastName" -> "Thisnameisthirtyfivecharacterslongg",
       "landline" -> "00000000000",
@@ -481,7 +479,7 @@ class ContactDetailsSubscriptionFormSpec extends BaseTestSpec {
   }
 
   "landline value supplied with the maximum allowed (on the boundary)" should {
-    lazy val form = contactDetailsSubscriptionForm.bind(Map(
+    lazy val form = contactDetailsSubscriptionForm.form.bind(Map(
       "firstName" -> "First",
       "lastName" -> "Last",
       "landline" -> "000000000000000000000000",
@@ -497,7 +495,7 @@ class ContactDetailsSubscriptionFormSpec extends BaseTestSpec {
   }
 
   "mobile value supplied with the maximum allowed (on the boundary)" should {
-    lazy val form = contactDetailsSubscriptionForm.bind(Map(
+    lazy val form = contactDetailsSubscriptionForm.form.bind(Map(
       "firstName" -> "First",
       "lastName" -> "Last",
       "landline" -> "00000000000",
@@ -513,7 +511,7 @@ class ContactDetailsSubscriptionFormSpec extends BaseTestSpec {
   }
 
   "landline value supplied over the maximum allowed (over the boundary)" should {
-    lazy val form = contactDetailsSubscriptionForm.bind(Map(
+    lazy val form = contactDetailsSubscriptionForm.form.bind(Map(
       "firstName" -> "First",
       "lastName" -> "Last",
       "landline" -> "1234567890123456789012345",
@@ -533,7 +531,7 @@ class ContactDetailsSubscriptionFormSpec extends BaseTestSpec {
   }
 
   "mobile value supplied over the maximum allowed (over the boundary)" should {
-    lazy val form = contactDetailsSubscriptionForm.bind(Map(
+    lazy val form = contactDetailsSubscriptionForm.form.bind(Map(
       "firstName" -> "First",
       "lastName" -> "Last",
       "landline" -> "00000000000",
@@ -553,7 +551,7 @@ class ContactDetailsSubscriptionFormSpec extends BaseTestSpec {
   }
 
   "landline value supplied over the maximum allowed (over the boundary) includes whitespace in the count" should {
-    lazy val form = contactDetailsSubscriptionForm.bind(Map(
+    lazy val form = contactDetailsSubscriptionForm.form.bind(Map(
       "firstName" -> "First",
       "lastName" -> "Last",
       "landline" -> "123456789012345 789 01245",
@@ -573,7 +571,7 @@ class ContactDetailsSubscriptionFormSpec extends BaseTestSpec {
   }
 
   "mobile value supplied over the maximum allowed (over the boundary) includes whitespace in the count" should {
-    lazy val form = contactDetailsSubscriptionForm.bind(Map(
+    lazy val form = contactDetailsSubscriptionForm.form.bind(Map(
       "firstName" -> "First",
       "lastName" -> "Last",
       "landline" -> "00000000000",
@@ -595,7 +593,7 @@ class ContactDetailsSubscriptionFormSpec extends BaseTestSpec {
   //Telephone Number Regex
 
   "landline value supplied with multiple white space" should {
-    lazy val form = contactDetailsSubscriptionForm.bind(Map(
+    lazy val form = contactDetailsSubscriptionForm.form.bind(Map(
       "firstName" -> "First",
       "lastName" -> "Last",
       "landline" -> "0 13 8 4 5 5 5 8 6 9",
@@ -611,7 +609,7 @@ class ContactDetailsSubscriptionFormSpec extends BaseTestSpec {
   }
 
   "landline value supplied with brackets" should {
-    lazy val form = contactDetailsSubscriptionForm.bind(Map(
+    lazy val form = contactDetailsSubscriptionForm.form.bind(Map(
       "firstName" -> "First",
       "lastName" -> "Last",
       "landline" -> "(00000) 000000",
@@ -627,7 +625,7 @@ class ContactDetailsSubscriptionFormSpec extends BaseTestSpec {
   }
 
   "landline value supplied with +44" should {
-    lazy val form = contactDetailsSubscriptionForm.bind(Map(
+    lazy val form = contactDetailsSubscriptionForm.form.bind(Map(
       "firstName" -> "First",
       "lastName" -> "Last",
       "landline" -> "+44000000000",
@@ -647,7 +645,7 @@ class ContactDetailsSubscriptionFormSpec extends BaseTestSpec {
   }
 
   "landline value supplied with /" should {
-    lazy val form = contactDetailsSubscriptionForm.bind(Map(
+    lazy val form = contactDetailsSubscriptionForm.form.bind(Map(
       "firstName" -> "First",
       "lastName" -> "Last",
       "landline" -> "0/00/00/00/00/00",
@@ -663,7 +661,7 @@ class ContactDetailsSubscriptionFormSpec extends BaseTestSpec {
   }
 
   "landline value supplied with #" should {
-    lazy val form = contactDetailsSubscriptionForm.bind(Map(
+    lazy val form = contactDetailsSubscriptionForm.form.bind(Map(
       "firstName" -> "First",
       "lastName" -> "Last",
       "landline" -> "#000000000",
@@ -679,7 +677,7 @@ class ContactDetailsSubscriptionFormSpec extends BaseTestSpec {
   }
 
   "landline value supplied with *" should {
-    lazy val form = contactDetailsSubscriptionForm.bind(Map(
+    lazy val form = contactDetailsSubscriptionForm.form.bind(Map(
       "firstName" -> "First",
       "lastName" -> "Last",
       "landline" -> "*000000000",
@@ -695,7 +693,7 @@ class ContactDetailsSubscriptionFormSpec extends BaseTestSpec {
   }
 
   "landline value supplied with :" should {
-    lazy val form = contactDetailsSubscriptionForm.bind(Map(
+    lazy val form = contactDetailsSubscriptionForm.form.bind(Map(
       "firstName" -> "First",
       "lastName" -> "Last",
       "landline" -> "00000:00000",
@@ -715,7 +713,7 @@ class ContactDetailsSubscriptionFormSpec extends BaseTestSpec {
   }
 
   "landline value supplied with - (American)" should {
-    lazy val form = contactDetailsSubscriptionForm.bind(Map(
+    lazy val form = contactDetailsSubscriptionForm.form.bind(Map(
       "firstName" -> "First",
       "lastName" -> "Last",
       "landline" -> "+1 000-000-0000",
@@ -735,7 +733,7 @@ class ContactDetailsSubscriptionFormSpec extends BaseTestSpec {
   }
 
   "landline value supplied with - (France)" should {
-    lazy val form = contactDetailsSubscriptionForm.bind(Map(
+    lazy val form = contactDetailsSubscriptionForm.form.bind(Map(
       "firstName" -> "First",
       "lastName" -> "Last",
       "landline" -> "+33(0)000000000",
@@ -751,7 +749,7 @@ class ContactDetailsSubscriptionFormSpec extends BaseTestSpec {
   }
 
   "landline value supplied with ext (extensions)" should {
-    lazy val form = contactDetailsSubscriptionForm.bind(Map(
+    lazy val form = contactDetailsSubscriptionForm.form.bind(Map(
       "firstName" -> "First",
       "lastName" -> "Last",
       "landline" -> "+44 00000000 ext 000",
@@ -771,7 +769,7 @@ class ContactDetailsSubscriptionFormSpec extends BaseTestSpec {
   }
 
   "landline value supplied with . " should {
-    lazy val form = contactDetailsSubscriptionForm.bind(Map(
+    lazy val form = contactDetailsSubscriptionForm.form.bind(Map(
       "firstName" -> "First",
       "lastName" -> "Last",
       "landline" -> "00000.00.00.00.00",
@@ -791,7 +789,7 @@ class ContactDetailsSubscriptionFormSpec extends BaseTestSpec {
   }
 
   "landline value supplied with a leading space " should {
-    lazy val form = contactDetailsSubscriptionForm.bind(Map(
+    lazy val form = contactDetailsSubscriptionForm.form.bind(Map(
       "firstName" -> "First",
       "lastName" -> "Last",
       "landline" -> " 00000 000000",
@@ -807,7 +805,7 @@ class ContactDetailsSubscriptionFormSpec extends BaseTestSpec {
   }
 
   "landline value supplied with a trailing space " should {
-    lazy val form = contactDetailsSubscriptionForm.bind(Map(
+    lazy val form = contactDetailsSubscriptionForm.form.bind(Map(
       "firstName" -> "First",
       "lastName" -> "Last",
       "landline" -> "00000 000000 ",
@@ -825,7 +823,7 @@ class ContactDetailsSubscriptionFormSpec extends BaseTestSpec {
   //Email Regex
 
   "email supplied with multiple white spaces" should {
-    lazy val form = contactDetailsSubscriptionForm.bind(Map(
+    lazy val form = contactDetailsSubscriptionForm.form.bind(Map(
       "firstName" -> "First",
       "lastName" -> "Last",
       "landline" -> "00000000000",
@@ -845,7 +843,7 @@ class ContactDetailsSubscriptionFormSpec extends BaseTestSpec {
   }
 
   "email supplied with multiple @" should {
-    lazy val form = contactDetailsSubscriptionForm.bind(Map(
+    lazy val form = contactDetailsSubscriptionForm.form.bind(Map(
       "firstName" -> "First",
       "lastName" -> "Last",
       "landline" -> "00000000000",
@@ -865,7 +863,7 @@ class ContactDetailsSubscriptionFormSpec extends BaseTestSpec {
   }
 
   "email supplied without @" should {
-    lazy val form = contactDetailsSubscriptionForm.bind(Map(
+    lazy val form = contactDetailsSubscriptionForm.form.bind(Map(
       "firstName" -> "First",
       "lastName" -> "Last",
       "landline" -> "00000000000",
@@ -885,7 +883,7 @@ class ContactDetailsSubscriptionFormSpec extends BaseTestSpec {
   }
 
   "email supplied with sub domain" should {
-    lazy val form = contactDetailsSubscriptionForm.bind(Map(
+    lazy val form = contactDetailsSubscriptionForm.form.bind(Map(
       "firstName" -> "First",
       "lastName" -> "Last",
       "landline" -> "00000000000",
@@ -901,7 +899,7 @@ class ContactDetailsSubscriptionFormSpec extends BaseTestSpec {
   }
 
   "email supplied with name.lastname@" should {
-    lazy val form = contactDetailsSubscriptionForm.bind(Map(
+    lazy val form = contactDetailsSubscriptionForm.form.bind(Map(
       "firstName" -> "First",
       "lastName" -> "Last",
       "landline" -> "00000000000",
@@ -917,7 +915,7 @@ class ContactDetailsSubscriptionFormSpec extends BaseTestSpec {
   }
 
   "email supplied with Name lastName <email@example.com>" should {
-    lazy val form = contactDetailsSubscriptionForm.bind(Map(
+    lazy val form = contactDetailsSubscriptionForm.form.bind(Map(
       "firstName" -> "First",
       "lastName" -> "Last",
       "landline" -> "00000000000",
@@ -937,7 +935,7 @@ class ContactDetailsSubscriptionFormSpec extends BaseTestSpec {
   }
 
   "email supplied with name+lastname@" should {
-    lazy val form = contactDetailsSubscriptionForm.bind(Map(
+    lazy val form = contactDetailsSubscriptionForm.form.bind(Map(
       "firstName" -> "First",
       "lastName" -> "Last",
       "landline" -> "00000000000",
@@ -957,7 +955,7 @@ class ContactDetailsSubscriptionFormSpec extends BaseTestSpec {
   }
 
   "email supplied with name_lastname@" should {
-    lazy val form = contactDetailsSubscriptionForm.bind(Map(
+    lazy val form = contactDetailsSubscriptionForm.form.bind(Map(
       "firstName" -> "First",
       "lastName" -> "Last",
       "landline" -> "00000000000",
@@ -973,7 +971,7 @@ class ContactDetailsSubscriptionFormSpec extends BaseTestSpec {
   }
 
   "Part 1 - minimum allowed supplied for email (on boundary) " should {
-    lazy val form = contactDetailsSubscriptionForm.bind(Map(
+    lazy val form = contactDetailsSubscriptionForm.form.bind(Map(
       "firstName" -> "First",
       "lastName" -> "Last",
       "landline" -> "00000000000",
@@ -989,7 +987,7 @@ class ContactDetailsSubscriptionFormSpec extends BaseTestSpec {
   }
 
   "Part 1 - nothing supplied for  part of the email (under the boundary) " should {
-    lazy val form = contactDetailsSubscriptionForm.bind(Map(
+    lazy val form = contactDetailsSubscriptionForm.form.bind(Map(
       "firstName" -> "First",
       "lastName" -> "Last",
       "landline" -> "00000000000",
@@ -1009,7 +1007,7 @@ class ContactDetailsSubscriptionFormSpec extends BaseTestSpec {
   }
 
   "Part 1 - maximum allowed supplied for email (on boundary) " should {
-    lazy val form = contactDetailsSubscriptionForm.bind(Map(
+    lazy val form = contactDetailsSubscriptionForm.form.bind(Map(
       "firstName" -> "First",
       "lastName" -> "Last",
       "landline" -> "00000000000",
@@ -1025,7 +1023,7 @@ class ContactDetailsSubscriptionFormSpec extends BaseTestSpec {
   }
 
   "Part 1 - too many characters supplied for the  part of the email (over the boundary) " should {
-    lazy val form = contactDetailsSubscriptionForm.bind(Map(
+    lazy val form = contactDetailsSubscriptionForm.form.bind(Map(
       "firstName" -> "First",
       "lastName" -> "Last",
       "landline" -> "00000000000",
@@ -1045,7 +1043,7 @@ class ContactDetailsSubscriptionFormSpec extends BaseTestSpec {
   }
 
   "Part 2 - minimum allowed supplied for email (on boundary)" should {
-    lazy val form = contactDetailsSubscriptionForm.bind(Map(
+    lazy val form = contactDetailsSubscriptionForm.form.bind(Map(
       "firstName" -> "First",
       "lastName" -> "Last",
       "landline" -> "00000000000",
@@ -1061,7 +1059,7 @@ class ContactDetailsSubscriptionFormSpec extends BaseTestSpec {
   }
 
   "Part 2 - nothing supplied for second part of the email (under the boundary) " should {
-    lazy val form = contactDetailsSubscriptionForm.bind(Map(
+    lazy val form = contactDetailsSubscriptionForm.form.bind(Map(
       "firstName" -> "First",
       "lastName" -> "Last",
       "landline" -> "00000000000",
@@ -1081,7 +1079,7 @@ class ContactDetailsSubscriptionFormSpec extends BaseTestSpec {
   }
 
   "Part 2 - maximum allowed supplied for email (on boundary) " should {
-    lazy val form = contactDetailsSubscriptionForm.bind(Map(
+    lazy val form = contactDetailsSubscriptionForm.form.bind(Map(
       "firstName" -> "First",
       "lastName" -> "Last",
       "landline" -> "00000000000",
@@ -1097,7 +1095,7 @@ class ContactDetailsSubscriptionFormSpec extends BaseTestSpec {
   }
 
   "Part 2 - too many characters supplied for the second part of the email (over the boundary) " should {
-    lazy val form = contactDetailsSubscriptionForm.bind(Map(
+    lazy val form = contactDetailsSubscriptionForm.form.bind(Map(
       "firstName" -> "First",
       "lastName" -> "Last",
       "landline" -> "00000000000",
@@ -1117,7 +1115,7 @@ class ContactDetailsSubscriptionFormSpec extends BaseTestSpec {
   }
 
   "Part 3 - max characters supplied for the email (on both boundaries) " should {
-    lazy val form = contactDetailsSubscriptionForm.bind(Map(
+    lazy val form = contactDetailsSubscriptionForm.form.bind(Map(
       "firstName" -> "First",
       "lastName" -> "Last",
       "landline" -> "00000000000",

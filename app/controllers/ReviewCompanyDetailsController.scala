@@ -16,38 +16,31 @@
 
 package controllers
 
-import auth.AuthorisedForTAVC
+import auth.AuthorisedActions
+import com.google.inject.{Inject, Singleton}
 import common.KeystoreKeys
-import config.{FrontendAppConfig, FrontendAuthConnector}
+import config.AppConfig
 import connectors.KeystoreConnector
 import models.{CompanyRegistrationReviewDetailsModel, ContactDetailsSubscriptionModel, ProvideCorrespondAddressModel, ReviewCompanyDetailsModel}
-import play.api.mvc.{AnyContent, Request, Result}
+import play.api.mvc.{Action, AnyContent, Request, Result}
 import services.{RegisteredBusinessCustomerService, SubscriptionService}
 import uk.gov.hmrc.play.frontend.controller.FrontendController
 import utils.CountriesHelper
 import views.html.registrationInformation.ReviewCompanyDetails
-import play.api.i18n.Messages.Implicits._
-import play.api.Play._
-import uk.gov.hmrc.passcode.authentication.{PasscodeAuthenticationProvider, PasscodeVerificationConfig}
+import play.api.i18n.{I18nSupport, MessagesApi}
 
 import scala.concurrent.Future
 
-object ReviewCompanyDetailsController extends ReviewCompanyDetailsController {
-  override lazy val applicationConfig = FrontendAppConfig
-  override lazy val authConnector = FrontendAuthConnector
-  override lazy val registeredBusinessCustomerService = RegisteredBusinessCustomerService
-  override lazy val keystoreConnector = KeystoreConnector
-  override lazy val subscriptionService = SubscriptionService
-  override def config = new PasscodeVerificationConfig(configuration)
-  override def passcodeAuthenticationProvider = new PasscodeAuthenticationProvider(config)
-}
+@Singleton
+class ReviewCompanyDetailsController @Inject()(authorised: AuthorisedActions,
+                                               keystoreConnector: KeystoreConnector,
+                                               registeredBusinessCustomerService: RegisteredBusinessCustomerService,
+                                               subscriptionService: SubscriptionService,
+                                               countriesHelper: CountriesHelper,
+                                               implicit val applicationConfig: AppConfig,
+                                               val messagesApi: MessagesApi)extends FrontendController with I18nSupport {
 
-trait ReviewCompanyDetailsController extends FrontendController with AuthorisedForTAVC {
-
-  val keystoreConnector: KeystoreConnector
-  val subscriptionService: SubscriptionService
-
-  val show = Authorised.async { implicit user => implicit request =>
+  def show: Action[AnyContent] = authorised.async { implicit user => implicit request =>
     for {
       registrationReviewDetails <- registeredBusinessCustomerService.getReviewBusinessCustomerDetails
       correspondenceAddress <- keystoreConnector.fetchAndGetFormData[ProvideCorrespondAddressModel](KeystoreKeys.provideCorrespondAddress)
@@ -56,10 +49,10 @@ trait ReviewCompanyDetailsController extends FrontendController with AuthorisedF
     } yield result
   }
 
-  val submit = Authorised.async { implicit user => implicit request =>
+  def submit: Action[AnyContent] = authorised.async { implicit user => implicit request =>
     subscriptionService.subscribe.map {
       response => response.status match {
-        case NO_CONTENT => Redirect(FrontendAppConfig.submissionUrl)
+        case NO_CONTENT => Redirect(applicationConfig.submissionUrl)
         case _ => InternalServerError
       }
     }
@@ -71,7 +64,7 @@ trait ReviewCompanyDetailsController extends FrontendController with AuthorisedF
                                              (implicit request: Request[AnyContent]): Future[Result] = {
     (registrationReviewDetails, correspondenceAddress, contactDetails) match {
       case (Some(regDetails), Some(corrAddress), Some(contact)) => {
-        val address = corrAddress.copy(countryCode = CountriesHelper.getSelectedCountry(corrAddress.countryCode))
+        val address = corrAddress.copy(countryCode = countriesHelper.getSelectedCountry(corrAddress.countryCode))
         Future.successful(Ok(ReviewCompanyDetails(ReviewCompanyDetailsModel(regDetails, address, contact))))
       }
       case (_, _, _) => Future.successful(Redirect(routes.ConfirmCorrespondAddressController.show()))

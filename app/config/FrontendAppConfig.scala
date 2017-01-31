@@ -16,6 +16,8 @@
 
 package config
 
+import com.google.inject.Inject
+import play.api.Configuration
 import play.api.Play.{configuration, current}
 import uk.gov.hmrc.play.config.ServicesConfig
 
@@ -37,7 +39,7 @@ trait AppConfig {
 
 }
 
-object FrontendAppConfig extends AppConfig with ServicesConfig {
+class FrontendAppConfig @Inject()(configuration: Configuration) extends AppConfig with ServicesConfig {
 
   private def loadConfig(key: String) = configuration.getString(key).getOrElse(throw new Exception(s"Missing configuration key: $key"))
 

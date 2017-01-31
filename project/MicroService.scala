@@ -10,7 +10,7 @@ trait MicroService {
   import DefaultBuildSettings._
   import uk.gov.hmrc.{SbtBuildInfo, ShellPrompt}
   import play.sbt.routes.RoutesKeys.routesGenerator
-  import play.routes.compiler.StaticRoutesGenerator
+  import play.routes.compiler.InjectedRoutesGenerator
   import TestPhases._
 
   val appName: String
@@ -44,7 +44,7 @@ trait MicroService {
       fork in Test := false,
       retrieveManaged := true,
       evictionWarningOptions in update := EvictionWarningOptions.default.withWarnScalaVersionEviction(false),
-      routesGenerator := StaticRoutesGenerator
+      routesGenerator := InjectedRoutesGenerator
     )
     .configs(IntegrationTest)
     .settings(inConfig(IntegrationTest)(Defaults.itSettings): _*)

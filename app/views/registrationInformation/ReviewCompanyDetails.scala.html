@@ -2,7 +2,7 @@
 @import models.ReviewCompanyDetailsModel
 @import views.html.helpers.{errorSummary, formInputRadioGroup, textWithConstErrors, backButtonWithProgress}
 
-@(reviewCompanyDetails: ReviewCompanyDetailsModel)(implicit request: Request[_], messages: Messages)
+@(reviewCompanyDetails: ReviewCompanyDetailsModel)(implicit request: Request[_], messages: Messages, appConfig: config.AppConfig)
 
 @main_template(Messages("page.registrationInformation.ReviewCompanyDetails.title")){
 

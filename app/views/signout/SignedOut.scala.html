@@ -1,4 +1,4 @@
-@()(implicit request: Request[_], messages: Messages)
+@()(implicit request: Request[_], messages: Messages, appConfig: config.AppConfig)
 
 @main_template(Messages("page.signout.SignedOut.title"),userLoggedIn = false) {
 

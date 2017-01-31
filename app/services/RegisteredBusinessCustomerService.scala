@@ -16,20 +16,18 @@
 
 package services
 
-import connectors.{BusinessCustomerDataCacheConnector, DataCacheConnector}
+import com.google.inject.Inject
+import connectors.KeystoreConnector
 import models.CompanyRegistrationReviewDetailsModel
 import play.api.Logger
 import uk.gov.hmrc.play.http.HeaderCarrier
-import scala.concurrent.ExecutionContext.Implicits.global
 
-import scala.concurrent.Future
+import scala.concurrent.{ExecutionContext, Future}
 
-trait RegisteredBusinessCustomerService {
+class RegisteredBusinessCustomerServiceImpl @Inject()(keystoreConnector: KeystoreConnector) extends RegisteredBusinessCustomerService {
 
-  val dataCacheConnector: DataCacheConnector
-
-  def getReviewBusinessCustomerDetails(implicit hc: HeaderCarrier) : Future[Option[CompanyRegistrationReviewDetailsModel]] = {
-    dataCacheConnector.fetchAndGetReviewDetailsForSession map {
+  def getReviewBusinessCustomerDetails(implicit hc: HeaderCarrier, ec: ExecutionContext) : Future[Option[CompanyRegistrationReviewDetailsModel]] = {
+    keystoreConnector.fetchAndGetReviewDetailsForSession map {
       case Some(data) => Some(data)
       case _ => {
         Logger.warn(s"[RegisteredBusinessService][getReviewBusinessDetails] - No Review Details Found")
@@ -37,8 +35,11 @@ trait RegisteredBusinessCustomerService {
       }
     }
   }
+
 }
 
-object RegisteredBusinessCustomerService extends RegisteredBusinessCustomerService {
-  val dataCacheConnector: DataCacheConnector = BusinessCustomerDataCacheConnector
+trait RegisteredBusinessCustomerService {
+
+  def getReviewBusinessCustomerDetails(implicit hc: HeaderCarrier, ec: ExecutionContext) : Future[Option[CompanyRegistrationReviewDetailsModel]]
+
 }

@@ -18,64 +18,44 @@ package controllers.feedback
 
 import java.net.URLEncoder
 
-import auth.AuthorisedForTAVC
+import auth.AuthorisedActions
+import com.google.inject.{Inject, Singleton}
 import play.api.Logger
 import play.api.http.{Status => HttpStatus}
 import play.api.mvc.{Action, AnyContent, Request, RequestHeader}
 import play.twirl.api.Html
-import config.{AppConfig, FrontendAppConfig, FrontendAuthConnector, WSHttp}
-import config.FrontendGlobal.internalServerErrorTemplate
-import connectors.KeystoreConnector
-import services.RegisteredBusinessCustomerService
+import config.AppConfig
+import handlers.ErrorHandler
 import views.html.feedback.feedback_thankyou
-import uk.gov.hmrc.play.frontend.auth.connectors.AuthConnector
 import uk.gov.hmrc.play.frontend.controller.FrontendController
 import uk.gov.hmrc.play.frontend.filters.SessionCookieCryptoFilter
-import uk.gov.hmrc.play.http.{HeaderCarrier, HttpGet, HttpPost, _}
 import uk.gov.hmrc.play.partials._
-import play.api.i18n.Messages.Implicits._
-import play.api.Play._
-import uk.gov.hmrc.passcode.authentication.{PasscodeAuthenticationProvider, PasscodeVerificationConfig}
+import play.api.i18n.{I18nSupport, MessagesApi}
+import uk.gov.hmrc.play.http.{HeaderCarrier, HttpReads, HttpResponse}
+import uk.gov.hmrc.play.http.ws.WSHttp
 
 import scala.concurrent.Future
 
-object FeedbackController extends FeedbackController with PartialRetriever {
+@Singleton
+class FeedbackController @Inject()(authorised: AuthorisedActions,
+                                   http: WSHttp,
+                                   implicit val applicationConfig: AppConfig,
+                                   val messagesApi: MessagesApi,
+                                   errorHandler: ErrorHandler) extends FrontendController with PartialRetriever with I18nSupport {
 
-  override val httpPost = WSHttp
-  override val httpGet = WSHttp
-
-  override def contactFormReferer(implicit request: Request[AnyContent]): String = request.headers.get(REFERER).getOrElse("")
-  override def localSubmitUrl(implicit request: Request[AnyContent]): String = routes.FeedbackController.submit().url
-
-  protected def loadPartial(url : String)(implicit request : RequestHeader) : HtmlPartial = ???
+  def errorPage(implicit request: Request[AnyContent]): Html = errorHandler.impl.internalServerErrorTemplate
 
   implicit val cachedStaticHtmlPartialRetriever: CachedStaticHtmlPartialRetriever = new CachedStaticHtmlPartialRetriever {
-    override val httpGet: HttpGet = WSHttp
+    override lazy val httpGet = http
   }
 
-  override implicit val formPartialRetriever: FormPartialRetriever = new FormPartialRetriever {
-    override def httpGet: HttpGet = WSHttp
+  implicit val formPartialRetriever: FormPartialRetriever = new FormPartialRetriever {
+    override def httpGet = http
     override def crypto: (String) => String = cookie => SessionCookieCryptoFilter.encrypt(cookie)
   }
 
-  override lazy val applicationConfig: AppConfig = FrontendAppConfig
-  override lazy val registeredBusinessCustomerService = RegisteredBusinessCustomerService
-  override lazy val authConnector = FrontendAuthConnector
-
-  override def config = new PasscodeVerificationConfig(configuration)
-  override def passcodeAuthenticationProvider = new PasscodeAuthenticationProvider(config)
-}
-
-trait FeedbackController extends FrontendController with AuthorisedForTAVC {
-  implicit val formPartialRetriever: FormPartialRetriever
-  implicit val cachedStaticHtmlPartialRetriever: CachedStaticHtmlPartialRetriever
-
-  def httpPost: HttpPost
-  def contactFormReferer(implicit request: Request[AnyContent]): String
-  def localSubmitUrl(implicit request: Request[AnyContent]): String
-
-  val applicationConfig: AppConfig
-  val authConnector: AuthConnector
+  def contactFormReferer(implicit request: Request[AnyContent]): String = request.headers.get(REFERER).getOrElse("")
+  val localSubmitUrl = routes.FeedbackController.submit().url
 
   private val TICKET_ID = "ticketId"
   private def feedbackFormPartialUrl(implicit request: Request[AnyContent]) =
@@ -86,7 +66,7 @@ trait FeedbackController extends FrontendController with AuthorisedForTAVC {
   private def feedbackThankYouPartialUrl(ticketId: String)(implicit request: Request[AnyContent]) =
     s"${applicationConfig.contactFrontendService}/beta-feedback/form/confirmation?ticketId=${urlEncode(ticketId)}"
 
-  def show: Action[AnyContent] = Authorised.async { implicit user => implicit request =>
+  def show: Action[AnyContent] = authorised.async { implicit user => implicit request =>
     (request.session.get(REFERER), request.headers.get(REFERER)) match {
       case (None, Some(ref)) => Future.successful(Ok(views.html.feedback.feedback(feedbackFormPartialUrl, None))
         .withSession(request.session + (REFERER -> ref)))
@@ -94,25 +74,25 @@ trait FeedbackController extends FrontendController with AuthorisedForTAVC {
     }
   }
 
-  def submit: Action[AnyContent] = Authorised.async { implicit user => implicit request =>
+  def submit: Action[AnyContent] = authorised.async { implicit user => implicit request =>
     request.body.asFormUrlEncoded.map { formData =>
-      httpPost.POSTForm[HttpResponse](feedbackHmrcSubmitPartialUrl, formData)(rds = readPartialsForm, hc = partialsReadyHeaderCarrier).map {
+      http.POSTForm[HttpResponse](feedbackHmrcSubmitPartialUrl, formData)(readPartialsForm, partialsReadyHeaderCarrier).map {
         resp =>
           resp.status match {
             case HttpStatus.OK => Redirect(routes.FeedbackController.thankyou()).withSession(request.session + (TICKET_ID -> resp.body))
             case HttpStatus.BAD_REQUEST => BadRequest(views.html.feedback.feedback(feedbackFormPartialUrl, Some(Html(resp.body))))
             case status =>
               Logger.warn(s"Unexpected status code from feedback form: $status")
-              InternalServerError(internalServerErrorTemplate)
+              InternalServerError(errorPage)
           }
       }
     }.getOrElse {
       Logger.warn("Trying to submit an empty feedback form")
-      Future.successful(InternalServerError(internalServerErrorTemplate))
+      Future.successful(InternalServerError(errorPage))
     }
   }
 
-  def thankyou: Action[AnyContent] = Authorised.async { implicit user => implicit request =>
+  def thankyou: Action[AnyContent] = authorised.async { implicit user => implicit request =>
     val ticketId = request.session.get(TICKET_ID).getOrElse("N/A")
     val referer = request.session.get(REFERER).getOrElse("/investment-tax-relief-subscription/")
     Future.successful(Ok(feedback_thankyou(feedbackThankYouPartialUrl(ticketId), referer)).withSession(request.session - REFERER))
@@ -136,4 +116,8 @@ trait FeedbackController extends FrontendController with AuthorisedForTAVC {
   implicit val readPartialsForm: HttpReads[HttpResponse] = new HttpReads[HttpResponse] {
     def read(method: String, url: String, response: HttpResponse): HttpResponse = response
   }
+
+  override def httpGet: WSHttp = http
+
+  override protected def loadPartial(url: String)(implicit request: RequestHeader) = ???
 }

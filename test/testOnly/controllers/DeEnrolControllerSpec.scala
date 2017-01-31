@@ -28,30 +28,20 @@ import play.mvc.Http.Status._
 import scala.concurrent.Future
 
 class DeEnrolControllerSpec extends BaseTestSpec {
-
-  object TestController extends DeEnrolController {
-    override val deEnrolmentConnector = mock[DeEnrolmentConnector]
-    override val authenticatorConnector = mock[AuthenticatorConnector]
-  }
+  
+  val mockDeEnrolmentConnector = mock[DeEnrolmentConnector]
+  val mockAuthenticatorConnector = mock[AuthenticatorConnector]
+  val testController = new DeEnrolController(mockDeEnrolmentConnector, mockAuthenticatorConnector)
 
   implicit lazy val materializer: Materializer = app.materializer
 
   def mockDeEnrolmentResponse(response: HttpResponse): OngoingStubbing[Future[HttpResponse]] =
-    when(TestController.deEnrolmentConnector.deEnrol()(Matchers.any[HeaderCarrier]()))
+    when(mockDeEnrolmentConnector.deEnrol()(Matchers.any[HeaderCarrier]()))
       .thenReturn(Future.successful(response))
 
   def mockAuthenticatorResponse(response: HttpResponse): OngoingStubbing[Future[HttpResponse]] =
-    when(TestController.authenticatorConnector.refreshProfile()(Matchers.any[HeaderCarrier]()))
+    when(mockAuthenticatorConnector.refreshProfile()(Matchers.any[HeaderCarrier]()))
       .thenReturn(Future.successful(response))
-
-  "DeEnrolController" should {
-    "use the correct de-enrolment connector" in {
-      DeEnrolController.deEnrolmentConnector shouldBe DeEnrolmentConnector
-    }
-    "use the correct Authenticator connector" in {
-      DeEnrolController.authenticatorConnector shouldBe AuthenticatorConnector
-    }
-  }
 
   "Calling DeEnrolController.deEnrol" when {
 
@@ -60,14 +50,14 @@ class DeEnrolControllerSpec extends BaseTestSpec {
       "Return status OK (200)" in {
         mockDeEnrolmentResponse(HttpResponse(OK))
         mockAuthenticatorResponse(HttpResponse(OK))
-        val result = TestController.deEnrol(fakeRequest)
+        val result = testController.deEnrol(fakeRequest)
         status(await(result)) shouldBe OK
       }
 
       "return a message saying 'Successfully Reset Enrolments'" in {
         mockDeEnrolmentResponse(HttpResponse(OK))
         mockAuthenticatorResponse(HttpResponse(OK))
-        val result = TestController.deEnrol(fakeRequest)
+        val result = testController.deEnrol(fakeRequest)
         bodyOf(await(result)) shouldBe "Successfully De-enrolled"
       }
     }
@@ -77,14 +67,14 @@ class DeEnrolControllerSpec extends BaseTestSpec {
       "Return status OK (200)" in {
         mockDeEnrolmentResponse(HttpResponse(OK))
         mockAuthenticatorResponse(HttpResponse(BAD_REQUEST))
-        val result = TestController.deEnrol(fakeRequest)
+        val result = testController.deEnrol(fakeRequest)
         status(await(result)) shouldBe OK
       }
 
       "return a message saying 'Successfully Reset Enrolments'" in {
         mockDeEnrolmentResponse(HttpResponse(OK))
         mockAuthenticatorResponse(HttpResponse(OK))
-        val result = TestController.deEnrol(fakeRequest)
+        val result = testController.deEnrol(fakeRequest)
         bodyOf(await(result)) shouldBe "Successfully De-enrolled"
       }
     }
@@ -94,14 +84,14 @@ class DeEnrolControllerSpec extends BaseTestSpec {
       "Return status BAD_REQUEST (400)" in {
         mockDeEnrolmentResponse(HttpResponse(BAD_REQUEST))
         mockAuthenticatorResponse(HttpResponse(BAD_REQUEST))
-        val result = TestController.deEnrol(fakeRequest)
+        val result = testController.deEnrol(fakeRequest)
         status(await(result)) shouldBe BAD_REQUEST
       }
 
       "return a message saying 'Successfully Reset Enrolments'" in {
         mockDeEnrolmentResponse(HttpResponse(BAD_REQUEST))
         mockAuthenticatorResponse(HttpResponse(BAD_REQUEST))
-        val result = TestController.deEnrol(fakeRequest)
+        val result = testController.deEnrol(fakeRequest)
         bodyOf(await(result)) shouldBe "Failed to De-enrol"
       }
     }

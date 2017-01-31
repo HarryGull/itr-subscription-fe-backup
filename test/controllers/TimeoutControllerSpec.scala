@@ -16,25 +16,18 @@
 
 package controllers
 
+import auth.MockConfig
 import common.BaseTestSpec
-import play.api.Play._
 import play.api.test.Helpers._
-import play.api.mvc.Action
-import uk.gov.hmrc.passcode.authentication.{PasscodeAuthenticationProvider, PasscodeVerificationConfig}
-import uk.gov.hmrc.passcode.authentication.PlayRequestTypes._
 
 
 class TimeoutControllerSpec extends BaseTestSpec {
 
-  object TestController extends TimeoutController {
-    override def PasscodeAuthenticatedActionAsync(body: => AsyncPlayRequest) = Action.async(body)
-    override def config = new PasscodeVerificationConfig(configuration(app))
-    override def passcodeAuthenticationProvider = new PasscodeAuthenticationProvider(config)
-  }
+  val testController = new TimeoutController(configuration, messagesApi, MockConfig)
 
   "timeout" should {
 
-    lazy val result = TestController.timeout(fakeRequest)
+    lazy val result = testController.timeout(fakeRequest)
 
     "return a 200" in {
       status(result) shouldBe OK

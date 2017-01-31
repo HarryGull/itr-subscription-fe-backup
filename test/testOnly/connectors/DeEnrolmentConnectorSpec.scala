@@ -21,31 +21,24 @@ import org.mockito.Matchers
 import org.mockito.Mockito._
 import play.api.libs.json.{JsValue, Json}
 import play.api.test.Helpers._
-import uk.gov.hmrc.play.http.ws.WSHttp
 import uk.gov.hmrc.play.http.HttpResponse
 
 import scala.concurrent.Future
 
 class DeEnrolmentConnectorSpec extends BaseTestSpec {
-
-  object TestConnector extends DeEnrolmentConnector {
-    val serviceURL = "tax-enrolments"
-    val deEnrolURI = "de-enrol/test"
-    val http = mock[WSHttp]
-  }
+  
+  val testConnector = new DeEnrolmentConnectorImpl(mockHttp)
 
   val jsonError = Json.parse("""{"Message": "Error"}""")
 
   "Calling resetEnrolments" when {
 
     "receiving an OK response" should {
-      lazy val result = TestConnector.deEnrol()
-      lazy val response = await(result)
       "Return OK" in {
-        when(TestConnector.http.POST[JsValue,HttpResponse]
-          (Matchers.eq(s"${TestConnector.serviceURL}/${TestConnector.deEnrolURI}"), Matchers.any(), Matchers.any())
+        when(mockHttp.POST[JsValue,HttpResponse]
+          (Matchers.eq(s"${testConnector.serviceURL}/${testConnector.deEnrolURI}"), Matchers.any(), Matchers.any())
           (Matchers.any(), Matchers.any(), Matchers.eq(hc))).thenReturn(Future.successful(HttpResponse(OK)))
-        val result = TestConnector.deEnrol()
+        val result = testConnector.deEnrol()
         val response = await(result)
         response.status shouldBe OK
       }
@@ -53,19 +46,19 @@ class DeEnrolmentConnectorSpec extends BaseTestSpec {
   }
 
   "receiving a response other than OK" should {
-    lazy val result = TestConnector.deEnrol()
+    lazy val result = testConnector.deEnrol()
     lazy val response = await(result)
 
     "Return OK" in {
-      when(TestConnector.http.POST[JsValue,HttpResponse]
-        (Matchers.eq(s"${TestConnector.serviceURL}/${TestConnector.deEnrolURI}"), Matchers.any(), Matchers.any())
+      when(mockHttp.POST[JsValue,HttpResponse]
+        (Matchers.eq(s"${testConnector.serviceURL}/${testConnector.deEnrolURI}"), Matchers.any(), Matchers.any())
         (Matchers.any(), Matchers.any(), Matchers.eq(hc))).thenReturn(Future.successful(HttpResponse(BAD_REQUEST, Some(jsonError))))
       response.status shouldBe BAD_REQUEST
     }
 
     "Return a JSON response" in {
-      when(TestConnector.http.POST[JsValue,HttpResponse]
-        (Matchers.eq(s"${TestConnector.serviceURL}/${TestConnector.deEnrolURI}"),Matchers.any(), Matchers.any())
+      when(mockHttp.POST[JsValue,HttpResponse]
+        (Matchers.eq(s"${testConnector.serviceURL}/${testConnector.deEnrolURI}"),Matchers.any(), Matchers.any())
         (Matchers.any(), Matchers.any(), Matchers.eq(hc))).thenReturn(Future.successful(HttpResponse(BAD_REQUEST, Some(jsonError))))
       Json.parse(response.body) shouldBe jsonError
     }

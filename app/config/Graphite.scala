@@ -14,13 +14,23 @@
  * limitations under the License.
  */
 
-package common
+package config
 
-import java.net.URLEncoder
+import javax.inject.{Inject, Singleton}
 
-object Encoder {
+import play.api.inject.ApplicationLifecycle
+import play.api.{Application, Configuration}
+import uk.gov.hmrc.play.graphite.GraphiteConfig
 
- val encodeType = "UTF-8"
- val encode = (s: String) => URLEncoder.encode(s, encodeType)
+import scala.concurrent.Future
 
+@Singleton
+class Graphite @Inject()(app: Application, lifecycle: ApplicationLifecycle) extends GraphiteConfig {
+  override def microserviceMetricsConfig(implicit app: Application): Option[Configuration] = app.configuration.getConfig(s"microservice.metrics")
+
+  lifecycle.addStopHook {
+    () => Future.successful(onStop(app))
+  }
+
+  onStart(app)
 }

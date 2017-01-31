@@ -16,22 +16,14 @@
 
 package utils
 
-import java.text.SimpleDateFormat
-import java.util.{Calendar, Date}
-
-import common.Constants
+import com.google.inject.Inject
 import models.ProvideCorrespondAddressModel
-import org.joda.time.DateTime
 import play.api.data.Forms._
 import play.api.data.Mapping
 import play.api.data.validation._
-import play.api.i18n.Messages
-import play.api.i18n.Messages.Implicits._
-import play.api.Play.current
+import play.api.i18n.{I18nSupport, Messages, MessagesApi}
 
-import scala.util.{Failure, Success, Try}
-
-object Validation {
+class Validation @Inject()(val messagesApi: MessagesApi) extends I18nSupport {
 
   def mandatoryAddressLineCheck: Mapping[String] = {
     val validAddressLine = """[a-zA-Z0-9,.\(\)/&'"\-]{1}[a-zA-Z0-9, .\(\)/&'"\-]{0,34}""".r

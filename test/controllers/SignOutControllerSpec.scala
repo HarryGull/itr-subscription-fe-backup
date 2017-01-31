@@ -16,50 +16,23 @@
 
 package controllers
 
-import auth.{MockAuthConnector, MockConfig}
+import auth.MockConfig
 import common.BaseTestSpec
-import config.{FrontendAppConfig, FrontendAuthConnector}
-import play.api.Play._
-import play.api.mvc.{Action, Request, Result}
 import play.api.test.Helpers._
-import uk.gov.hmrc.passcode.authentication.{PasscodeAuthenticationProvider, PasscodeVerificationConfig}
-import uk.gov.hmrc.passcode.authentication.PlayRequestTypes._
-import uk.gov.hmrc.play.frontend.auth.AuthContext
-
-import scala.concurrent.Future
 
 
 class SignOutControllerSpec extends BaseTestSpec {
 
-  object TestController extends SignOutController {
-    override lazy val applicationConfig = MockConfig
-    override lazy val authConnector = MockAuthConnector
-    override lazy val registeredBusinessCustomerService = mockRegisteredBusinessCustomerService
-    override def withVerifiedPasscode(body: => Future[Result])
-                                     (implicit request: Request[_], user: AuthContext): Future[Result] = body
-    override def PasscodeAuthenticatedActionAsync(body: => AsyncPlayRequest) = Action.async(body)
-    override def config = new PasscodeVerificationConfig(configuration(app))
-    override def passcodeAuthenticationProvider = new PasscodeAuthenticationProvider(config)
-  }
-
-  "SignOutController" should {
-    "Use the correct application config" in {
-      SignOutController.applicationConfig shouldBe FrontendAppConfig
-    }
-    "Use the correct auth connector" in {
-      SignOutController.authConnector shouldBe FrontendAuthConnector
-    }
-  }
+  val testController = new SignOutController(mockAuthorisedActions, MockConfig, configuration, messagesApi)
 
   "SignOutController.signout" should {
 
     "Redirect to sign-out" in {
-      withRegDetails()
-      showWithSessionAndAuth(TestController.signout())(
+      showWithSessionAndAuth(testController.signout())(
         result => {
           status(result) shouldBe SEE_OTHER
           redirectLocation(result) shouldBe
-            Some(s"${TestController.applicationConfig.ggSignOutUrl}?continue=${TestController.applicationConfig.signOutPageUrl}")
+            Some(s"${testController.applicationConfig.ggSignOutUrl}?continue=${testController.applicationConfig.signOutPageUrl}")
         }
       )
     }
@@ -69,7 +42,7 @@ class SignOutControllerSpec extends BaseTestSpec {
   "SignOutController.show" should {
 
     "Show the signed out page" in {
-      showWithoutSession(TestController.show())(
+      showWithoutSession(testController.show())(
         result => {
           status(result) shouldBe OK
         }

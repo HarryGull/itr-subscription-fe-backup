@@ -18,16 +18,17 @@ package utils
 
 import java.util.Properties
 
-import play.api.Play
+import com.google.inject.Inject
+import play.api.Environment
 
 import scala.collection.JavaConverters
 import scala.io.Source
 
 
-object CountriesHelper {
+class CountriesHelper @Inject()(environment: Environment) {
 
   lazy val p = new Properties
-  p.load(Source.fromInputStream(Play.classloader(Play.current).getResourceAsStream("country-code.properties"), "UTF-8").bufferedReader())
+  p.load(Source.fromInputStream(environment.classLoader.getResourceAsStream("country-code.properties"), "UTF-8").bufferedReader())
 
   def getIsoCodeTupleList: List[(String, String)] = {
     JavaConverters.propertiesAsScalaMapConverter(p).asScala.toList.sortBy(_._2)

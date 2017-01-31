@@ -20,8 +20,8 @@ import models.ConfirmCorrespondAddressModel
 import play.api.data.Form
 import play.api.data.Forms._
 
-object ConfirmCorrespondAddressForm {
-  val confirmCorrespondAddressForm = Form(
+class ConfirmCorrespondAddressForm {
+  val form = Form(
     mapping(
       "contactAddressUse" -> nonEmptyText
     )(ConfirmCorrespondAddressModel.apply)(ConfirmCorrespondAddressModel.unapply)
