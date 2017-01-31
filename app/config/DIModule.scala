@@ -21,6 +21,7 @@ import com.google.inject.AbstractModule
 import com.google.inject.name.Names
 import connectors._
 import services.{RegisteredBusinessCustomerService, RegisteredBusinessCustomerServiceImpl, SubscriptionService, SubscriptionServiceImpl}
+import testOnly.connectors._
 import uk.gov.hmrc.http.cache.client.SessionCache
 import uk.gov.hmrc.play.frontend.auth.connectors.AuthConnector
 import uk.gov.hmrc.play.http.ws.WSHttp
@@ -54,6 +55,12 @@ class DIModule extends AbstractModule {
     // Startup classes
     bind(classOf[Global]).asEagerSingleton()
     bind(classOf[Graphite]).asEagerSingleton()
+
+    // test only
+    bind(classOf[AuthenticatorConnector]).to(classOf[AuthenticatorConnectorImpl])
+    bind(classOf[GgStubsConnector]).to(classOf[GgStubsConnectorImpl])
+    bind(classOf[DeEnrolmentConnector]).to(classOf[DeEnrolmentConnectorImpl])
+
 
   }
 
