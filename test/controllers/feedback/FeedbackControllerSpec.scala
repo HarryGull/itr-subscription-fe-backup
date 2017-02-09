@@ -18,7 +18,6 @@ package controllers.feedback
 
 import auth.MockConfig
 import common.BaseTestSpec
-import handlers.ErrorHandler
 import org.mockito.Matchers
 import org.mockito.Mockito._
 import play.api.http.Status
@@ -32,7 +31,7 @@ import scala.concurrent.Future
 
 class FeedbackControllerSpec extends BaseTestSpec {
 
-  val testController = new FeedbackController(mockAuthorisedActions, mockHttp, MockConfig, messagesApi, mock[ErrorHandler]) {
+  val testController = new FeedbackController(mockAuthorisedActions, mockHttp, MockConfig, messagesApi) {
     override implicit val formPartialRetriever: FormPartialRetriever = new FormPartialRetriever {
       override def crypto: (String) => String = ???
       override def httpGet = mockHttp
