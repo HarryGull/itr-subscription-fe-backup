@@ -24,8 +24,7 @@ import play.api.Logger
 import play.api.http.{Status => HttpStatus}
 import play.api.mvc.{Action, AnyContent, Request, RequestHeader}
 import play.twirl.api.Html
-import config.AppConfig
-import handlers.ErrorHandler
+import config.{AppConfig, FrontendGlobal}
 import views.html.feedback.feedback_thankyou
 import uk.gov.hmrc.play.frontend.controller.FrontendController
 import uk.gov.hmrc.play.frontend.filters.SessionCookieCryptoFilter
@@ -40,10 +39,9 @@ import scala.concurrent.Future
 class FeedbackController @Inject()(authorised: AuthorisedActions,
                                    http: WSHttp,
                                    implicit val applicationConfig: AppConfig,
-                                   val messagesApi: MessagesApi,
-                                   errorHandler: ErrorHandler) extends FrontendController with PartialRetriever with I18nSupport {
+                                   val messagesApi: MessagesApi) extends FrontendController with PartialRetriever with I18nSupport {
 
-  def errorPage(implicit request: Request[AnyContent]): Html = errorHandler.impl.internalServerErrorTemplate
+  def errorPage(implicit request: Request[AnyContent]): Html = FrontendGlobal.internalServerErrorTemplate
 
   implicit val cachedStaticHtmlPartialRetriever: CachedStaticHtmlPartialRetriever = new CachedStaticHtmlPartialRetriever {
     override lazy val httpGet = http

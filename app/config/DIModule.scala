@@ -52,10 +52,6 @@ class DIModule extends AbstractModule {
     // Auth
     bind(classOf[AuthorisedActions]).to(classOf[AuthorisedForTAVC])
 
-    // Startup classes
-    bind(classOf[Global]).asEagerSingleton()
-    bind(classOf[Graphite]).asEagerSingleton()
-
     // test only
     bind(classOf[AuthenticatorConnector]).to(classOf[AuthenticatorConnectorImpl])
     bind(classOf[GgStubsConnector]).to(classOf[GgStubsConnectorImpl])
