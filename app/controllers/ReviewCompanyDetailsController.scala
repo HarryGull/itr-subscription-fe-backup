@@ -19,7 +19,7 @@ package controllers
 import auth.AuthorisedActions
 import com.google.inject.{Inject, Singleton}
 import common.KeystoreKeys
-import config.AppConfig
+import config.{AppConfig, FrontendGlobal}
 import connectors.KeystoreConnector
 import models.{CompanyRegistrationReviewDetailsModel, ContactDetailsSubscriptionModel, ProvideCorrespondAddressModel, ReviewCompanyDetailsModel}
 import play.api.mvc.{Action, AnyContent, Request, Result}
@@ -53,7 +53,7 @@ class ReviewCompanyDetailsController @Inject()(authorised: AuthorisedActions,
     subscriptionService.subscribe.map {
       response => response.status match {
         case NO_CONTENT => Redirect(applicationConfig.submissionUrl)
-        case _ => InternalServerError
+        case _ => InternalServerError(FrontendGlobal.internalServerErrorTemplate)
       }
     }
   }

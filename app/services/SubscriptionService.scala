@@ -64,12 +64,20 @@ class SubscriptionServiceImpl @Inject()(subscriptionConnector: SubscriptionConne
   private def sendSubscriptionRequest(safeID: String,
                                       postcode: String,
                                       subscriptionTypeModel: Option[IntermediateSubscriptionTypeModel])
-                                     (implicit hc: HeaderCarrier): Future[HttpResponse] = {
+                                     (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[HttpResponse] = {
     (safeID.nonEmpty,postcode.nonEmpty,subscriptionTypeModel.isDefined) match {
       case (true,true,true) => {
         val json = Json.toJson(subscriptionTypeModel.get)
         val targetSubmissionModel = Json.parse(json.toString()).as[SubscriptionTypeModel]
-        subscriptionConnector.subscribe(targetSubmissionModel,safeID,postcode)
+        subscriptionConnector.subscribe(targetSubmissionModel,safeID,postcode).map {
+          result => result
+        }.recover {
+          case e: Exception => {
+            Logger.warn(s"[SubscriptionService][sendSubscriptionRequest] - Safe ID: ${safeID.isEmpty} " +
+              s"Postcode: ${postcode.isEmpty} Subscription model: ${subscriptionTypeModel.isDefined}")
+            HttpResponse(INTERNAL_SERVER_ERROR)
+          }
+        }
       }
       case (_,_,_) => {
         Logger.warn(s"[SubscriptionService][sendSubscriptionRequest] - Safe ID: ${safeID.isEmpty} " +
