@@ -25,7 +25,7 @@ import play.api.i18n.{I18nSupport, Messages, MessagesApi}
 
 class Validation @Inject()(val messagesApi: MessagesApi) extends I18nSupport {
 
-  val EmailThresholdLength = 133
+  val EmailThresholdLength = 132
 
   def mandatoryAddressLineCheck: Mapping[String] = {
     val validAddressLine = """[a-zA-Z0-9,.\(\)/&'"\-]{1}[a-zA-Z0-9, .\(\)/&'"\-]{0,34}""".r
@@ -114,7 +114,7 @@ class Validation @Inject()(val messagesApi: MessagesApi) extends I18nSupport {
       Constraint("constraints.email")({
         text =>
           val error = text match {
-            case validEmailLine() if text.length < EmailThresholdLength => Nil
+            case validEmailLine() if text.length <= EmailThresholdLength => Nil
             case _ => Seq(ValidationError(Messages("validation.error.email")))
           }
           if (error.isEmpty) Valid else Invalid(error)
