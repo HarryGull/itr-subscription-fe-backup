@@ -22,7 +22,7 @@ import config.{FrontendAppConfig, FrontendAuthConnector}
 import connectors.KeystoreConnector
 import models.{CompanyRegistrationReviewDetailsModel, ContactDetailsSubscriptionModel, ProvideCorrespondAddressModel, ReviewCompanyDetailsModel}
 import play.api.mvc.{AnyContent, Request, Result}
-import services.{RegisteredBusinessCustomerService, SubscriptionService}
+import services.{AuthService, RegisteredBusinessCustomerService, SubscriptionService}
 import uk.gov.hmrc.play.frontend.controller.FrontendController
 import utils.CountriesHelper
 import views.html.registrationInformation.ReviewCompanyDetails
@@ -35,6 +35,7 @@ object ReviewCompanyDetailsController extends ReviewCompanyDetailsController {
   override lazy val registeredBusinessCustomerService = RegisteredBusinessCustomerService
   override lazy val keystoreConnector = KeystoreConnector
   override lazy val subscriptionService = SubscriptionService
+  override lazy val authService = AuthService
 }
 
 trait ReviewCompanyDetailsController extends FrontendController with AuthorisedForTAVC {

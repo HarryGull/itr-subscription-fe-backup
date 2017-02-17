@@ -47,6 +47,7 @@ class ProvideCorrespondAddressControllerSpec extends UnitSpec with MockitoSugar 
     override lazy val registeredBusinessCustomerService = mockRegisteredBusinessCustomerService
     override def withVerifiedPasscode(body: => Future[Result])
                                      (implicit request: Request[_], user: AuthContext): Future[Result] = body
+    override lazy val authService = mockAuthService
   }
 
   val model = ProvideCorrespondAddressModel("Line 1","Line 2",None,None,None,"JP")

@@ -23,11 +23,10 @@ import connectors.KeystoreConnector
 import models.{AddressModel, CompanyRegistrationReviewDetailsModel}
 import org.mockito.Matchers
 import org.scalatest.mock.MockitoSugar
-import org.mockito.stubbing.OngoingStubbing
 import org.mockito.Mockito._
 import play.api.libs.json.Json
-import services.RegisteredBusinessCustomerService
-import uk.gov.hmrc.play.http.HeaderCarrier
+import services.{AuthService, RegisteredBusinessCustomerService}
+import uk.gov.hmrc.play.http.{HeaderCarrier, HttpResponse}
 
 import scala.concurrent.Future
 
@@ -35,6 +34,7 @@ object AuthHelper extends MockitoSugar {
 
   val mockConfig: AppConfig = MockConfig
   val mockAuthConnector = MockAuthConnector
+  val mockAuthService = mock[AuthService]
   val mockRegisteredBusinessCustomerService = mock[RegisteredBusinessCustomerService]
   val mockKeystoreConnector = mock[KeystoreConnector]
 
@@ -97,11 +97,14 @@ object AuthHelper extends MockitoSugar {
     when(mockRegisteredBusinessCustomerService.getReviewBusinessCustomerDetails(Matchers.any[HeaderCarrier]())).thenReturn(Future.successful(Some(validModel)))
     when(mockKeystoreConnector.fetchAndGetFormData[String](Matchers.eq(KeystoreKeys.otacToken))
       (Matchers.any(), Matchers.any())).thenReturn(Future.successful(None))
+    when(mockAuthService.getAffinityGroup()(Matchers.any())).thenReturn(Future.successful(Some("Organisation")))
   }
 
   def noRegDetails(): Unit = {
     when(mockRegisteredBusinessCustomerService.getReviewBusinessCustomerDetails(Matchers.any[HeaderCarrier]())).thenReturn(Future.successful(None))
     when(mockKeystoreConnector.fetchAndGetFormData[String](Matchers.eq(KeystoreKeys.otacToken))
       (Matchers.any(), Matchers.any())).thenReturn(Future.successful(None))
+    when(mockAuthService.getAffinityGroup()(Matchers.any())).thenReturn(Future.successful(Some("Organisation")))
   }
+
 }

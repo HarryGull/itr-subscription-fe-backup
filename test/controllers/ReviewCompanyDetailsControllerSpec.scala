@@ -47,6 +47,7 @@ class ReviewCompanyDetailsControllerSpec extends UnitSpec with FakeRequestHelper
     override lazy val subscriptionService = mockSubscriptionService
     override def withVerifiedPasscode(body: => Future[Result])
                                      (implicit request: Request[_], user: AuthContext): Future[Result] = body
+    override lazy val authService = mockAuthService
   }
 
   "ReviewCompanyDetailsController" should {

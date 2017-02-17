@@ -17,16 +17,18 @@
 package auth
 
 import connectors.KeystoreConnector
-import services.RegisteredBusinessCustomerService
+import services.{AuthService, RegisteredBusinessCustomerService}
 import uk.gov.hmrc.play.frontend.auth.connectors.domain.ConfidenceLevel.L50
 import uk.gov.hmrc.play.frontend.auth.{CompositePageVisibilityPredicate, NonNegotiableIdentityConfidencePredicate, PageVisibilityPredicate}
 
 class TAVCCompositePageVisibilityPredicate(businessCustomerFrontendUrl: String,
                                            rbcService: RegisteredBusinessCustomerService,
-                                           keystoreConnector: KeystoreConnector) extends CompositePageVisibilityPredicate {
+                                           keystoreConnector: KeystoreConnector,
+                                           authService: AuthService) extends CompositePageVisibilityPredicate {
   override def children: Seq[PageVisibilityPredicate] = Seq (
     new NonNegotiableIdentityConfidencePredicate(L50),
     new WhitelistPredicate(keystoreConnector),
+    new AffinityGroupPredicate(authService),
     new BusinessCustomerPredicate(businessCustomerFrontendUrl, rbcService),
     new SecondWhitelistPredicate(keystoreConnector)
   )

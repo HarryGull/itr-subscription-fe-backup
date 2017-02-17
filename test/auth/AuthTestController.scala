@@ -31,6 +31,7 @@ object AuthTestController extends AuthTestController {
   override lazy val keystoreConnector = mockKeystoreConnector
   override def withVerifiedPasscode(body: => Future[Result])
                                    (implicit request: Request[_], user: AuthContext): Future[Result] = body
+  override lazy val authService = mockAuthService
 }
 
 trait AuthTestController extends FrontendController with AuthorisedForTAVC {

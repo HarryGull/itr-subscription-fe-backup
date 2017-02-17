@@ -26,9 +26,8 @@ import play.twirl.api.Html
 import config.{AppConfig, FrontendAppConfig, FrontendAuthConnector, WSHttp}
 import config.FrontendGlobal.internalServerErrorTemplate
 import connectors.KeystoreConnector
-import services.RegisteredBusinessCustomerService
+import services.{AuthService, RegisteredBusinessCustomerService}
 import views.html.feedback.feedback_thankyou
-import uk.gov.hmrc.play.frontend.auth.connectors.AuthConnector
 import uk.gov.hmrc.play.frontend.controller.FrontendController
 import uk.gov.hmrc.play.frontend.filters.SessionCookieCryptoFilter
 import uk.gov.hmrc.play.http.{HeaderCarrier, HttpGet, HttpPost, _}
@@ -59,6 +58,7 @@ object FeedbackController extends FeedbackController with PartialRetriever {
   override lazy val registeredBusinessCustomerService = RegisteredBusinessCustomerService
   override lazy val authConnector = FrontendAuthConnector
   override lazy val keystoreConnector = KeystoreConnector
+  override lazy val authService = AuthService
 }
 
 trait FeedbackController extends FrontendController with AuthorisedForTAVC {
@@ -70,7 +70,6 @@ trait FeedbackController extends FrontendController with AuthorisedForTAVC {
   def localSubmitUrl(implicit request: Request[AnyContent]): String
 
   val applicationConfig: AppConfig
-  val authConnector: AuthConnector
 
   private val TICKET_ID = "ticketId"
   private def feedbackFormPartialUrl(implicit request: Request[AnyContent]) =

@@ -33,7 +33,8 @@ trait AppConfig {
   val contactFrontendService: String
   val ggSignOutUrl: String
   val signOutPageUrl: String
-
+  val authUrl: String
+  val createAccountUrl: String
 }
 
 object FrontendAppConfig extends AppConfig with ServicesConfig {
@@ -54,4 +55,7 @@ object FrontendAppConfig extends AppConfig with ServicesConfig {
   override lazy val reportAProblemNonJSUrl = s"$contactFrontendService/problem_reports_nonjs?service=$contactFormServiceIdentifier"
   override lazy val ggSignOutUrl = loadConfig("government-gateway-sign-out.host")
   override lazy val signOutPageUrl: String = loadConfig(s"sign-out-page.url")
+
+  override lazy val authUrl = baseUrl("auth")
+  override lazy val createAccountUrl = loadConfig("create-account.url")
 }

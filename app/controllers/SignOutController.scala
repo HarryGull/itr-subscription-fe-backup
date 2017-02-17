@@ -20,7 +20,7 @@ import auth.AuthorisedForTAVC
 import config.{FrontendAppConfig, FrontendAuthConnector}
 import connectors.KeystoreConnector
 import play.api.mvc.{Action, AnyContent}
-import services.RegisteredBusinessCustomerService
+import services.{AuthService, RegisteredBusinessCustomerService}
 import uk.gov.hmrc.play.frontend.controller.FrontendController
 import views.html.signout.SignedOut
 
@@ -31,6 +31,7 @@ object SignOutController extends SignOutController {
   override lazy val authConnector = FrontendAuthConnector
   override lazy val registeredBusinessCustomerService = RegisteredBusinessCustomerService
   override lazy val keystoreConnector = KeystoreConnector
+  override lazy val authService = AuthService
 }
 
 trait SignOutController extends FrontendController with AuthorisedForTAVC {

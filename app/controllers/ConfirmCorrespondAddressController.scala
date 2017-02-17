@@ -21,10 +21,10 @@ import common.{Constants, KeystoreKeys}
 import config.{FrontendAppConfig, FrontendAuthConnector}
 import connectors.KeystoreConnector
 import forms.ConfirmCorrespondAddressForm._
-import models.{AddressModel, CompanyRegistrationReviewDetailsModel, ConfirmCorrespondAddressModel, ProvideCorrespondAddressModel}
+import models.{CompanyRegistrationReviewDetailsModel, ConfirmCorrespondAddressModel, ProvideCorrespondAddressModel}
 import play.api.libs.json.Json
 import play.api.mvc.{Action, AnyContent}
-import services.RegisteredBusinessCustomerService
+import services.{AuthService, RegisteredBusinessCustomerService}
 import uk.gov.hmrc.play.frontend.controller.FrontendController
 import uk.gov.hmrc.play.http.HeaderCarrier
 import views.html.registrationInformation.ConfirmCorrespondAddress
@@ -36,6 +36,7 @@ object ConfirmCorrespondAddressController extends ConfirmCorrespondAddressContro
   override lazy val authConnector = FrontendAuthConnector
   override lazy val registeredBusinessCustomerService = RegisteredBusinessCustomerService
   override lazy val keystoreConnector = KeystoreConnector
+  override lazy val authService = AuthService
 }
 
 trait ConfirmCorrespondAddressController extends FrontendController with AuthorisedForTAVC {

@@ -63,6 +63,7 @@ class FeedbackControllerSpec extends UnitSpec with MockitoSugar with WithFakeApp
     override lazy val registeredBusinessCustomerService = mockRegisteredBusinessCustomerService
     override def withVerifiedPasscode(body: => Future[Result])
                                      (implicit request: Request[_], user: AuthContext): Future[Result] = body
+    override lazy val authService = mockAuthService
   }
 
   "GET /feedback" should {

@@ -41,6 +41,7 @@ class SignOutControllerSpec extends UnitSpec with FakeRequestHelper with Mockito
     override def withVerifiedPasscode(body: => Future[Result])
                                      (implicit request: Request[_], user: AuthContext): Future[Result] = body
     override def PasscodeAuthenticatedActionAsync(body: => AsyncPlayRequest) = Action.async(body)
+    override lazy val authService = mockAuthService
   }
 
   "SignOutController" should {

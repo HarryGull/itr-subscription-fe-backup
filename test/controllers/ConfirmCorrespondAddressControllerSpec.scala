@@ -50,6 +50,7 @@ class ConfirmCorrespondAddressControllerSpec extends UnitSpec with MockitoSugar 
     override lazy val keystoreConnector: KeystoreConnector = mockKeystoreConnector
     override def withVerifiedPasscode(body: => Future[Result])
                             (implicit request: Request[_], user: AuthContext): Future[Result] = body
+    override lazy val authService = mockAuthService
   }
 
   val confirmCorrespondAddressModel = ConfirmCorrespondAddressModel(Constants.StandardRadioButtonYesValue)

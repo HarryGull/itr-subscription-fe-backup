@@ -18,7 +18,7 @@ package auth
 
 import play.api.mvc._
 import config.AppConfig
-import services.RegisteredBusinessCustomerService
+import services.{AuthService, RegisteredBusinessCustomerService}
 import uk.gov.hmrc.passcode.authentication.PasscodeAuthentication
 import connectors.KeystoreConnector
 import uk.gov.hmrc.play.frontend.auth.{Actions, AuthenticationProvider, TaxRegime}
@@ -32,6 +32,7 @@ trait AuthorisedForTAVC extends Actions with PasscodeAuthentication {
   val applicationConfig: AppConfig
   val registeredBusinessCustomerService: RegisteredBusinessCustomerService
   val keystoreConnector: KeystoreConnector
+  val authService: AuthService
   val postSignInRedirectUrl: String = applicationConfig.introductionUrl
 
   // $COVERAGE-OFF$
@@ -40,7 +41,8 @@ trait AuthorisedForTAVC extends Actions with PasscodeAuthentication {
   lazy val visibilityPredicate = new TAVCCompositePageVisibilityPredicate(
     applicationConfig.businessCustomerUrl,
     registeredBusinessCustomerService,
-    keystoreConnector
+    keystoreConnector,
+    authService
   )
 
   private type PlayRequest = Request[AnyContent] => Result

@@ -47,6 +47,7 @@ class ContactDetailsSubscriptionControllerSpec extends UnitSpec with MockitoSuga
     override lazy val registeredBusinessCustomerService = mockRegisteredBusinessCustomerService
     override def withVerifiedPasscode(body: => Future[Result])
                                      (implicit request: Request[_], user: AuthContext): Future[Result] = body
+    override lazy val authService = mockAuthService
   }
 
   val model = ContactDetailsSubscriptionModel("First","Last",Some("86"),Some("86"),"test@test.com")

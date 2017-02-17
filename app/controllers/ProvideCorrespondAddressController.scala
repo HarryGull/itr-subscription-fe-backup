@@ -20,11 +20,10 @@ import auth.AuthorisedForTAVC
 import common.KeystoreKeys
 import config.{FrontendAppConfig, FrontendAuthConnector}
 import connectors.KeystoreConnector
-import play.api.mvc.Action
 import models.ProvideCorrespondAddressModel
 import forms.ProvideCorrespondAddressForm._
 import play.api.i18n.Messages
-import services.RegisteredBusinessCustomerService
+import services.{AuthService, RegisteredBusinessCustomerService}
 import uk.gov.hmrc.play.frontend.controller.FrontendController
 import views.html.registrationInformation.ProvideCorrespondAddress
 import utils._
@@ -37,6 +36,7 @@ object ProvideCorrespondAddressController extends ProvideCorrespondAddressContro
   override lazy val authConnector = FrontendAuthConnector
   override lazy val registeredBusinessCustomerService = RegisteredBusinessCustomerService
   override lazy val keystoreConnector = KeystoreConnector
+  override lazy val authService = AuthService
 }
 
 trait ProvideCorrespondAddressController extends FrontendController with AuthorisedForTAVC {
