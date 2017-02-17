@@ -24,12 +24,13 @@ import uk.gov.hmrc.play.frontend.auth.{CompositePageVisibilityPredicate, NonNego
 class TAVCCompositePageVisibilityPredicate(businessCustomerFrontendUrl: String,
                                            rbcService: RegisteredBusinessCustomerService,
                                            keystoreConnector: KeystoreConnector,
-                                           authService: AuthService) extends CompositePageVisibilityPredicate {
+                                           authService: AuthService,
+                                           passcodeAuthenticationEnabled: Boolean) extends CompositePageVisibilityPredicate {
   override def children: Seq[PageVisibilityPredicate] = Seq (
     new NonNegotiableIdentityConfidencePredicate(L50),
     new WhitelistPredicate(keystoreConnector),
     new AffinityGroupPredicate(authService),
     new BusinessCustomerPredicate(businessCustomerFrontendUrl, rbcService),
-    new SecondWhitelistPredicate(keystoreConnector)
+    new SecondWhitelistPredicate(keystoreConnector, passcodeAuthenticationEnabled)
   )
 }

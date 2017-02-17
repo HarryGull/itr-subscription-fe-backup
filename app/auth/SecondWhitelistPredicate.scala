@@ -25,18 +25,20 @@ import uk.gov.hmrc.play.http.{HeaderCarrier, SessionKeys}
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
-class SecondWhitelistPredicate(keystoreConnector: KeystoreConnector) extends PageVisibilityPredicate {
+class SecondWhitelistPredicate(keystoreConnector: KeystoreConnector, passcodeAuthenticationEnabled: Boolean) extends PageVisibilityPredicate {
 
   override def apply(authContext: AuthContext, request: Request[AnyContent]): Future[PageVisibilityResult] = {
     implicit val hc = HeaderCarrier.fromHeadersAndSession(request.headers, Some(request.session))
-    request.getQueryString("p").fold(
-      request.session.get(SessionKeys.otacToken).fold(
-      keystoreConnector.fetchAndGetFormData[String](KeystoreKeys.otacToken).map {
-        case Some(token) => PageBlocked(Future.successful(Redirect(request.uri, request.queryString + ("p" -> Seq(token)))))
-        case _ => PageIsVisible
-      }
+    if (passcodeAuthenticationEnabled) {
+      request.getQueryString("p").fold(
+        request.session.get(SessionKeys.otacToken).fold(
+          keystoreConnector.fetchAndGetFormData[String](KeystoreKeys.otacToken).map {
+            case Some(token) => PageBlocked(Future.successful(Redirect(request.uri, request.queryString + ("p" -> Seq(token)))))
+            case _ => PageIsVisible
+          }
+        )(_ => Future.successful(PageIsVisible))
       )(_ => Future.successful(PageIsVisible))
-    )(_ => Future.successful(PageIsVisible))
+    } else Future.successful(PageIsVisible)
   }
 
 }

@@ -35,6 +35,7 @@ trait AppConfig {
   val signOutPageUrl: String
   val authUrl: String
   val createAccountUrl: String
+  val passcodeAuthenticationEnabled: Boolean
 }
 
 object FrontendAppConfig extends AppConfig with ServicesConfig {
@@ -58,4 +59,5 @@ object FrontendAppConfig extends AppConfig with ServicesConfig {
 
   override lazy val authUrl = baseUrl("auth")
   override lazy val createAccountUrl = loadConfig("create-account.url")
+  override lazy val passcodeAuthenticationEnabled = configuration.getBoolean("passcodeAuthentication.enabled").getOrElse(false)
 }

@@ -42,7 +42,8 @@ trait AuthorisedForTAVC extends Actions with PasscodeAuthentication {
     applicationConfig.businessCustomerUrl,
     registeredBusinessCustomerService,
     keystoreConnector,
-    authService
+    authService,
+    applicationConfig.passcodeAuthenticationEnabled
   )
 
   private type PlayRequest = Request[AnyContent] => Result
