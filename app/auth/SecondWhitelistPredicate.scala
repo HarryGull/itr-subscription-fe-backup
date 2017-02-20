@@ -22,10 +22,10 @@ import play.api.mvc.Results._
 import uk.gov.hmrc.play.frontend.auth._
 import _root_.connectors.KeystoreConnector
 import uk.gov.hmrc.play.http.{HeaderCarrier, SessionKeys}
-import scala.concurrent.ExecutionContext.Implicits.global
-import scala.concurrent.Future
 
-class SecondWhitelistPredicate(keystoreConnector: KeystoreConnector) extends PageVisibilityPredicate {
+import scala.concurrent.{ExecutionContext, Future}
+
+class SecondWhitelistPredicate(keystoreConnector: KeystoreConnector)(implicit ec: ExecutionContext) extends PageVisibilityPredicate {
 
   override def apply(authContext: AuthContext, request: Request[AnyContent]): Future[PageVisibilityResult] = {
     implicit val hc = HeaderCarrier.fromHeadersAndSession(request.headers, Some(request.session))

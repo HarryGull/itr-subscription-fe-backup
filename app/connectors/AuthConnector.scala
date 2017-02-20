@@ -16,12 +16,29 @@
 
 package connectors
 
-import com.google.inject.{Inject, Singleton}
-import uk.gov.hmrc.play.config.ServicesConfig
-import uk.gov.hmrc.play.frontend.auth.connectors.{AuthConnector => HMRCAuthConnector}
+import javax.inject.{Inject, Singleton}
+
+import config.AppConfig
+import uk.gov.hmrc.play.http.HeaderCarrier
+import uk.gov.hmrc.play.http._
 import uk.gov.hmrc.play.http.ws.WSHttp
 
+import scala.concurrent.Future
+
 @Singleton
-class AuthorisationConnector @Inject()(override val http: WSHttp) extends HMRCAuthConnector with ServicesConfig {
-  lazy val serviceUrl: String = baseUrl("auth")
+class AuthConnectorImpl @Inject()(http: WSHttp, applicationConfig: AppConfig) extends AuthConnector {
+
+  lazy val serviceUrl = applicationConfig.authUrl
+  val authorityUri = "auth/authority"
+
+  def getAuthority()(implicit hc: HeaderCarrier): Future[HttpResponse] = {
+    http.GET[HttpResponse](s"$serviceUrl/$authorityUri")
+  }
+
+}
+
+trait AuthConnector {
+
+  def getAuthority()(implicit hc: HeaderCarrier): Future[HttpResponse]
+
 }

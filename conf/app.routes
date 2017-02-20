@@ -29,3 +29,6 @@ GET         /thankyou                                   controllers.feedback.Fee
 # Sign out route
 GET        /sign-out                                    controllers.SignOutController.signout
 GET        /signed-out                                  controllers.SignOutController.show
+
+# Error pages
+GET        /not-a-company                               controllers.AffinityGroupErrorController.show

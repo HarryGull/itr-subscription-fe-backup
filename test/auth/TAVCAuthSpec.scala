@@ -18,16 +18,26 @@ package auth
 
 import java.net.URLEncoder
 
-import common.BaseTestSpec
+import common.{BaseTestSpec, KeystoreKeys}
 import controllers.routes
+import org.mockito.Matchers
+import org.mockito.Mockito._
 import play.api.test.FakeRequest
 import play.api.http.Status
 import uk.gov.hmrc.play.frontend.auth.AuthenticationProviderIds
 import play.api.test.Helpers._
 
+import scala.concurrent.Future
+
 class TAVCAuthSpec extends BaseTestSpec {
 
-  val authorisedForTAVC = new AuthorisedForTAVC(MockAuthConnector, configuration, MockConfig, mockRegisteredBusinessCustomerService, mockKeystoreConnector)
+  val authorisedForTAVC = new AuthorisedForTAVC(MockAuthConnector,
+    configuration,
+    MockConfig,
+    mockRegisteredBusinessCustomerService,
+    mockKeystoreConnector,
+    mockAuthService
+  )
   val testController = new AuthTestController(authorisedForTAVC)
 
   "Government Gateway Provider" should {
@@ -92,4 +102,17 @@ class TAVCAuthSpec extends BaseTestSpec {
       status(result) shouldBe Status.SEE_OTHER
     }
   }
+
+  "Calling authenticated async action with a default GG login session and account type is not Organisation" should {
+    "redirect to affinity group error page" in {
+      when(mockRegisteredBusinessCustomerService.getReviewBusinessCustomerDetails(Matchers.any(), Matchers.any())).thenReturn(Future.successful(None))
+      when(mockKeystoreConnector.fetchAndGetFormData[String](Matchers.eq(KeystoreKeys.otacToken))
+        (Matchers.any(), Matchers.any())).thenReturn(Future.successful(None))
+      when(mockAuthService.getAffinityGroup()(Matchers.any(), Matchers.any())).thenReturn(Future.successful(Some("Individual")))
+      val result = testController.authorisedAsyncAction(authenticatedFakeRequest(AuthenticationProviderIds.GovernmentGatewayId))
+      status(result) shouldBe Status.SEE_OTHER
+      redirectLocation(result) shouldBe Some(routes.AffinityGroupErrorController.show().url)
+    }
+  }
+
 }

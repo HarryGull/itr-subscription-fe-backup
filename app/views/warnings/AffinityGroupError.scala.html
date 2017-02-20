@@ -1,0 +1,23 @@
+@(signinURL: String, createAccountURL: String)(implicit request: Request[_], messages: Messages, applicationConfig: config.AppConfig)
+
+@main_template(Messages("page.error.AffinityGroupError.title"), userLoggedIn = false) {
+
+<h1 id="not-a-company-header" class="heading-xlarge">@Messages("page.error.AffinityGroupError.header")</h1>
+
+<div class="form-group">
+    <p id="not-a-company">@Messages("page.error.AffinityGroupError.description.one")</p>
+</div>
+
+<div class="form-group">
+    <p id="sign-in">@Messages("page.error.AffinityGroupError.description.two.one")
+        <a href="@signinURL" id="sign-in-link">@Messages("page.error.AffinityGroupError.description.two.link")</a>
+        @Messages("page.error.AffinityGroupError.description.two.two")</p>
+</div>
+
+<div class="form-group">
+    <p id="create-account">@Messages("page.error.AffinityGroupError.description.three.one")
+        <a href="@createAccountURL" id="create-account-link">@Messages("page.error.AffinityGroupError.description.three.link")</a>
+        @Messages("page.error.AffinityGroupError.description.three.two")</p>
+</div>
+
+}

@@ -21,8 +21,6 @@ import org.mockito.Matchers
 import org.mockito.Mockito._
 import uk.gov.hmrc.play.http.HeaderCarrier
 
-import scala.concurrent.ExecutionContext.Implicits.global
-
 class RegisteredBusinessCustomerServiceSpec extends BaseTestSpec {
   
   val testService = new RegisteredBusinessCustomerServiceImpl(mockKeystoreConnector)

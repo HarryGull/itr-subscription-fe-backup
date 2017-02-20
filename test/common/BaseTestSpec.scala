@@ -32,7 +32,7 @@ import play.api.{Configuration, Environment}
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc._
 import play.api.test.FakeRequest
-import services.RegisteredBusinessCustomerService
+import services.{AuthService, RegisteredBusinessCustomerService}
 import uk.gov.hmrc.http.cache.client.SessionCache
 import uk.gov.hmrc.play.frontend.auth.{AuthContext, AuthenticationProviderIds}
 import uk.gov.hmrc.play.frontend.auth.connectors.domain
@@ -45,21 +45,28 @@ import uk.gov.hmrc.time.DateTimeUtils
 import utils.{CountriesHelper, Validation}
 
 import scala.concurrent.Future
+import scala.concurrent.ExecutionContext.Implicits.global
 
 trait BaseTestSpec extends UnitSpec with OneAppPerSuite with BeforeAndAfterEach with I18nSupport with MockitoSugar {
 
   override def beforeEach() {
     reset(mockKeystoreConnector)
+    reset(mockSessionCache)
+    reset(mockAuthService)
+    reset(mockRegisteredBusinessCustomerService)
+    reset(mockHttp)
   }
 
   val sessionId = UUID.randomUUID.toString
   implicit val hc: HeaderCarrier = HeaderCarrier(sessionId = Some(SessionId(sessionId.toString)))
+  implicit val ec = global.prepare()
   val fakeRequest = FakeRequest()
 
   val mockSessionCache = mock[SessionCache]
   val mockHttp = mock[WSHttp]
   val mockRegisteredBusinessCustomerService = mock[RegisteredBusinessCustomerService]
   val mockKeystoreConnector = mock[KeystoreConnector]
+  val mockAuthService = mock[AuthService]
 
   val provideModel = ProvideCorrespondAddressModel("test1","test2",Some("test3"),Some("test4"),Some("test5"),"test6")
   val contactDetailsModel = ContactDetailsSubscriptionModel("test1","test2",Some("test3"),Some("test4"),"test5")
@@ -154,12 +161,14 @@ trait BaseTestSpec extends UnitSpec with OneAppPerSuite with BeforeAndAfterEach 
     when(mockRegisteredBusinessCustomerService.getReviewBusinessCustomerDetails(Matchers.any(), Matchers.any())).thenReturn(Future.successful(Some(validModel)))
     when(mockKeystoreConnector.fetchAndGetFormData[String](Matchers.eq(KeystoreKeys.otacToken))(Matchers.any(), Matchers.any()))
       .thenReturn(Future.successful(None))
+    when(mockAuthService.getAffinityGroup()(Matchers.any(), Matchers.any())).thenReturn(Future.successful(Some("Organisation")))
   }
 
   def noRegDetails(): Unit = {
     when(mockRegisteredBusinessCustomerService.getReviewBusinessCustomerDetails(Matchers.any(), Matchers.any())).thenReturn(Future.successful(None))
     when(mockKeystoreConnector.fetchAndGetFormData[String](Matchers.eq(KeystoreKeys.otacToken))(Matchers.any(), Matchers.any()))
       .thenReturn(Future.successful(None))
+    when(mockAuthService.getAffinityGroup()(Matchers.any(), Matchers.any())).thenReturn(Future.successful(Some("Organisation")))
   }
 
   def allDetails(): Unit = {

@@ -97,3 +97,14 @@ feedback.title = Feedback
 
 ## Feedback Thank You ##
 feedback.thankyou.title = Feedback received
+
+# Affinity group error page
+page.error.AffinityGroupError.title=You''ve signed in with the wrong type of account
+page.error.AffinityGroupError.header=You''ve signed in with the wrong type of account
+page.error.AffinityGroupError.description.one=This service only works with Government Gateway accounts set up for companies.
+page.error.AffinityGroupError.description.two.one=To use this service, you’ll need to
+page.error.AffinityGroupError.description.two.link=sign out
+page.error.AffinityGroupError.description.two.two=and log back in as a company.
+page.error.AffinityGroupError.description.three.one=You can
+page.error.AffinityGroupError.description.three.link=register for a Government Gateway account
+page.error.AffinityGroupError.description.three.two=if you don't have one.
