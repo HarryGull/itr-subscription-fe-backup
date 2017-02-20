@@ -22,6 +22,8 @@ import play.api.i18n.Messages
 
 class ContactDetailsSubscriptionFormSpec extends BaseTestSpec {
 
+  val chars132 = "thisxx@" + ("12345678911" * 11) + ".com"
+
   "Creating a form using an empty model" should {
     lazy val form = contactDetailsSubscriptionForm.form
     "return an empty string for Name, lastName, telephone number and email" in {
@@ -106,9 +108,10 @@ class ContactDetailsSubscriptionFormSpec extends BaseTestSpec {
         "lastName" -> "Roth",
         "landline" -> "",
         "mobile" -> "",
-        "email" -> "Test@email.com")
+        "email" -> "Test@email.c")
       )
       "raise no errors" in {
+        //println(form.errors.head.value)
         form.hasErrors shouldBe false
       }
     }
@@ -122,6 +125,50 @@ class ContactDetailsSubscriptionFormSpec extends BaseTestSpec {
         "landline" -> "08746 716283",
         "mobile" -> "08746 716383",
         "email" -> "")
+      )
+      "raise form error" in {
+        form.hasErrors shouldBe true
+      }
+      "raise 1 form error" in {
+        form.errors.length shouldBe 1
+        form.errors.head.key shouldBe "email"
+      }
+      "associate the correct error message to the error" in {
+        Messages(form.error("email").get.message) shouldBe Messages("validation.error.email")
+      }
+    }
+  }
+
+  "Creating a form using an invalid post" when {
+    "supplied with invalid email with no .com or simailr extension for email" should {
+      lazy val form = contactDetailsSubscriptionForm.form.bind(Map(
+        "firstName" -> "Tim",
+        "lastName" -> "Roth",
+        "landline" -> "08746 716283",
+        "mobile" -> "08746 716383",
+        "email" -> "fred@frederick")
+      )
+      "raise form error" in {
+        form.hasErrors shouldBe true
+      }
+      "raise 1 form error" in {
+        form.errors.length shouldBe 1
+        form.errors.head.key shouldBe "email"
+      }
+      "associate the correct error message to the error" in {
+        Messages(form.error("email").get.message) shouldBe Messages("validation.error.email")
+      }
+    }
+  }
+
+  "Creating a form using an invalid post" when {
+    "supplied with invalid email with an ending . but no domain extension for email" should {
+      lazy val form = contactDetailsSubscriptionForm.form.bind(Map(
+        "firstName" -> "Tim",
+        "lastName" -> "Roth",
+        "landline" -> "08746 716283",
+        "mobile" -> "08746 716383",
+        "email" -> "fred@frederick.")
       )
       "raise form error" in {
         form.hasErrors shouldBe true
@@ -436,7 +483,7 @@ class ContactDetailsSubscriptionFormSpec extends BaseTestSpec {
       "lastName" -> "Last",
       "landline" -> "00000000000",
       "mobile" -> "",
-      "email" -> "D@d.")
+      "email" -> "D@d.d")
     )
     "raise form error" in {
       form.hasErrors shouldBe false
@@ -821,7 +868,6 @@ class ContactDetailsSubscriptionFormSpec extends BaseTestSpec {
   }
 
   //Email Regex
-
   "email supplied with multiple white spaces" should {
     lazy val form = contactDetailsSubscriptionForm.form.bind(Map(
       "firstName" -> "First",
@@ -976,7 +1022,7 @@ class ContactDetailsSubscriptionFormSpec extends BaseTestSpec {
       "lastName" -> "Last",
       "landline" -> "00000000000",
       "mobile" -> "00000000000",
-      "email" -> "P@test.com")
+      "email" -> "P@t.c")
     )
     "raise form error" in {
       form.hasErrors shouldBe false
@@ -1012,7 +1058,7 @@ class ContactDetailsSubscriptionFormSpec extends BaseTestSpec {
       "lastName" -> "Last",
       "landline" -> "00000000000",
       "mobile" -> "00000000000",
-      "email" -> "thisisalongemailthisisalongemailthisisalongemailthisisalongemail@test.com")
+      "email" -> chars132)
     )
     "raise form error" in {
       form.hasErrors shouldBe false
@@ -1028,7 +1074,8 @@ class ContactDetailsSubscriptionFormSpec extends BaseTestSpec {
       "lastName" -> "Last",
       "landline" -> "00000000000",
       "mobile" -> "00000000000",
-      "email" -> "thisisalongemailthisisalongemailthisisalongemailthisisalongemailx@test.com")
+      //133 chars
+      "email" -> s"1$chars132")
     )
     "raise form error" in {
       form.hasErrors shouldBe true
@@ -1048,7 +1095,7 @@ class ContactDetailsSubscriptionFormSpec extends BaseTestSpec {
       "lastName" -> "Last",
       "landline" -> "00000000000",
       "mobile" -> "00000000000",
-      "email" -> "test@P")
+      "email" -> "t@P.c")
     )
     "raise form error" in {
       form.hasErrors shouldBe false
@@ -1078,55 +1125,4 @@ class ContactDetailsSubscriptionFormSpec extends BaseTestSpec {
     }
   }
 
-  "Part 2 - maximum allowed supplied for email (on boundary) " should {
-    lazy val form = contactDetailsSubscriptionForm.form.bind(Map(
-      "firstName" -> "First",
-      "lastName" -> "Last",
-      "landline" -> "00000000000",
-      "mobile" -> "00000000000",
-      "email" -> "test@thisisalongemailthisisalongemailthisisalongemai.thisisalongemail")
-    )
-    "raise form error" in {
-      form.hasErrors shouldBe false
-    }
-    "raise 0 form error" in {
-      form.errors.length shouldBe 0
-    }
-  }
-
-  "Part 2 - too many characters supplied for the second part of the email (over the boundary) " should {
-    lazy val form = contactDetailsSubscriptionForm.form.bind(Map(
-      "firstName" -> "First",
-      "lastName" -> "Last",
-      "landline" -> "00000000000",
-      "mobile" -> "00000000000",
-      "email" -> "test@thisisalongemailthisisalongemailthisisalongemai.thisisalongemailx")
-    )
-    "raise form error" in {
-      form.hasErrors shouldBe true
-    }
-    "raise 1 form error" in {
-      form.errors.length shouldBe 1
-      form.errors.head.key shouldBe "email"
-    }
-    "associate the correct error message to the error" in {
-      Messages(form.error("email").get.message) shouldBe Messages("validation.error.email")
-    }
-  }
-
-  "Part 3 - max characters supplied for the email (on both boundaries) " should {
-    lazy val form = contactDetailsSubscriptionForm.form.bind(Map(
-      "firstName" -> "First",
-      "lastName" -> "Last",
-      "landline" -> "00000000000",
-      "mobile" -> "00000000000",
-      "email" -> "thisisalongemailthisisalongemailthisisalongemailthisisalongemail@thisisalongemailthisisalongemailthisisalongemai.thisisalongemail")
-    )
-    "raise form error" in {
-      form.hasErrors shouldBe false
-    }
-    "raise 0 form error" in {
-      form.errors.length shouldBe 0
-    }
-  }
 }

@@ -30,7 +30,7 @@ class ContactDetailsSubscriptionForm @Inject()(validation: Validation) {
       "lastName" -> nonEmptyText,
       "landline" -> optional(validation.optionalTelephoneNumberCheck),
       "mobile" -> optional(validation.optionalTelephoneNumberCheck),
-      "email" -> validation.emailCheck
+      "email" -> validation.emailCheck()
     )(ContactDetailsSubscriptionModel.apply)(ContactDetailsSubscriptionModel.unapply)
   )
 }
