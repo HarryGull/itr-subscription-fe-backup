@@ -52,7 +52,8 @@ class AuthorisedForTAVC @Inject()(val authConnector: AuthConnector,
     applicationConfig.businessCustomerUrl,
     registeredBusinessCustomerService,
     keystoreConnector,
-    authService
+    authService,
+    applicationConfig.passcodeAuthenticationEnabled
   )
 
   def async(action: TAVCUser => Request[AnyContent] => Future[Result]): Action[AnyContent] = {
