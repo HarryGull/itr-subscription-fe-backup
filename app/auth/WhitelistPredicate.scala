@@ -20,7 +20,7 @@ import common.KeystoreKeys
 import play.api.mvc.{AnyContent, Request}
 import uk.gov.hmrc.play.frontend.auth.{AuthContext, PageIsVisible, PageVisibilityPredicate, PageVisibilityResult}
 import connectors.KeystoreConnector
-import uk.gov.hmrc.play.http.{HeaderCarrier, SessionKeys}
+import uk.gov.hmrc.play.http.HeaderCarrier
 
 import scala.concurrent.Future
 

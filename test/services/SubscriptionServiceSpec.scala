@@ -26,7 +26,6 @@ import play.api.test.Helpers._
 import uk.gov.hmrc.play.http.HttpResponse
 
 import scala.concurrent.Future
-import scala.concurrent.ExecutionContext.Implicits.global
 
 class SubscriptionServiceSpec extends BaseTestSpec {
 

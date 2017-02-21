@@ -19,7 +19,7 @@ package auth
 import com.google.inject.{Inject, Singleton}
 import play.api.mvc._
 import config.AppConfig
-import services.RegisteredBusinessCustomerService
+import services.{AuthService, RegisteredBusinessCustomerService}
 import uk.gov.hmrc.passcode.authentication.{PasscodeAuthentication, PasscodeAuthenticationProvider, PasscodeVerificationConfig}
 import connectors.KeystoreConnector
 import play.api.Configuration
@@ -28,14 +28,16 @@ import uk.gov.hmrc.play.frontend.auth.{Actions, AuthenticationProvider, TaxRegim
 import uk.gov.hmrc.play.frontend.auth.connectors.domain.Accounts
 import uk.gov.hmrc.play.http.HeaderCarrier
 
-import scala.concurrent.Future
+import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
 class AuthorisedForTAVC @Inject()(val authConnector: AuthConnector,
                                   configuration: Configuration,
                                   applicationConfig: AppConfig,
                                   registeredBusinessCustomerService: RegisteredBusinessCustomerService,
-                                  keystoreConnector: KeystoreConnector) extends AuthorisedActions with Actions with PasscodeAuthentication {
+                                  keystoreConnector: KeystoreConnector,
+                                  authService: AuthService)(implicit ec: ExecutionContext)
+  extends AuthorisedActions with Actions with PasscodeAuthentication {
 
   lazy val postSignInRedirectUrl: String = applicationConfig.introductionUrl
 
@@ -49,7 +51,9 @@ class AuthorisedForTAVC @Inject()(val authConnector: AuthConnector,
   private lazy val visibilityPredicate = new TAVCCompositePageVisibilityPredicate(
     applicationConfig.businessCustomerUrl,
     registeredBusinessCustomerService,
-    keystoreConnector
+    keystoreConnector,
+    authService,
+    applicationConfig.passcodeAuthenticationEnabled
   )
 
   def async(action: TAVCUser => Request[AnyContent] => Future[Result]): Action[AnyContent] = {

@@ -20,10 +20,10 @@ import auth.{AuthorisedActions, AuthorisedForTAVC}
 import com.google.inject.AbstractModule
 import com.google.inject.name.Names
 import connectors._
-import services.{RegisteredBusinessCustomerService, RegisteredBusinessCustomerServiceImpl, SubscriptionService, SubscriptionServiceImpl}
+import services._
 import testOnly.connectors._
 import uk.gov.hmrc.http.cache.client.SessionCache
-import uk.gov.hmrc.play.frontend.auth.connectors.AuthConnector
+import uk.gov.hmrc.play.frontend.auth.connectors.{AuthConnector => HMRCAuthConnector}
 import uk.gov.hmrc.play.http.ws.WSHttp
 
 class DIModule extends AbstractModule {
@@ -41,13 +41,15 @@ class DIModule extends AbstractModule {
     bind(classOf[SessionCache]).annotatedWith(Names.named("ITR")).to(classOf[ITRSessionCache])
 
     // Connectors
-    bind(classOf[AuthConnector]).to(classOf[AuthorisationConnector])
+    bind(classOf[HMRCAuthConnector]).to(classOf[AuthorisationConnector])
     bind(classOf[KeystoreConnector]).to(classOf[KeystoreConnectorImpl])
     bind(classOf[SubscriptionConnector]).to(classOf[SubscriptionConnectorImpl])
+    bind(classOf[AuthConnector]).to(classOf[AuthConnectorImpl])
 
     // Services
     bind(classOf[RegisteredBusinessCustomerService]).to(classOf[RegisteredBusinessCustomerServiceImpl])
     bind(classOf[SubscriptionService]).to(classOf[SubscriptionServiceImpl])
+    bind(classOf[AuthService]).to(classOf[AuthServiceImpl])
 
     // Auth
     bind(classOf[AuthorisedActions]).to(classOf[AuthorisedForTAVC])

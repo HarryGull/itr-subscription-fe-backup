@@ -16,23 +16,25 @@
 
 package auth
 
-import services.RegisteredBusinessCustomerService
-import play.api.mvc.{AnyContent, Request}
+import play.api.mvc.{AnyContent, Request, Result}
 import play.api.mvc.Results.Redirect
+import services.AuthService
 import uk.gov.hmrc.play.frontend.auth._
 import uk.gov.hmrc.play.http.HeaderCarrier
 
 import scala.concurrent.{ExecutionContext, Future}
 
-class BusinessCustomerPredicate(businessCustomerFrontendUri:String, rbcService: RegisteredBusinessCustomerService)
-                               (implicit ec: ExecutionContext) extends PageVisibilityPredicate {
+class AffinityGroupPredicate(authService: AuthService)(implicit ec: ExecutionContext) extends PageVisibilityPredicate {
   override def apply(authContext: AuthContext, request: Request[AnyContent]): Future[PageVisibilityResult] = {
     implicit val hc = HeaderCarrier.fromHeadersAndSession(request.headers, Some(request.session))
-    rbcService.getReviewBusinessCustomerDetails.map {
-      case Some(companyRegistrationReviewDetailsModel) => PageIsVisible
-      case _ => PageBlocked(needsBusinessCustomerDetails)
+    authService.getAffinityGroup.map {
+      case Some(affinityGroup) => {
+        if(affinityGroup.equals("Organisation")) PageIsVisible
+        else PageBlocked(redirectToErrorPage)
+      }
+      case _ => PageBlocked(redirectToErrorPage)
     }
   }
 
-  private val needsBusinessCustomerDetails = Future.successful(Redirect(businessCustomerFrontendUri))
+  private def redirectToErrorPage: Future[Result] = Future.successful(Redirect(controllers.routes.AffinityGroupErrorController.show()))
 }
