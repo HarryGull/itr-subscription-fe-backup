@@ -22,7 +22,7 @@ import common.{Constants, KeystoreKeys}
 import config.AppConfig
 import connectors.KeystoreConnector
 import forms.ConfirmCorrespondAddressForm
-import models.{CompanyRegistrationReviewDetailsModel, ConfirmCorrespondAddressModel, ProvideCorrespondAddressModel}
+import models.{AddressModel, CompanyRegistrationReviewDetailsModel, ConfirmCorrespondAddressModel, ProvideCorrespondAddressModel}
 import play.api.libs.json.Json
 import play.api.mvc.{Action, AnyContent}
 import services.RegisteredBusinessCustomerService
@@ -59,11 +59,24 @@ class ConfirmCorrespondAddressController @Inject()(authorised: AuthorisedActions
 
   def show: Action[AnyContent] = authorised.async { implicit user => implicit request =>
 
-    getConfirmCorrespondenceModels.map {
-      case (Some(confirmCorrespondAddress),companyDetails) =>
-        Ok(ConfirmCorrespondAddress(confirmCorrespondAddressForm.form.fill(confirmCorrespondAddress),companyDetails))
-      case (None,companyDetails) => Ok(ConfirmCorrespondAddress(confirmCorrespondAddressForm.form,companyDetails))
-    }
+
+    //Ok(ConfirmCorrespondAddress(confirmCorrespondAddressForm.form,companyDetails)
+
+    val  garyModel = CompanyRegistrationReviewDetailsModel("Company Name", Some("LTD"),
+      AddressModel("gary 1","",Some("gary2"),Some("gary 3"),Some("gary 4"),"GB"), "222222", "X1000000000000",false, true)
+
+    val model2 = ConfirmCorrespondAddressModel(Constants.StandardRadioButtonYesValue)
+
+//
+    Future.successful(Ok(ConfirmCorrespondAddress(confirmCorrespondAddressForm.form.fill(model2),garyModel)))
+
+
+
+//    getConfirmCorrespondenceModels.map {
+//      case (Some(confirmCorrespondAddress),companyDetails) =>
+//        Ok(ConfirmCorrespondAddress(confirmCorrespondAddressForm.form.fill(confirmCorrespondAddress),companyDetails))
+//      case (None,companyDetails) => Ok(ConfirmCorrespondAddress(confirmCorrespondAddressForm.form,companyDetails))
+//    }
   }
 
   def submit: Action[AnyContent] = authorised.async { implicit user => implicit request =>
