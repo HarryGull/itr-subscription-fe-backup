@@ -58,24 +58,11 @@ class ConfirmCorrespondAddressController @Inject()(authorised: AuthorisedActions
 
 
   def show: Action[AnyContent] = authorised.async { implicit user => implicit request =>
-
-
-    //Ok(ConfirmCorrespondAddress(confirmCorrespondAddressForm.form,companyDetails)
-
-    val  garyModel = CompanyRegistrationReviewDetailsModel("Company Name", Some("LTD"), AddressModel("gary 1","line 2",Some("line 3"),Some("line 4 3"),Some("TF1 3NY"),"GB"), "222222", "XA0000100085318",false, true)
-
-    val model2 = ConfirmCorrespondAddressModel(Constants.StandardRadioButtonYesValue)
-
-//
-    Future.successful(Ok(ConfirmCorrespondAddress(confirmCorrespondAddressForm.form.fill(model2),garyModel)))
-
-
-
-//    getConfirmCorrespondenceModels.map {
-//      case (Some(confirmCorrespondAddress),companyDetails) =>
-//        Ok(ConfirmCorrespondAddress(confirmCorrespondAddressForm.form.fill(confirmCorrespondAddress),companyDetails))
-//      case (None,companyDetails) => Ok(ConfirmCorrespondAddress(confirmCorrespondAddressForm.form,companyDetails))
-//    }
+    getConfirmCorrespondenceModels.map {
+      case (Some(confirmCorrespondAddress),companyDetails) =>
+        Ok(ConfirmCorrespondAddress(confirmCorrespondAddressForm.form.fill(confirmCorrespondAddress),companyDetails))
+      case (None,companyDetails) => Ok(ConfirmCorrespondAddress(confirmCorrespondAddressForm.form,companyDetails))
+    }
   }
 
   def submit: Action[AnyContent] = authorised.async { implicit user => implicit request =>
