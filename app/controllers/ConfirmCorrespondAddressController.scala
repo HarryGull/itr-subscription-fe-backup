@@ -62,8 +62,7 @@ class ConfirmCorrespondAddressController @Inject()(authorised: AuthorisedActions
 
     //Ok(ConfirmCorrespondAddress(confirmCorrespondAddressForm.form,companyDetails)
 
-    val  garyModel = CompanyRegistrationReviewDetailsModel("Company Name", Some("LTD"),
-      AddressModel("gary 1","",Some("gary2"),Some("gary 3"),Some("gary 4"),"GB"), "222222", "X1000000000000",false, true)
+    val  garyModel = CompanyRegistrationReviewDetailsModel("Company Name", Some("LTD"), AddressModel("gary 1","line 2",Some("line 3"),Some("line 4 3"),Some("TF1 3NY"),"GB"), "222222", "XA0000100085318",false, true)
 
     val model2 = ConfirmCorrespondAddressModel(Constants.StandardRadioButtonYesValue)
 

@@ -18,7 +18,7 @@ package services
 
 import com.google.inject.Inject
 import connectors.KeystoreConnector
-import models.CompanyRegistrationReviewDetailsModel
+import models.{AddressModel, CompanyRegistrationReviewDetailsModel}
 import play.api.Logger
 import uk.gov.hmrc.play.http.HeaderCarrier
 
@@ -27,13 +27,15 @@ import scala.concurrent.{ExecutionContext, Future}
 class RegisteredBusinessCustomerServiceImpl @Inject()(keystoreConnector: KeystoreConnector) extends RegisteredBusinessCustomerService {
 
   def getReviewBusinessCustomerDetails(implicit hc: HeaderCarrier, ec: ExecutionContext) : Future[Option[CompanyRegistrationReviewDetailsModel]] = {
-    keystoreConnector.fetchAndGetReviewDetailsForSession map {
-      case Some(data) => Some(data)
-      case _ => {
-        Logger.warn(s"[RegisteredBusinessService][getReviewBusinessDetails] - No Review Details Found")
-        None
-      }
-    }
+//    keystoreConnector.fetchAndGetReviewDetailsForSession map {
+//      case Some(data) => Some(data)
+//      case _ => {
+//        Logger.warn(s"[RegisteredBusinessService][getReviewBusinessDetails] - No Review Details Found")
+//        None
+//      }
+
+        Future(Some(CompanyRegistrationReviewDetailsModel("Company Name", Some("LTD"), AddressModel("gary 1","line 2",Some("line 3"),Some("line 4 3"),Some("TF1 3NY"),"GB"), "222222", "XA0000100085318",false, true)))
+    //}
   }
 
 }

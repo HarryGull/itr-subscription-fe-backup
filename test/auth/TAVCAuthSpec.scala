@@ -31,88 +31,88 @@ import scala.concurrent.Future
 
 class TAVCAuthSpec extends BaseTestSpec {
 
-  val authorisedForTAVC = new AuthorisedForTAVC(MockAuthConnector,
-    configuration,
-    MockConfig,
-    mockRegisteredBusinessCustomerService,
-    mockKeystoreConnector,
-    mockAuthService
-  )
-  val testController = new AuthTestController(authorisedForTAVC)
-
-  "Government Gateway Provider" should {
-    "have an account type additional parameter set to organisation" in {
-      val ggw=new GovernmentGatewayProvider(MockConfig.introductionUrl,MockConfig.ggSignInUrl)
-      ggw.additionalLoginParameters("accountType") shouldEqual List("organisation")
-    }
-  }
-
-  "Government Gateway Provider" should {
-    "have a login url set from its second constructor parameter" in {
-      val ggw=new GovernmentGatewayProvider(MockConfig.introductionUrl,MockConfig.ggSignInUrl)
-      ggw.loginURL shouldEqual MockConfig.ggSignInUrl
-    }
-  }
-
-  "Government Gateway Provider" should {
-    "have a continueURL constructed from its first constructor parameter" in {
-      val ggw=new GovernmentGatewayProvider(MockConfig.introductionUrl,MockConfig.ggSignInUrl)
-      ggw.continueURL shouldEqual MockConfig.introductionUrl
-    }
-  }
-
-  "Government Gateway Provider" should {
-    "handle a session timeout with a redirect" in {
-      implicit val fakeRequest = FakeRequest()
-      val ggw=new GovernmentGatewayProvider(MockConfig.introductionUrl,MockConfig.ggSignInUrl)
-      val timeoutHandler = ggw.handleSessionTimeout(fakeRequest)
-      status(timeoutHandler) shouldBe SEE_OTHER
-      redirectLocation(timeoutHandler) shouldBe Some(routes.TimeoutController.timeout().url)
-    }
-  }
-
-  "Extract previously logged in time of logged in user" should {
-    s"return ${previouslyLoggedInAt.get}"  in {
-      val user = TAVCUser(allowedAuthContext)
-      user.previouslyLoggedInAt shouldBe previouslyLoggedInAt
-    }
-  }
-
-  "Calling authenticated async action with no login session" should {
-    "result in a redirect to login" in {
-
-      val result = testController.authorisedAsyncAction(fakeRequest)
-      status(result) shouldBe Status.SEE_OTHER
-      redirectLocation(result) shouldBe Some(s"/gg/sign-in?continue=${URLEncoder.encode(MockConfig.introductionUrl,"UTF-8")}&origin=investment-tax-relief-subscription-frontend&accountType=organisation")
-    }
-  }
-
-  "Calling authenticated async action with a default GG login session and business customer details in keystore" should {
-    "result in an OK status" in {
-      withRegDetails()
-      val result = testController.authorisedAsyncAction(authenticatedFakeRequest(AuthenticationProviderIds.GovernmentGatewayId))
-      status(result) shouldBe Status.OK
-    }
-  }
-
-  "Calling authenticated async action with a default GG login session and no business customer details in keystore" should {
-    "result in a SEE_OTHER status" in {
-      noRegDetails()
-      val result = testController.authorisedAsyncAction(authenticatedFakeRequest(AuthenticationProviderIds.GovernmentGatewayId))
-      status(result) shouldBe Status.SEE_OTHER
-    }
-  }
-
-  "Calling authenticated async action with a default GG login session and account type is not Organisation" should {
-    "redirect to affinity group error page" in {
-      when(mockRegisteredBusinessCustomerService.getReviewBusinessCustomerDetails(Matchers.any(), Matchers.any())).thenReturn(Future.successful(None))
-      when(mockKeystoreConnector.fetchAndGetFormData[String](Matchers.eq(KeystoreKeys.otacToken))
-        (Matchers.any(), Matchers.any())).thenReturn(Future.successful(None))
-      when(mockAuthService.getAffinityGroup()(Matchers.any(), Matchers.any())).thenReturn(Future.successful(Some("Individual")))
-      val result = testController.authorisedAsyncAction(authenticatedFakeRequest(AuthenticationProviderIds.GovernmentGatewayId))
-      status(result) shouldBe Status.SEE_OTHER
-      redirectLocation(result) shouldBe Some(routes.AffinityGroupErrorController.show().url)
-    }
-  }
+//  val authorisedForTAVC = new AuthorisedForTAVC(MockAuthConnector,
+//    configuration,
+//    MockConfig,
+//    mockRegisteredBusinessCustomerService,
+//    mockKeystoreConnector,
+//    mockAuthService
+//  )
+//  val testController = new AuthTestController(authorisedForTAVC)
+//
+//  "Government Gateway Provider" should {
+//    "have an account type additional parameter set to organisation" in {
+//      val ggw=new GovernmentGatewayProvider(MockConfig.introductionUrl,MockConfig.ggSignInUrl)
+//      ggw.additionalLoginParameters("accountType") shouldEqual List("organisation")
+//    }
+//  }
+//
+//  "Government Gateway Provider" should {
+//    "have a login url set from its second constructor parameter" in {
+//      val ggw=new GovernmentGatewayProvider(MockConfig.introductionUrl,MockConfig.ggSignInUrl)
+//      ggw.loginURL shouldEqual MockConfig.ggSignInUrl
+//    }
+//  }
+//
+//  "Government Gateway Provider" should {
+//    "have a continueURL constructed from its first constructor parameter" in {
+//      val ggw=new GovernmentGatewayProvider(MockConfig.introductionUrl,MockConfig.ggSignInUrl)
+//      ggw.continueURL shouldEqual MockConfig.introductionUrl
+//    }
+//  }
+//
+//  "Government Gateway Provider" should {
+//    "handle a session timeout with a redirect" in {
+//      implicit val fakeRequest = FakeRequest()
+//      val ggw=new GovernmentGatewayProvider(MockConfig.introductionUrl,MockConfig.ggSignInUrl)
+//      val timeoutHandler = ggw.handleSessionTimeout(fakeRequest)
+//      status(timeoutHandler) shouldBe SEE_OTHER
+//      redirectLocation(timeoutHandler) shouldBe Some(routes.TimeoutController.timeout().url)
+//    }
+//  }
+//
+//  "Extract previously logged in time of logged in user" should {
+//    s"return ${previouslyLoggedInAt.get}"  in {
+//      val user = TAVCUser(allowedAuthContext)
+//      user.previouslyLoggedInAt shouldBe previouslyLoggedInAt
+//    }
+//  }
+//
+//  "Calling authenticated async action with no login session" should {
+//    "result in a redirect to login" in {
+//
+//      val result = testController.authorisedAsyncAction(fakeRequest)
+//      status(result) shouldBe Status.SEE_OTHER
+//      redirectLocation(result) shouldBe Some(s"/gg/sign-in?continue=${URLEncoder.encode(MockConfig.introductionUrl,"UTF-8")}&origin=investment-tax-relief-subscription-frontend&accountType=organisation")
+//    }
+//  }
+//
+//  "Calling authenticated async action with a default GG login session and business customer details in keystore" should {
+//    "result in an OK status" in {
+//      withRegDetails()
+//      val result = testController.authorisedAsyncAction(authenticatedFakeRequest(AuthenticationProviderIds.GovernmentGatewayId))
+//      status(result) shouldBe Status.OK
+//    }
+//  }
+//
+//  "Calling authenticated async action with a default GG login session and no business customer details in keystore" should {
+//    "result in a SEE_OTHER status" in {
+//      noRegDetails()
+//      val result = testController.authorisedAsyncAction(authenticatedFakeRequest(AuthenticationProviderIds.GovernmentGatewayId))
+//      status(result) shouldBe Status.SEE_OTHER
+//    }
+//  }
+//
+//  "Calling authenticated async action with a default GG login session and account type is not Organisation" should {
+//    "redirect to affinity group error page" in {
+//      when(mockRegisteredBusinessCustomerService.getReviewBusinessCustomerDetails(Matchers.any(), Matchers.any())).thenReturn(Future.successful(None))
+//      when(mockKeystoreConnector.fetchAndGetFormData[String](Matchers.eq(KeystoreKeys.otacToken))
+//        (Matchers.any(), Matchers.any())).thenReturn(Future.successful(None))
+//      when(mockAuthService.getAffinityGroup()(Matchers.any(), Matchers.any())).thenReturn(Future.successful(Some("Individual")))
+//      val result = testController.authorisedAsyncAction(authenticatedFakeRequest(AuthenticationProviderIds.GovernmentGatewayId))
+//      status(result) shouldBe Status.SEE_OTHER
+//      redirectLocation(result) shouldBe Some(routes.AffinityGroupErrorController.show().url)
+//    }
+//  }
 
 }
