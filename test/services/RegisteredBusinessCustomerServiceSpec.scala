@@ -23,32 +23,32 @@ import uk.gov.hmrc.play.http.HeaderCarrier
 
 class RegisteredBusinessCustomerServiceSpec extends BaseTestSpec {
   
-//  val testService = new RegisteredBusinessCustomerServiceImpl(mockKeystoreConnector)
-//
-//  "getReviewBusinessCustomerDetails" when {
-//
-//    "dataCacheConnector returns a CompanyRegistrationReviewDetailsModel" should {
-//
-//      "return the data" in {
-//        when(mockKeystoreConnector.fetchAndGetReviewDetailsForSession(Matchers.any[HeaderCarrier]()))
-//          .thenReturn(Some(validModel))
-//        val result = testService.getReviewBusinessCustomerDetails
-//        await(result) shouldBe Some(validModel)
-//      }
-//
-//    }
-//
-//    "dataCacheConnector returns nothing" should {
-//
-//      "return a None" in {
-//        when(mockKeystoreConnector.fetchAndGetReviewDetailsForSession(Matchers.any[HeaderCarrier]()))
-//          .thenReturn(None)
-//        val result = testService.getReviewBusinessCustomerDetails
-//        await(result) shouldBe None
-//      }
-//
-//    }
-//
-//  }
+  val testService = new RegisteredBusinessCustomerServiceImpl(mockKeystoreConnector)
+
+  "getReviewBusinessCustomerDetails" when {
+
+    "dataCacheConnector returns a CompanyRegistrationReviewDetailsModel" should {
+
+      "return the data" in {
+        when(mockKeystoreConnector.fetchAndGetReviewDetailsForSession(Matchers.any[HeaderCarrier]()))
+          .thenReturn(Some(validModel))
+        val result = testService.getReviewBusinessCustomerDetails
+        await(result) shouldBe Some(validModel)
+      }
+
+    }
+
+    "dataCacheConnector returns nothing" should {
+
+      "return a None" in {
+        when(mockKeystoreConnector.fetchAndGetReviewDetailsForSession(Matchers.any[HeaderCarrier]()))
+          .thenReturn(None)
+        val result = testService.getReviewBusinessCustomerDetails
+        await(result) shouldBe None
+      }
+
+    }
+
+  }
 
 }

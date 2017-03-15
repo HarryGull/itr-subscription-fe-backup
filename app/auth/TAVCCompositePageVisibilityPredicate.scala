@@ -34,7 +34,7 @@ class TAVCCompositePageVisibilityPredicate(businessCustomerFrontendUrl: String,
     new NonNegotiableIdentityConfidencePredicate(L50),
     new WhitelistPredicate(keystoreConnector),
     new AffinityGroupPredicate(authService),
-    //new BusinessCustomerPredicate(businessCustomerFrontendUrl, rbcService),
+    new BusinessCustomerPredicate(businessCustomerFrontendUrl, rbcService),
     new SecondWhitelistPredicate(keystoreConnector, passcodeAuthenticationEnabled)
   )
 
