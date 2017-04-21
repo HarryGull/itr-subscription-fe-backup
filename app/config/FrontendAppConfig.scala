@@ -33,7 +33,7 @@ trait AppConfig {
   val subscriptionUrl: String
   val submissionUrl: String
   val contactFormServiceIdentifier: String
-  val contactFrontendService: String
+  val contactFrontendPartialBaseUrl: String
   val ggSignOutUrl: String
   val signOutPageUrl: String
   val authUrl: String
@@ -53,10 +53,15 @@ class FrontendAppConfig @Inject()(configuration: Configuration) extends AppConfi
   override lazy val businessCustomerUrl = configuration.getString("business-customer.url").getOrElse("")
   override lazy val subscriptionUrl = baseUrl("investment-tax-relief-subscription")
   override lazy val submissionUrl = configuration.getString("submission.url").getOrElse("")
-  override lazy val contactFrontendService = loadConfig("contact-frontend.url")
-  override val contactFormServiceIdentifier = "TAVC"
-  override lazy val reportAProblemPartialUrl = s"$contactFrontendService/problem_reports_ajax?service=$contactFormServiceIdentifier"
-  override lazy val reportAProblemNonJSUrl = s"$contactFrontendService/problem_reports_nonjs?service=$contactFormServiceIdentifier"
+
+  //Contact Frontend Config
+  protected lazy val contactFrontendService = baseUrl("contact-frontend")
+  protected lazy val contactHost = loadConfig("contact-frontend.host")
+  override lazy val contactFormServiceIdentifier = "TAVC"
+  override lazy val contactFrontendPartialBaseUrl = s"$contactFrontendService"
+  override lazy val reportAProblemPartialUrl = s"$contactHost/contact/problem_reports_ajax?service=$contactFormServiceIdentifier"
+  override lazy val reportAProblemNonJSUrl = s"$contactHost/contact/problem_reports_nonjs?service=$contactFormServiceIdentifier"
+
   override lazy val ggSignOutUrl = loadConfig("government-gateway-sign-out.host")
   override lazy val signOutPageUrl: String = loadConfig(s"sign-out-page.url")
   override lazy val authUrl = baseUrl("auth")

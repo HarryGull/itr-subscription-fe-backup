@@ -53,18 +53,20 @@ class FeedbackController @Inject()(authorised: AuthorisedActions,
   }
 
   def contactFormReferer(implicit request: Request[AnyContent]): String = request.headers.get(REFERER).getOrElse("")
-  val localSubmitUrl = routes.FeedbackController.submit().url
+
+  def localSubmitUrl(implicit request: Request[AnyContent]): String = routes.FeedbackController.submit().url
 
   private val TICKET_ID = "ticketId"
   private def feedbackFormPartialUrl(implicit request: Request[AnyContent]) =
-    s"${applicationConfig.contactFrontendService}/beta-feedback/form/?submitUrl=${urlEncode(localSubmitUrl)}" +
+    s"${applicationConfig.contactFrontendPartialBaseUrl}/contact/beta-feedback/form/?submitUrl=${urlEncode(localSubmitUrl)}" +
       s"&service=${urlEncode(applicationConfig.contactFormServiceIdentifier)}&referer=${urlEncode(contactFormReferer)}"
   private def feedbackHmrcSubmitPartialUrl(implicit request: Request[AnyContent]) =
-    s"${applicationConfig.contactFrontendService}/beta-feedback/form?resubmitUrl=${urlEncode(localSubmitUrl)}"
+    s"${applicationConfig.contactFrontendPartialBaseUrl}/contact/beta-feedback/form?resubmitUrl=${urlEncode(localSubmitUrl)}"
   private def feedbackThankYouPartialUrl(ticketId: String)(implicit request: Request[AnyContent]) =
-    s"${applicationConfig.contactFrontendService}/beta-feedback/form/confirmation?ticketId=${urlEncode(ticketId)}"
+    s"${applicationConfig.contactFrontendPartialBaseUrl}/contact/beta-feedback/form/confirmation?ticketId=${urlEncode(ticketId)}"
 
   def show: Action[AnyContent] = authorised.async { implicit user => implicit request =>
+    Logger.error("SUBMIT URL IS :" + s"${urlEncode(localSubmitUrl)}")
     (request.session.get(REFERER), request.headers.get(REFERER)) match {
       case (None, Some(ref)) => Future.successful(Ok(views.html.feedback.feedback(feedbackFormPartialUrl, None))
         .withSession(request.session + (REFERER -> ref)))
