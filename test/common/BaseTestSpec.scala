@@ -138,8 +138,7 @@ trait BaseTestSpec extends UnitSpec with OneAppPerSuite with BeforeAndAfterEach 
       SessionKeys.sessionId -> s"session-${UUID.randomUUID()}",
       SessionKeys.lastRequestTimestamp -> DateTimeUtils.now.getMillis.toString,
       SessionKeys.token -> "ANYOLDTOKEN",
-      SessionKeys.authProvider -> provider,
-      SessionKeys.otacToken -> "ANYOLDTOKEN"
+      SessionKeys.authProvider -> provider
     )
 
   def showWithSessionAndAuth(action: Action[AnyContent])(test: Future[Result] => Any) {
@@ -159,15 +158,11 @@ trait BaseTestSpec extends UnitSpec with OneAppPerSuite with BeforeAndAfterEach 
 
   def withRegDetails(): Unit = {
     when(mockRegisteredBusinessCustomerService.getReviewBusinessCustomerDetails(Matchers.any(), Matchers.any())).thenReturn(Future.successful(Some(validModel)))
-    when(mockKeystoreConnector.fetchAndGetFormData[String](Matchers.eq(KeystoreKeys.otacToken))(Matchers.any(), Matchers.any()))
-      .thenReturn(Future.successful(None))
     when(mockAuthService.getAffinityGroup()(Matchers.any(), Matchers.any())).thenReturn(Future.successful(Some("Organisation")))
   }
 
   def noRegDetails(): Unit = {
     when(mockRegisteredBusinessCustomerService.getReviewBusinessCustomerDetails(Matchers.any(), Matchers.any())).thenReturn(Future.successful(None))
-    when(mockKeystoreConnector.fetchAndGetFormData[String](Matchers.eq(KeystoreKeys.otacToken))(Matchers.any(), Matchers.any()))
-      .thenReturn(Future.successful(None))
     when(mockAuthService.getAffinityGroup()(Matchers.any(), Matchers.any())).thenReturn(Future.successful(Some("Organisation")))
   }
 

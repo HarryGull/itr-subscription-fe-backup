@@ -35,5 +35,4 @@ object MockConfig extends AppConfig {
   override val signOutPageUrl: String = "/signout"
   override val authUrl: String = "/auth"
   override val createAccountUrl: String = "/create-account"
-  override val passcodeAuthenticationEnabled: Boolean = false
 }

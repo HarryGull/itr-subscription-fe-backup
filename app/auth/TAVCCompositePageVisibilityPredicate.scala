@@ -26,16 +26,13 @@ import scala.concurrent.ExecutionContext
 class TAVCCompositePageVisibilityPredicate(businessCustomerFrontendUrl: String,
                                            rbcService: RegisteredBusinessCustomerService,
                                            keystoreConnector: KeystoreConnector,
-                                           authService: AuthService,
-                                           passcodeAuthenticationEnabled: Boolean)(implicit ec: ExecutionContext)
+                                           authService: AuthService)(implicit ec: ExecutionContext)
   extends CompositePageVisibilityPredicate {
 
   override def children: Seq[PageVisibilityPredicate] = Seq (
     new NonNegotiableIdentityConfidencePredicate(L50),
-    new WhitelistPredicate(keystoreConnector),
     new AffinityGroupPredicate(authService),
-    new BusinessCustomerPredicate(businessCustomerFrontendUrl, rbcService),
-    new SecondWhitelistPredicate(keystoreConnector, passcodeAuthenticationEnabled)
+    new BusinessCustomerPredicate(businessCustomerFrontendUrl, rbcService)
   )
 
 }

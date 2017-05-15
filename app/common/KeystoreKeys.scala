@@ -30,8 +30,6 @@ trait KeystoreKeys {
   val backLinkConfirmCorrespondAddress: String = "backLink:confirmCorrespondAddress"
   val backLinkProvideCorrespondAddress: String = "backLink:provideCorrespondAddress"
   val backLinkContactDetailsSubscription: String = "backLink:contactDetailsSubscription"
-
-  // whitelist keys
-  val otacToken: String = "otacToken"
+  
 
 }

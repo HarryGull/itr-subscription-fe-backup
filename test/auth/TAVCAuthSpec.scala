@@ -106,8 +106,6 @@ class TAVCAuthSpec extends BaseTestSpec {
   "Calling authenticated async action with a default GG login session and account type is not Organisation" should {
     "redirect to affinity group error page" in {
       when(mockRegisteredBusinessCustomerService.getReviewBusinessCustomerDetails(Matchers.any(), Matchers.any())).thenReturn(Future.successful(None))
-      when(mockKeystoreConnector.fetchAndGetFormData[String](Matchers.eq(KeystoreKeys.otacToken))
-        (Matchers.any(), Matchers.any())).thenReturn(Future.successful(None))
       when(mockAuthService.getAffinityGroup()(Matchers.any(), Matchers.any())).thenReturn(Future.successful(Some("Individual")))
       val result = testController.authorisedAsyncAction(authenticatedFakeRequest(AuthenticationProviderIds.GovernmentGatewayId))
       status(result) shouldBe Status.SEE_OTHER
