@@ -44,8 +44,12 @@ class ConfirmCorrespondAddressController @Inject()(authorised: AuthorisedActions
                                                    implicit val applicationConfig: AppConfig)
   extends FrontendController with I18nSupport {
 
-  def redirect(): Action[AnyContent] = authorised.async { implicit user => implicit request =>
-    Future.successful(Redirect(routes.ConfirmCorrespondAddressController.show().url))
+  def redirect(tokenId: Option[String]): Action[AnyContent] = { Action.async{ implicit request =>
+      tokenId map {
+        tok => keystoreConnector.saveFormData[String](KeystoreKeys.tokenId, tok)
+      }
+      Future.successful(Redirect(routes.ConfirmCorrespondAddressController.show().url))
+    }
   }
 
   private def getConfirmCorrespondenceModels(implicit headerCarrier: HeaderCarrier) : Future[(Option[ConfirmCorrespondAddressModel],
@@ -57,7 +61,9 @@ class ConfirmCorrespondAddressController @Inject()(authorised: AuthorisedActions
   }
 
 
-  def show: Action[AnyContent] = authorised.async { implicit user => implicit request =>
+  def show: Action[AnyContent] =
+
+    authorised.async { implicit user => implicit request =>
     getConfirmCorrespondenceModels.map {
       case (Some(confirmCorrespondAddress),companyDetails) =>
         Ok(ConfirmCorrespondAddress(confirmCorrespondAddressForm.form.fill(confirmCorrespondAddress),companyDetails))
