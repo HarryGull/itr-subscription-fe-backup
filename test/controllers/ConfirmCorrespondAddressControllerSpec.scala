@@ -51,7 +51,7 @@ class ConfirmCorrespondAddressControllerSpec extends BaseTestSpec {
     }
 
     "redirect to the show method of this page when no token is passed in the url" in {
-      val result = testController.redirect(Some(tokenId)).apply(fakeRequest)
+      val result = testController.redirect(None).apply(fakeRequest)
       await(result).map{
         res => {
           status(result) shouldBe SEE_OTHER

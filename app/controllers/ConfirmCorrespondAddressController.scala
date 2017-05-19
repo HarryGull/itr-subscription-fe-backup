@@ -26,6 +26,7 @@ import models.{AddressModel, CompanyRegistrationReviewDetailsModel, ConfirmCorre
 import play.api.libs.json.Json
 import play.api.mvc.{Action, AnyContent}
 import services.RegisteredBusinessCustomerService
+import uk.gov.hmrc.http.cache.client.CacheMap
 import uk.gov.hmrc.play.frontend.controller.FrontendController
 import uk.gov.hmrc.play.http.HeaderCarrier
 import views.html.registrationInformation.ConfirmCorrespondAddress
@@ -44,11 +45,11 @@ class ConfirmCorrespondAddressController @Inject()(authorised: AuthorisedActions
                                                    implicit val applicationConfig: AppConfig)
   extends FrontendController with I18nSupport {
 
-  def redirect(tokenId: Option[String]): Action[AnyContent] = { Action.async{ implicit request =>
-      tokenId map {
-        tok => keystoreConnector.saveFormData[String](KeystoreKeys.tokenId, tok)
-      }
-      Future.successful(Redirect(routes.ConfirmCorrespondAddressController.show().url))
+  def redirect(tokenId: Option[String]): Action[AnyContent] = { Action.async { implicit request =>
+    for {
+      tok <- if (tokenId.isDefined) keystoreConnector.saveFormData[String](KeystoreKeys.tokenId, tokenId.get) else
+                                    Future{CacheMap("", Map("" -> Json.toJson("")))}
+    } yield Redirect(routes.ConfirmCorrespondAddressController.show().url)
     }
   }
 
