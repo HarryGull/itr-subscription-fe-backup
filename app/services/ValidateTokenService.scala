@@ -19,7 +19,6 @@ package services
 import javax.inject.Singleton
 
 import com.google.inject.Inject
-import common.KeystoreKeys
 import connectors.ValidateTokenConnector
 import play.api.Logger
 import uk.gov.hmrc.play.http.HeaderCarrier
@@ -32,28 +31,16 @@ import scala.concurrent.Future
 class ValidateTokenServiceImpl @Inject()(validateTokenConnector: ValidateTokenConnector) extends ValidateTokenService{
 
   def validateTemporaryToken(tokenId: Option[String])(implicit hc: HeaderCarrier): Future[Boolean] = {
-
-    def hasValidToken(token: Option[String]): Future[Boolean] = {
-        validateTokenConnector.validateToken(tokenId).map {
-          case Some(validationResult) if validationResult => {
-            true
-          }
-          case _ =>
-            false
-        }.recover {
-          case _ => Logger.warn(s"[ValidateTokenService][validateTemporaryToken] - Call to validate token failed")
-            false
+    validateTokenConnector.validateToken(tokenId).map {
+        case Some(validationResult) if validationResult => {
+          true
         }
-    }
-
-    (for {
-      validated <- hasValidToken(tokenId)
-    } yield validated).recover {
-      case _ => {
-        Logger.warn(s"[TokenService][validateTemporaryToken] - Call to validate token failed")
+        case _ =>
+          false
+      }.recover {
+        case _ => Logger.warn(s"[ValidateTokenService][validateTemporaryToken] - Call to validate token failed")
+          false
       }
-        false
-    }
   }
 }
 

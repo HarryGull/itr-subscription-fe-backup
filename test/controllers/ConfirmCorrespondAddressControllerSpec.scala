@@ -21,7 +21,9 @@ import common.{BaseTestSpec, Constants, KeystoreKeys}
 import models.ConfirmCorrespondAddressModel
 import org.mockito.Matchers
 import org.mockito.Mockito._
+import play.api.libs.json.Json
 import play.api.test.Helpers._
+import uk.gov.hmrc.http.cache.client.CacheMap
 
 import scala.concurrent.Future
 
@@ -31,6 +33,33 @@ class ConfirmCorrespondAddressControllerSpec extends BaseTestSpec {
     confirmCorrespondAddressForm, countriesHelper, messagesApi, MockConfig)
 
   val confirmCorrespondAddressModel = ConfirmCorrespondAddressModel(Constants.StandardRadioButtonYesValue)
+
+  val cacheMapTokenId: CacheMap = CacheMap("", Map("" -> Json.toJson(tokenId)))
+
+
+  "Sending a GET request to ConfirmCorrespondAddressController redirect method" should {
+    "save the token from the url into keystore and redirect to the show method of this page when a token is passed in the url" in {
+      when(mockKeystoreConnector.saveFormData[String](Matchers.eq(KeystoreKeys.tokenId),Matchers.any())(Matchers.any(),Matchers.any()))
+        .thenReturn(Future.successful(cacheMapTokenId))
+      val result = testController.redirect(Some(tokenId)).apply(fakeRequest)
+      await(result).map{
+        res => {
+          status(result) shouldBe SEE_OTHER
+          redirectLocation(result) shouldBe Some("/investment-tax-relief-subscription/confirm-correspondence-address")
+        }
+      }
+    }
+
+    "redirect to the show method of this page when no token is passed in the url" in {
+      val result = testController.redirect(Some(tokenId)).apply(fakeRequest)
+      await(result).map{
+        res => {
+          status(result) shouldBe SEE_OTHER
+          redirectLocation(result) shouldBe Some("/investment-tax-relief-subscription/confirm-correspondence-address")
+        }
+      }
+    }
+  }
 
   "Sending a GET request to ConfirmCorrespondAddressController" should {
     "return a 200 when something is fetched from keystore" in {

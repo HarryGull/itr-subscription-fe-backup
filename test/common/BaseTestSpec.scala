@@ -19,7 +19,7 @@ package common
 import java.util.UUID
 
 import auth.{AuthorisedActions, TAVCUser}
-import connectors.KeystoreConnector
+import connectors.{ValidateTokenConnector, KeystoreConnector}
 import forms.{ConfirmCorrespondAddressForm, ContactDetailsSubscriptionForm, ProvideCorrespondAddressForm}
 import models.{AddressModel, CompanyRegistrationReviewDetailsModel, ContactDetailsSubscriptionModel, ProvideCorrespondAddressModel}
 import org.joda.time.{DateTime, DateTimeZone}
@@ -32,7 +32,7 @@ import play.api.{Configuration, Environment}
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc._
 import play.api.test.FakeRequest
-import services.{AuthService, RegisteredBusinessCustomerService}
+import services.{ValidateTokenService, AuthService, RegisteredBusinessCustomerService}
 import uk.gov.hmrc.http.cache.client.SessionCache
 import uk.gov.hmrc.play.frontend.auth.{AuthContext, AuthenticationProviderIds}
 import uk.gov.hmrc.play.frontend.auth.connectors.domain
@@ -55,6 +55,8 @@ trait BaseTestSpec extends UnitSpec with OneAppPerSuite with BeforeAndAfterEach 
     reset(mockAuthService)
     reset(mockRegisteredBusinessCustomerService)
     reset(mockHttp)
+    reset(mockValidateTokenService)
+    reset(mockValidateTokenConnector)
   }
 
   val sessionId = UUID.randomUUID.toString
@@ -67,9 +69,13 @@ trait BaseTestSpec extends UnitSpec with OneAppPerSuite with BeforeAndAfterEach 
   val mockRegisteredBusinessCustomerService = mock[RegisteredBusinessCustomerService]
   val mockKeystoreConnector = mock[KeystoreConnector]
   val mockAuthService = mock[AuthService]
+  val mockValidateTokenService= mock[ValidateTokenService]
+  val mockValidateTokenConnector = mock[ValidateTokenConnector]
 
   val provideModel = ProvideCorrespondAddressModel("test1","test2",Some("test3"),Some("test4"),Some("test5"),"test6")
   val contactDetailsModel = ContactDetailsSubscriptionModel("test1","test2",Some("test3"),Some("test4"),"test5")
+
+  val tokenId = "123456789"
 
   val validation = new Validation(messagesApi)
   val countriesHelper = new CountriesHelper(Environment.simple())
@@ -195,4 +201,23 @@ trait BaseTestSpec extends UnitSpec with OneAppPerSuite with BeforeAndAfterEach 
       (Matchers.contains(KeystoreKeys.contactDetailsSubscription))(Matchers.any(),Matchers.any()))
       .thenReturn(Future.successful(None))
   }
+
+
+  def withValidToken(): Unit = {
+    when(mockKeystoreConnector.fetchAndGetFormData[String](Matchers.eq(KeystoreKeys.tokenId))(Matchers.any(),Matchers.any())).
+      thenReturn(Future.successful(Some(tokenId)))
+    when(mockValidateTokenService.validateTemporaryToken(Matchers.any())(Matchers.any())).thenReturn(Future.successful(true))
+  }
+  def withInvalidToken(): Unit ={
+    when(mockKeystoreConnector.fetchAndGetFormData[String](Matchers.eq(KeystoreKeys.tokenId))(Matchers.any(),Matchers.any())).
+      thenReturn(Future.successful(Some(tokenId)))
+    when(mockValidateTokenService.validateTemporaryToken(Matchers.any())(Matchers.any())).thenReturn(Future.successful(false))
+  }
+
+  def withoutToken(): Unit = {
+    when(mockKeystoreConnector.fetchAndGetFormData[String](Matchers.eq(KeystoreKeys.tokenId))(Matchers.any(),Matchers.any())).
+      thenReturn(Future.successful(None))
+    when(mockValidateTokenService.validateTemporaryToken(Matchers.any())(Matchers.any())).thenReturn(Future.successful(false))
+  }
+
 }
