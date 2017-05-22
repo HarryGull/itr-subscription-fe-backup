@@ -28,6 +28,7 @@ object MockConfig extends AppConfig {
   override val introductionUrl: String = "http://localhost:9637/investment-tax-relief-subscription/"
   override val businessCustomerUrl: String = "http://localhost:9923/business-customer/investment-tax-relief"
   override val subscriptionUrl: String = ""
+  override val submissionBackendUrl: String = ""
   override val submissionUrl: String = "/investment-tax-relief/"
   override val contactFormServiceIdentifier: String = "/contact"
   override val contactFrontendPartialBaseUrl: String = "/contact/partial"
@@ -35,5 +36,4 @@ object MockConfig extends AppConfig {
   override val signOutPageUrl: String = "/signout"
   override val authUrl: String = "/auth"
   override val createAccountUrl: String = "/create-account"
-  override val passcodeAuthenticationEnabled: Boolean = false
 }

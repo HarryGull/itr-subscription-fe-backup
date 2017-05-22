@@ -5,7 +5,7 @@ GET         /assets/*file            controllers.Assets.at(path="/public", file)
 ########################################################
 
 
-GET         /                                           controllers.ConfirmCorrespondAddressController.redirect
+GET         /                                           controllers.ConfirmCorrespondAddressController.redirect(tokenId: Option[String]?=None)
 
 GET         /confirm-correspondence-address             controllers.ConfirmCorrespondAddressController.show
 POST        /confirm-correspondence-address             controllers.ConfirmCorrespondAddressController.submit

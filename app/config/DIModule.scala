@@ -45,11 +45,13 @@ class DIModule extends AbstractModule {
     bind(classOf[KeystoreConnector]).to(classOf[KeystoreConnectorImpl])
     bind(classOf[SubscriptionConnector]).to(classOf[SubscriptionConnectorImpl])
     bind(classOf[AuthConnector]).to(classOf[AuthConnectorImpl])
+    bind(classOf[ValidateTokenConnector]).to(classOf[ValidateTokenConnectorImpl])
 
     // Services
     bind(classOf[RegisteredBusinessCustomerService]).to(classOf[RegisteredBusinessCustomerServiceImpl])
     bind(classOf[SubscriptionService]).to(classOf[SubscriptionServiceImpl])
     bind(classOf[AuthService]).to(classOf[AuthServiceImpl])
+    bind(classOf[ValidateTokenService]).to(classOf[ValidateTokenServiceImpl])
 
     // Auth
     bind(classOf[AuthorisedActions]).to(classOf[AuthorisedForTAVC])

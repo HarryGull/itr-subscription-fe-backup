@@ -16,23 +16,25 @@
 
 package auth
 
+import _root_.connectors.KeystoreConnector
 import common.KeystoreKeys
+import play.api.mvc.Results._
 import play.api.mvc.{AnyContent, Request}
-import uk.gov.hmrc.play.frontend.auth.{AuthContext, PageIsVisible, PageVisibilityPredicate, PageVisibilityResult}
-import connectors.KeystoreConnector
+import services.ValidateTokenService
+import uk.gov.hmrc.play.frontend.auth._
 import uk.gov.hmrc.play.http.HeaderCarrier
 
-import scala.concurrent.Future
+import scala.concurrent.{Future, ExecutionContext}
 
-class WhitelistPredicate(keystoreConnector: KeystoreConnector) extends PageVisibilityPredicate {
-
+class PassedThrottlePredicate(validateTokenService: ValidateTokenService, keystore: KeystoreConnector, submissionFrontendUrl: String)
+                               (implicit ec: ExecutionContext) extends PageVisibilityPredicate {
   override def apply(authContext: AuthContext, request: Request[AnyContent]): Future[PageVisibilityResult] = {
     implicit val hc = HeaderCarrier.fromHeadersAndSession(request.headers, Some(request.session))
-    request.getQueryString("p").fold(Future.successful(PageIsVisible)) {
-      token =>
-        keystoreConnector.saveFormData[String](KeystoreKeys.otacToken, token)
-        Future.successful(PageIsVisible)
-    }
+    for{
+      tokenId <-  keystore.fetchAndGetFormData[String](KeystoreKeys.tokenId)
+      passedCheck <- validateTokenService.validateTemporaryToken(tokenId)
+    }yield if(passedCheck) PageIsVisible else PageBlocked(failedThrottleCheck)
   }
 
+  private val failedThrottleCheck = Future.successful(Redirect(submissionFrontendUrl))
 }

@@ -24,7 +24,6 @@ import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent}
 import uk.gov.hmrc.play.frontend.controller.FrontendController
 import views.html.signout.SignedOut
-import uk.gov.hmrc.passcode.authentication.{PasscodeAuthentication, PasscodeAuthenticationProvider, PasscodeVerificationConfig}
 
 import scala.concurrent.Future
 
@@ -32,16 +31,13 @@ import scala.concurrent.Future
 class SignOutController @Inject()(authorised: AuthorisedActions,
                                   implicit val applicationConfig: AppConfig,
                                   configuration: Configuration,
-                                  val messagesApi: MessagesApi) extends FrontendController with PasscodeAuthentication with I18nSupport {
-
-  override def config: PasscodeVerificationConfig = new PasscodeVerificationConfig(configuration)
-  override def passcodeAuthenticationProvider: PasscodeAuthenticationProvider = new PasscodeAuthenticationProvider(config)
+                                  val messagesApi: MessagesApi) extends FrontendController with I18nSupport {
 
   def signout(): Action[AnyContent] = authorised.async { implicit user => implicit request =>
     Future.successful(Redirect(s"${applicationConfig.ggSignOutUrl}?continue=${applicationConfig.signOutPageUrl}"))
   }
 
-  def show(): Action[AnyContent] = PasscodeAuthenticatedActionAsync { implicit request =>
+  def show(): Action[AnyContent] = Action.async { implicit request =>
     Future.successful(Ok(SignedOut()))
   }
 

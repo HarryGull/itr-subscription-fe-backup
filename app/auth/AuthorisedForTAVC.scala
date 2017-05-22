@@ -19,8 +19,7 @@ package auth
 import com.google.inject.{Inject, Singleton}
 import play.api.mvc._
 import config.AppConfig
-import services.{AuthService, RegisteredBusinessCustomerService}
-import uk.gov.hmrc.passcode.authentication.{PasscodeAuthentication, PasscodeAuthenticationProvider, PasscodeVerificationConfig}
+import services.{ValidateTokenService, AuthService, RegisteredBusinessCustomerService}
 import connectors.KeystoreConnector
 import play.api.Configuration
 import uk.gov.hmrc.play.frontend.auth.connectors.AuthConnector
@@ -34,32 +33,31 @@ import scala.concurrent.{ExecutionContext, Future}
 class AuthorisedForTAVC @Inject()(val authConnector: AuthConnector,
                                   configuration: Configuration,
                                   applicationConfig: AppConfig,
+                                  validateTokenService: ValidateTokenService,
                                   registeredBusinessCustomerService: RegisteredBusinessCustomerService,
                                   keystoreConnector: KeystoreConnector,
                                   authService: AuthService)(implicit ec: ExecutionContext)
-  extends AuthorisedActions with Actions with PasscodeAuthentication {
+  extends AuthorisedActions with Actions {
 
   lazy val postSignInRedirectUrl: String = applicationConfig.introductionUrl
-
-  override def config: PasscodeVerificationConfig = new PasscodeVerificationConfig(configuration)
-  override def passcodeAuthenticationProvider: PasscodeAuthenticationProvider = new PasscodeAuthenticationProvider(config)
 
   // $COVERAGE-OFF$
   implicit private def hc(implicit request: Request[_]): HeaderCarrier = HeaderCarrier.fromHeadersAndSession(request.headers, Some(request.session))
   // $COVERAGE-ON$
 
   private lazy val visibilityPredicate = new TAVCCompositePageVisibilityPredicate(
+    validateTokenService,
+    applicationConfig.submissionUrl,
     applicationConfig.businessCustomerUrl,
     registeredBusinessCustomerService,
     keystoreConnector,
-    authService,
-    applicationConfig.passcodeAuthenticationEnabled
+    authService
   )
 
   def async(action: TAVCUser => Request[AnyContent] => Future[Result]): Action[AnyContent] = {
     AuthorisedFor(TAVCRegime, visibilityPredicate).async {
       implicit user => implicit request =>
-        withVerifiedPasscode(action(TAVCUser(user))(request))
+        action(TAVCUser(user))(request)
     }
   }
 

@@ -32,13 +32,13 @@ trait AppConfig {
   val businessCustomerUrl: String
   val subscriptionUrl: String
   val submissionUrl: String
+  val submissionBackendUrl: String
   val contactFormServiceIdentifier: String
   val contactFrontendPartialBaseUrl: String
   val ggSignOutUrl: String
   val signOutPageUrl: String
   val authUrl: String
   val createAccountUrl: String
-  val passcodeAuthenticationEnabled: Boolean
 }
 
 class FrontendAppConfig @Inject()(configuration: Configuration) extends AppConfig with ServicesConfig {
@@ -53,6 +53,7 @@ class FrontendAppConfig @Inject()(configuration: Configuration) extends AppConfi
   override lazy val businessCustomerUrl = configuration.getString("business-customer.url").getOrElse("")
   override lazy val subscriptionUrl = baseUrl("investment-tax-relief-subscription")
   override lazy val submissionUrl = configuration.getString("submission.url").getOrElse("")
+  override lazy val submissionBackendUrl = baseUrl("investment-tax-relief")
 
   //Contact Frontend Config
   protected lazy val contactFrontendService = baseUrl("contact-frontend")
@@ -66,5 +67,4 @@ class FrontendAppConfig @Inject()(configuration: Configuration) extends AppConfi
   override lazy val signOutPageUrl: String = loadConfig(s"sign-out-page.url")
   override lazy val authUrl = baseUrl("auth")
   override lazy val createAccountUrl = loadConfig("create-account.url")
-  override lazy val passcodeAuthenticationEnabled = configuration.getBoolean("passcodeAuthentication.enabled").getOrElse(false)
 }

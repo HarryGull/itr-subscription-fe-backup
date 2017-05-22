@@ -35,16 +35,16 @@ class GovernmentGatewayProvider(postSignInRedirectUrl: String, loginUrl: String)
 
   override def continueURL: String = postSignInRedirectUrl
 
-  private def loginUrlParameters(whitelistToken: String) = Map(
-    "continue" -> Seq(continueURL + whitelistToken),
+  private def loginUrlParameters = Map(
+    "continue" -> Seq(continueURL),
     "origin" -> Seq(origin)) ++ additionalLoginParameters
 
   override def redirectToLogin(implicit request: Request[_]): Future[Result] = {
-    Future.successful(Redirect(loginURL, loginUrlParameters(request.getQueryString("p").fold("")(token => s"?p=$token"))))
+    Future.successful(Redirect(loginURL, loginUrlParameters))
   }
 }
 
 object GovernmentGatewayProvider {
-  def handleSessionTimeout(implicit request: Request[_]): Future[Result] = Future.successful(Redirect(routes.TimeoutController.timeout().url))
+    def handleSessionTimeout(implicit request: Request[_]): Future[Result] = Future.successful(Redirect(routes.TimeoutController.timeout().url))
   val additionalLoginParameters = Map("accountType" -> Seq("organisation"))
 }

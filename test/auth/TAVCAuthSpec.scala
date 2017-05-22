@@ -34,11 +34,13 @@ class TAVCAuthSpec extends BaseTestSpec {
   val authorisedForTAVC = new AuthorisedForTAVC(MockAuthConnector,
     configuration,
     MockConfig,
+    mockValidateTokenService,
     mockRegisteredBusinessCustomerService,
     mockKeystoreConnector,
     mockAuthService
   )
   val testController = new AuthTestController(authorisedForTAVC)
+
 
   "Government Gateway Provider" should {
     "have an account type additional parameter set to organisation" in {
@@ -89,6 +91,7 @@ class TAVCAuthSpec extends BaseTestSpec {
 
   "Calling authenticated async action with a default GG login session and business customer details in keystore" should {
     "result in an OK status" in {
+      withValidToken()
       withRegDetails()
       val result = testController.authorisedAsyncAction(authenticatedFakeRequest(AuthenticationProviderIds.GovernmentGatewayId))
       status(result) shouldBe Status.OK
@@ -97,6 +100,7 @@ class TAVCAuthSpec extends BaseTestSpec {
 
   "Calling authenticated async action with a default GG login session and no business customer details in keystore" should {
     "result in a SEE_OTHER status" in {
+      withValidToken()
       noRegDetails()
       val result = testController.authorisedAsyncAction(authenticatedFakeRequest(AuthenticationProviderIds.GovernmentGatewayId))
       status(result) shouldBe Status.SEE_OTHER
@@ -105,13 +109,33 @@ class TAVCAuthSpec extends BaseTestSpec {
 
   "Calling authenticated async action with a default GG login session and account type is not Organisation" should {
     "redirect to affinity group error page" in {
+      withValidToken()
       when(mockRegisteredBusinessCustomerService.getReviewBusinessCustomerDetails(Matchers.any(), Matchers.any())).thenReturn(Future.successful(None))
-      when(mockKeystoreConnector.fetchAndGetFormData[String](Matchers.eq(KeystoreKeys.otacToken))
-        (Matchers.any(), Matchers.any())).thenReturn(Future.successful(None))
       when(mockAuthService.getAffinityGroup()(Matchers.any(), Matchers.any())).thenReturn(Future.successful(Some("Individual")))
       val result = testController.authorisedAsyncAction(authenticatedFakeRequest(AuthenticationProviderIds.GovernmentGatewayId))
       status(result) shouldBe Status.SEE_OTHER
       redirectLocation(result) shouldBe Some(routes.AffinityGroupErrorController.show().url)
+    }
+  }
+
+
+  "Calling authenticated async action with a default GG login session a token that cannot be validated" should {
+    "result in a SEE_OTHER status that redirects to the submission frontend" in {
+     withInvalidToken()
+      noRegDetails()
+      val result = testController.authorisedAsyncAction(authenticatedFakeRequest(AuthenticationProviderIds.GovernmentGatewayId))
+      status(result) shouldBe Status.SEE_OTHER
+      redirectLocation(result) shouldBe Some(MockConfig.submissionUrl)
+    }
+  }
+
+  "Calling authenticated async action with a default GG login session and no token" should {
+    "result in a SEE_OTHER status that redirects to the submission frontend" in {
+      withoutToken()
+      noRegDetails()
+      val result = testController.authorisedAsyncAction(authenticatedFakeRequest(AuthenticationProviderIds.GovernmentGatewayId))
+      status(result) shouldBe Status.SEE_OTHER
+      redirectLocation(result) shouldBe Some(MockConfig.submissionUrl)
     }
   }
 

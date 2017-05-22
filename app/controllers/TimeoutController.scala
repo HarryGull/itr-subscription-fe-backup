@@ -22,22 +22,19 @@ import play.api.Configuration
 import play.api.i18n.{I18nSupport, MessagesApi}
 import views.html.warnings._
 import play.api.mvc.{Action, AnyContent}
-import uk.gov.hmrc.passcode.authentication.PasscodeAuthentication
 import uk.gov.hmrc.play.frontend.controller.FrontendController
-import uk.gov.hmrc.passcode.authentication.{PasscodeAuthenticationProvider, PasscodeVerificationConfig}
 
 import scala.concurrent.Future
 
 @Singleton
 class TimeoutController @Inject()(configuration: Configuration,
                                   val messagesApi: MessagesApi,
-                                  implicit val applicationConfig: AppConfig) extends FrontendController with PasscodeAuthentication with I18nSupport {
+                                  implicit val applicationConfig: AppConfig) extends FrontendController with I18nSupport {
 
-  override def config: PasscodeVerificationConfig = new PasscodeVerificationConfig(configuration)
-  override def passcodeAuthenticationProvider: PasscodeAuthenticationProvider = new PasscodeAuthenticationProvider(config)
 
-  def timeout:Action[AnyContent] = PasscodeAuthenticatedActionAsync { implicit request =>
-    Future.successful(Ok(sessionTimeout()))
+
+  def timeout:Action[AnyContent] = Action.async{
+    implicit request => Future.successful(Ok(sessionTimeout()))
   }
 
 }

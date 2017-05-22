@@ -31,33 +31,12 @@ class AffinityGroupErrorControllerSpec extends BaseTestSpec {
 
   "show" should {
 
-    "return OK when keystoreConnector returns an otacToken" in {
-      when(mockKeystoreConnector.fetchAndGetFormData[String](Matchers.eq(KeystoreKeys.otacToken))(Matchers.any(), Matchers.any()))
-        .thenReturn(Future.successful(Some("test")))
+    "return OK"  in {
       showWithSessionAndAuth(testController.show())(
         result =>
           status(result) shouldBe OK
       )
     }
-
-    "return OK when keystoreConnector returns nothing" in {
-      when(mockKeystoreConnector.fetchAndGetFormData[String](Matchers.eq(KeystoreKeys.otacToken))(Matchers.any(), Matchers.any()))
-        .thenReturn(Future.successful(None))
-      showWithSessionAndAuth(testController.show())(
-        result =>
-          status(result) shouldBe OK
-      )
-    }
-
-    "return OK when keystoreConnector returns a failed future" in {
-      when(mockKeystoreConnector.fetchAndGetFormData[String](Matchers.eq(KeystoreKeys.otacToken))(Matchers.any(), Matchers.any()))
-        .thenReturn(Future.failed(Upstream5xxResponse("", INTERNAL_SERVER_ERROR, INTERNAL_SERVER_ERROR)))
-      showWithSessionAndAuth(testController.show())(
-        result =>
-          status(result) shouldBe OK
-      )
-    }
-
   }
 
 }

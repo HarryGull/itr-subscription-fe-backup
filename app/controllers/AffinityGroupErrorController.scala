@@ -28,6 +28,8 @@ import uk.gov.hmrc.play.config.AppName
 import uk.gov.hmrc.play.frontend.controller.FrontendController
 import views.html.warnings.AffinityGroupError
 
+import scala.concurrent.Future
+
 class AffinityGroupErrorController @Inject()(keystoreConnector: KeystoreConnector,
                                              val messagesApi: MessagesApi,
                                              implicit val applicationConfig: AppConfig) extends FrontendController with I18nSupport with AppName {
@@ -35,18 +37,9 @@ class AffinityGroupErrorController @Inject()(keystoreConnector: KeystoreConnecto
   def show() : Action[AnyContent] = Action.async { implicit request =>
     def signInURL(params : String = "") =
       s"${applicationConfig.ggSignInUrl}?continue=${applicationConfig.introductionUrl}$params&origin=$appName&accountType=organisation"
-    def createAccountURL(params : String = "") =
-      s"${applicationConfig.createAccountUrl}?continue=${applicationConfig.introductionUrl}$params&origin=$appName&accountType=organisation"
-    keystoreConnector.fetchAndGetFormData[String](KeystoreKeys.otacToken).map {
-      case Some(token) => {
-        val queryParams = s"?p=$token"
-        Ok(AffinityGroupError(signInURL(queryParams), createAccountURL(queryParams)))
-      }
-      case None => Ok(AffinityGroupError(signInURL(), createAccountURL()))
-    }.recover {
-      case e : Exception => Logger.warn(s"[AffinityGroupErrorController][show] Error contacting keystore: ${e.getMessage}")
-        Ok(AffinityGroupError(signInURL(), createAccountURL()))
-    }
+    def createAccountURL() =
+      s"${applicationConfig.createAccountUrl}?continue=${applicationConfig.introductionUrl}&origin=$appName&accountType=organisation"
+      Future.successful(Ok(AffinityGroupError(signInURL(), createAccountURL())))
   }
 
 }
