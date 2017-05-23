@@ -118,7 +118,7 @@ class TAVCAuthSpec extends BaseTestSpec {
     }
   }
 
-
+/*
   "Calling authenticated async action with a default GG login session a token that cannot be validated" should {
     "result in a SEE_OTHER status that redirects to the submission frontend" in {
      withInvalidToken()
@@ -137,6 +137,6 @@ class TAVCAuthSpec extends BaseTestSpec {
       status(result) shouldBe Status.SEE_OTHER
       redirectLocation(result) shouldBe Some(MockConfig.submissionUrl)
     }
-  }
+  }*/
 
 }
