@@ -31,6 +31,7 @@ import uk.gov.hmrc.play.frontend.controller.FrontendController
 import uk.gov.hmrc.play.http.HeaderCarrier
 import views.html.registrationInformation.ConfirmCorrespondAddress
 import play.api.i18n.{I18nSupport, MessagesApi}
+import uk.gov.hmrc.play.health.routes
 import utils.CountriesHelper
 
 import scala.concurrent.Future
@@ -47,8 +48,9 @@ class ConfirmCorrespondAddressController @Inject()(authorised: AuthorisedActions
 
   def redirect(tokenId: Option[String]): Action[AnyContent] = { Action.async { implicit request =>
     for {
-      tok <- if (tokenId.isDefined) keystoreConnector.saveFormData[String](KeystoreKeys.tokenId, tokenId.get) else
-                                    Future{CacheMap("", Map("" -> Json.toJson("")))}
+      tok <- if (tokenId.isEmpty) Future{CacheMap("", Map("" -> Json.toJson("")))}
+            else keystoreConnector.saveFormData[String](KeystoreKeys.tokenId, tokenId.get)
+
     } yield Redirect(routes.ConfirmCorrespondAddressController.show().url)
     }
   }
