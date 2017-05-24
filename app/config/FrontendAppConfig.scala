@@ -53,7 +53,7 @@ class FrontendAppConfig @Inject()(configuration: Configuration) extends AppConfi
   override lazy val businessCustomerUrl = configuration.getString("business-customer.url").getOrElse("")
   override lazy val subscriptionUrl = baseUrl("investment-tax-relief-subscription")
   override lazy val submissionUrl = configuration.getString("submission.url").getOrElse("")
-  override lazy val submissionBackendUrl = baseUrl("investment-tax-relief")
+  override lazy val submissionBackendUrl = baseUrl("investment-tax-relief-submission")
 
   //Contact Frontend Config
   protected lazy val contactFrontendService = baseUrl("contact-frontend")

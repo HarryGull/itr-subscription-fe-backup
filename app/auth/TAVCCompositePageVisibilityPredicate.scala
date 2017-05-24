@@ -32,7 +32,7 @@ class TAVCCompositePageVisibilityPredicate(validateTokenService: ValidateTokenSe
   extends CompositePageVisibilityPredicate {
 
   override def children: Seq[PageVisibilityPredicate] = Seq (
-    //new PassedThrottlePredicate(validateTokenService, keystoreConnector, submissionFrontendUrl),
+    new PassedThrottlePredicate(validateTokenService, keystoreConnector, submissionFrontendUrl),
     new NonNegotiableIdentityConfidencePredicate(L50),
     new AffinityGroupPredicate(authService),
     new BusinessCustomerPredicate(businessCustomerFrontendUrl, rbcService)
