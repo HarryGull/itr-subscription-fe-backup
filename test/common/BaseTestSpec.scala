@@ -19,7 +19,7 @@ package common
 import java.util.UUID
 
 import auth.{AuthorisedActions, TAVCUser}
-import connectors.{ValidateTokenConnector, KeystoreConnector}
+import connectors.{KeystoreConnector, ValidateTokenConnector}
 import forms.{ConfirmCorrespondAddressForm, ContactDetailsSubscriptionForm, ProvideCorrespondAddressForm}
 import models.{AddressModel, CompanyRegistrationReviewDetailsModel, ContactDetailsSubscriptionModel, ProvideCorrespondAddressModel}
 import org.joda.time.{DateTime, DateTimeZone}
@@ -32,7 +32,7 @@ import play.api.{Configuration, Environment}
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc._
 import play.api.test.FakeRequest
-import services.{ValidateTokenService, AuthService, RegisteredBusinessCustomerService}
+import services._
 import uk.gov.hmrc.http.cache.client.SessionCache
 import uk.gov.hmrc.play.frontend.auth.{AuthContext, AuthenticationProviderIds}
 import uk.gov.hmrc.play.frontend.auth.connectors.domain
@@ -57,6 +57,7 @@ trait BaseTestSpec extends UnitSpec with OneAppPerSuite with BeforeAndAfterEach 
     reset(mockHttp)
     reset(mockValidateTokenService)
     reset(mockValidateTokenConnector)
+    reset(mockEmailVerificationService)
   }
 
   val sessionId = UUID.randomUUID.toString
@@ -71,6 +72,7 @@ trait BaseTestSpec extends UnitSpec with OneAppPerSuite with BeforeAndAfterEach 
   val mockAuthService = mock[AuthService]
   val mockValidateTokenService= mock[ValidateTokenService]
   val mockValidateTokenConnector = mock[ValidateTokenConnector]
+  val mockEmailVerificationService = mock[EmailVerificationService]
 
   val provideModel = ProvideCorrespondAddressModel("test1","test2",Some("test3"),Some("test4"),Some("test5"),"test6")
   val contactDetailsModel = ContactDetailsSubscriptionModel("test1","test2",Some("test3"),Some("test4"),"test5")

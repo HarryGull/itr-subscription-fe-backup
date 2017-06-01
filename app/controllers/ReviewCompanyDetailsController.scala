@@ -23,7 +23,7 @@ import config.{AppConfig, FrontendGlobal}
 import connectors.KeystoreConnector
 import models.{CompanyRegistrationReviewDetailsModel, ContactDetailsSubscriptionModel, ProvideCorrespondAddressModel, ReviewCompanyDetailsModel}
 import play.api.mvc.{Action, AnyContent, Request, Result}
-import services.{RegisteredBusinessCustomerService, SubscriptionService}
+import services.{EmailVerificationService, RegisteredBusinessCustomerService, SubscriptionService}
 import uk.gov.hmrc.play.frontend.controller.FrontendController
 import utils.CountriesHelper
 import views.html.registrationInformation.ReviewCompanyDetails
@@ -41,6 +41,7 @@ class ReviewCompanyDetailsController @Inject()(authorised: AuthorisedActions,
                                                val messagesApi: MessagesApi)extends FrontendController with I18nSupport {
 
   def show: Action[AnyContent] = authorised.async { implicit user => implicit request =>
+
     for {
       registrationReviewDetails <- registeredBusinessCustomerService.getReviewBusinessCustomerDetails
       correspondenceAddress <- keystoreConnector.fetchAndGetFormData[ProvideCorrespondAddressModel](KeystoreKeys.provideCorrespondAddress)

@@ -18,12 +18,16 @@ package connectors
 
 import com.google.inject.{Inject, Singleton}
 import config.AppConfig
+import models.Email
 import models.etmp.SubscriptionTypeModel
+import play.api.Logger
 import play.api.libs.json.{JsValue, Json}
 import uk.gov.hmrc.play.http.ws.WSHttp
-import uk.gov.hmrc.play.http.{HeaderCarrier, HttpResponse}
+import uk.gov.hmrc.play.http.{BadRequestException, HeaderCarrier, HttpResponse}
 
 import scala.concurrent.Future
+
+import scala.concurrent.ExecutionContext.Implicits.global
 
 @Singleton
 class SubscriptionConnectorImpl @Inject()(http: WSHttp, applicationConfig: AppConfig) extends SubscriptionConnector {
@@ -32,10 +36,20 @@ class SubscriptionConnectorImpl @Inject()(http: WSHttp, applicationConfig: AppCo
   def subscribe(subscriptionModel: SubscriptionTypeModel, safeID: String, postcode: String)(implicit hc: HeaderCarrier): Future[HttpResponse] = {
     http.POST[JsValue, HttpResponse](s"$serviceUrl/investment-tax-relief-subscription/$safeID/$postcode/subscribe",Json.toJson(subscriptionModel))
   }
+
+  def updateEmail(registrationId: String, email: Email)(implicit hc: HeaderCarrier): Future[Option[Email]] = {
+    val json = Json.toJson(email)
+    http.PUT[JsValue, Email](s"$serviceUrl/investment-tax-relief-subscription/update-email", json).map{
+      e => Some(e)
+    } recover {
+      case ex: BadRequestException =>
+        None
+    }
+  }
 }
 
 trait SubscriptionConnector {
 
   def subscribe(subscriptionModel: SubscriptionTypeModel, safeID: String, postcode: String)(implicit hc: HeaderCarrier): Future[HttpResponse]
-
+  def updateEmail(registrationId: String, email: Email)(implicit hc: HeaderCarrier): Future[Option[Email]]
 }

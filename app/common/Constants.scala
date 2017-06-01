@@ -22,4 +22,5 @@ trait Constants {
   val StandardRadioButtonYesValue = "Yes"
   val StandardRadioButtonNoValue = "No"
   val SuggestedTextMaxLength: Int = 2048
+  val ContactDetailsReturnUrl = 1
 }
