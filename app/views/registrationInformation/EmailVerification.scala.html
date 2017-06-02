@@ -1,0 +1,28 @@
+@import uk.gov.hmrc.play.views.html.helpers.form
+@import models.ContactDetailsSubscriptionModel
+
+@(emailVerificationModel: EmailVerificationModel)(implicit request: Request[_], messages: Messages, appConfig: config.AppConfig)
+
+@main_template(Messages("page.registrationInformation.EmailVerification.title")) {
+
+<div class="grid-row">
+    <div class="column-two-thirds">
+        <h1 id="main-heading" class="form-title heading-xlarge">@Messages("page.registrationInformation.EmailVerification.heading")</h1>
+
+        <div class="form-group">
+            <p id="email-one">@Messages("page.registrationInformation.EmailVerification.info.one") @emailVerificationModel.contactDetails.email@Messages("page.registrationInformation.EmailVerification.info.two")</p>
+        </div>
+
+        <details>
+            <summary><span id="help" class="summary">@Messages("page.registrationInformation.EmailVerification.help.link")</span></summary>
+            <div class="panel panel-indent panel-border-narrow">
+                <p id="help-text-one">@Messages("page.registrationInformation.EmailVerification.help.text.one")
+                    <a id="email-help-link-one" href="@controllers.routes.ContactDetailsSubscriptionController.show">@Messages("page.registrationInformation.EmailVerification.help.text.two")</a>
+                    @Messages("page.registrationInformation.EmailVerification.help.text.three")
+                    <a id="email-help-link-two" href="/investment-tax-relief-subscription/email-verification/1">@Messages("page.registrationInformation.EmailVerification.help.text.four")</a></p>
+            </div>
+        </details>
+
+    </div>
+</div>
+}

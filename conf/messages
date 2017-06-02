@@ -87,6 +87,17 @@ page.registrationInformation.ReviewCompanyDetails.button.confirm.and.register= C
 page.registrationInformation.ReviewCompanyDetails.correspondenceAddress= Correspondence address
 page.registrationInformation.ReviewCompanyDetails.companyContact= Company contact
 
+# Email Verification Details
+page.registrationInformation.EmailVerification.heading= We''ve sent you an email
+page.registrationInformation.EmailVerification.title= We''ve sent you an email
+page.registrationInformation.EmailVerification.info.one= We''ve sent an email to
+page.registrationInformation.EmailVerification.info.two= . It contains a link you’ll need to continue your registration.
+page.registrationInformation.EmailVerification.help.link= If you don't get an email
+page.registrationInformation.EmailVerification.help.text.one= Check the email address you''ve entered. If it''s wrong you''ll need to
+page.registrationInformation.EmailVerification.help.text.two= start again
+page.registrationInformation.EmailVerification.help.text.three= . If it''s right, check for the email in your spam folder. If you''re having problems you can ask us to
+page.registrationInformation.EmailVerification.help.text.four= send it again.
+
 #signout page
 page.signout.SignedOut.title = You''re signed out
 page.signout.SignedOut.header = You''re signed out
