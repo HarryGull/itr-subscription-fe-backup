@@ -36,5 +36,8 @@ object MockConfig extends AppConfig {
   override val signOutPageUrl: String = "/signout"
   override val authUrl: String = "/auth"
   override val createAccountUrl: String = "/create-account"
-  override lazy val emailVerificationReturnUrlOne = "http://localhost:9637/investment-tax-relief-subscription/contact-details-subscription"
+  override val emailVerificationReturnUrlOne = "http://localhost:9637/investment-tax-relief-subscription/contact-details-subscription"
+  override val sendVerificationEmailURL = "http://localhost:9891/email-verification/verification-requests"
+  override val checkVerifiedEmailURL = "http://localhost:9891/email-verification/verified-email-addresses"
+  override val emailVerificationTemplate = "verifyEmailAddress"
 }

@@ -48,7 +48,8 @@ class EmailVerificationController @Inject()(authorised: AuthorisedActions,
               isVerified <- emailVerificationService.verifyEmailAddress(data.get.email)
           } yield if (isVerified.getOrElse(false)) Redirect(controllers.routes.ReviewCompanyDetailsController.show()) else {
             if(data.isDefined){
-              emailVerificationService.sendVerificationLink(data.get.email, applicationConfig.emailVerificationReturnUrlOne)
+              emailVerificationService.sendVerificationLink(data.get.email, applicationConfig.emailVerificationReturnUrlOne,
+                applicationConfig.emailVerificationTemplate)
               Ok(EmailVerification(EmailVerificationModel(data.get)))
             }
             else Redirect(controllers.routes.ContactDetailsSubscriptionController.show())

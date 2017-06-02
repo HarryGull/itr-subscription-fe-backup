@@ -46,6 +46,7 @@ class DIModule extends AbstractModule {
     bind(classOf[SubscriptionConnector]).to(classOf[SubscriptionConnectorImpl])
     bind(classOf[AuthConnector]).to(classOf[AuthConnectorImpl])
     bind(classOf[ValidateTokenConnector]).to(classOf[ValidateTokenConnectorImpl])
+    bind(classOf[EmailVerificationConnector]).to(classOf[EmailVerificationConnectorImpl])
 
     // Services
     bind(classOf[RegisteredBusinessCustomerService]).to(classOf[RegisteredBusinessCustomerServiceImpl])

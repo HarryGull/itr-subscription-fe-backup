@@ -16,13 +16,14 @@
 
 package connectors
 
-import config.WSHttp
+import com.google.inject.{Inject, Singleton}
+import config.{AppConfig, WSHttp}
 import models.EmailVerificationRequest
 import play.api.Logger
 import play.api.http.Status._
 import play.api.libs.json.{JsValue, Json}
-import uk.gov.hmrc.play.config.ServicesConfig
 import uk.gov.hmrc.play.http._
+import uk.gov.hmrc.play.http.ws.WSHttp
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
@@ -30,16 +31,10 @@ import scala.util.control.NoStackTrace
 
 private[connectors] class EmailErrorResponse(s: String) extends NoStackTrace
 
-object EmailVerificationConnector extends EmailVerificationConnector with ServicesConfig {
-  val http = WSHttp
-  val sendVerificationEmailURL = getConfString("email-vs.sendVerificationEmailURL", throw new Exception("email.sendVerificationEmailURL not found"))
-  val checkVerifiedEmailURL = getConfString("email-vs.checkVerifiedEmailURL", throw new Exception("email.checkVerifiedEmailURL not found"))
-}
-
-trait EmailVerificationConnector extends HttpErrorFunctions {
-  val http : HttpGet with HttpPost with HttpPut
-  val sendVerificationEmailURL : String
-  val checkVerifiedEmailURL : String
+@Singleton
+class EmailVerificationConnectorImpl @Inject()(http: WSHttp, applicationConfig: AppConfig) extends EmailVerificationConnector with HttpErrorFunctions {
+  val sendVerificationEmailURL = applicationConfig.sendVerificationEmailURL
+  val checkVerifiedEmailURL = applicationConfig.checkVerifiedEmailURL
 
   implicit val reads = new HttpReads[HttpResponse] {
     def read(http: String, url: String, res: HttpResponse) = customRead(http, url, res)
@@ -67,10 +62,7 @@ trait EmailVerificationConnector extends HttpErrorFunctions {
       throw new EmailErrorResponse(status)
     }
 
-    val json = Json.toJson(emailRequest)
-    val targetSubmissionModel = Json.parse(json.toString()).as[EmailVerificationRequest]
-    Logger.warn("[EmailVerificationConnector] [requestVerificationEmail] request to verification service call")
-    http.POST[JsValue, HttpResponse](s"$sendVerificationEmailURL", Json.toJson(targetSubmissionModel)) map { r =>
+    http.POST[EmailVerificationRequest, HttpResponse](s"$sendVerificationEmailURL", emailRequest) map { r =>
       r.status match {
         case CREATED => {
           Logger.debug("[EmailVerificationConnector] [requestVerificationEmail] request to verification service successful")
@@ -81,9 +73,9 @@ trait EmailVerificationConnector extends HttpErrorFunctions {
           false
       }
     } recover {
-//      case ex: ConflictException =>
-//        Logger.warn("[EmailVerificationConnector] [requestVerificationEmail] request to send verification email returned a 409 - email already verified")
-//        false
+      //      case ex: ConflictException =>
+      //        Logger.warn("[EmailVerificationConnector] [requestVerificationEmail] request to send verification email returned a 409 - email already verified")
+      //        false
       case ex: BadRequestException => errorMsg("400", ex)
       case ex: NotFoundException => errorMsg("404", ex)
       case ex: InternalServerException => errorMsg("500", ex)
@@ -91,7 +83,7 @@ trait EmailVerificationConnector extends HttpErrorFunctions {
     }
   }
 
-  private[connectors] def customRead(http: String, url: String, response: HttpResponse) =
+  def customRead(http: String, url: String, response: HttpResponse) =
     response.status match {
       case 400 => throw new BadRequestException("Provided incorrect data to Email Verification")
       case 404 => throw new NotFoundException("Email not found")
@@ -100,5 +92,9 @@ trait EmailVerificationConnector extends HttpErrorFunctions {
       case 502 => throw new BadGatewayException("Email service returned an upstream error")
       case _ => handleResponse(http, url)(response)
     }
+}
 
+trait EmailVerificationConnector {
+  def checkVerifiedEmail(email : String)(implicit hc : HeaderCarrier) : Future[Boolean]
+  def requestVerificationEmail(emailRequest : EmailVerificationRequest)(implicit hc : HeaderCarrier) : Future[Boolean]
 }

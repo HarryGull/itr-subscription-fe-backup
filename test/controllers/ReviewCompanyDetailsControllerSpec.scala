@@ -31,7 +31,7 @@ class ReviewCompanyDetailsControllerSpec extends BaseTestSpec {
   val mockSubscriptionService = mock[SubscriptionService]
   
   val testController = new ReviewCompanyDetailsController(mockAuthorisedActions, mockKeystoreConnector, mockRegisteredBusinessCustomerService,
-    mockSubscriptionService, countriesHelper, MockConfig, messagesApi)
+    mockSubscriptionService, mockEmailVerificationService, countriesHelper, MockConfig, messagesApi)
 
   "ReviewCompanyDetailsController.show" when {
 
@@ -68,9 +68,25 @@ class ReviewCompanyDetailsControllerSpec extends BaseTestSpec {
 
   "ReviewCompanyDetailsController.submit" when {
 
+    "Sending a POST request to ReviewCompanyDetailsController and email is not verified " should {
+
+      "redirect to Email Verification page" in {
+        allDetails()
+        when(mockEmailVerificationService.verifyEmailAddress(Matchers.any())(Matchers.any()))
+          .thenReturn(Future.successful(Some(false)))
+        when(mockSubscriptionService.subscribe(Matchers.any(), Matchers.any())).thenReturn(Future.successful(HttpResponse(OK)))
+        submitWithSessionAndAuth(testController.submit)(
+          result => redirectLocation(result) shouldBe Some(routes.EmailVerificationController.show(1).url)
+        )
+      }
+    }
+
     "Sending a POST request to ReviewCompanyDetailsController and SubscriptionService returns OK" should {
 
       "return a 303" in {
+        allDetails()
+        when(mockEmailVerificationService.verifyEmailAddress(Matchers.any())(Matchers.any()))
+          .thenReturn(Future.successful(Some(true)))
         when(mockSubscriptionService.subscribe(Matchers.any(), Matchers.any())).thenReturn(Future.successful(HttpResponse(NO_CONTENT)))
         submitWithSessionAndAuth(testController.submit)(
           result => status(result) shouldBe SEE_OTHER
@@ -78,6 +94,9 @@ class ReviewCompanyDetailsControllerSpec extends BaseTestSpec {
       }
 
       "redirect to submission frontend" in {
+        allDetails()
+        when(mockEmailVerificationService.verifyEmailAddress(Matchers.any())(Matchers.any()))
+          .thenReturn(Future.successful(Some(true)))
         when(mockSubscriptionService.subscribe(Matchers.any(), Matchers.any())).thenReturn(Future.successful(HttpResponse(NO_CONTENT)))
         submitWithSessionAndAuth(testController.submit)(
           result => redirectLocation(result) shouldBe Some(MockConfig.submissionUrl)
@@ -89,6 +108,9 @@ class ReviewCompanyDetailsControllerSpec extends BaseTestSpec {
     "Sending a POST request to ReviewCompanyDetailsController and SubscriptionService returns a non-OK response" should {
 
       "return an INTERNAL_SERVER_ERROR" in {
+        allDetails()
+        when(mockEmailVerificationService.verifyEmailAddress(Matchers.any())(Matchers.any()))
+          .thenReturn(Future.successful(Some(true)))
         when(mockSubscriptionService.subscribe(Matchers.any(), Matchers.any())).thenReturn(Future.successful(HttpResponse(INTERNAL_SERVER_ERROR)))
         submitWithSessionAndAuth(testController.submit)(
           result => status(result) shouldBe INTERNAL_SERVER_ERROR

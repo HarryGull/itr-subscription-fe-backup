@@ -38,9 +38,9 @@ class EmailVerificationControllerSpec extends BaseTestSpec {
     "return a 200 when EMAIL is not verified" in {
       when(mockKeystoreConnector.fetchAndGetFormData[ContactDetailsSubscriptionModel](Matchers.any())(Matchers.any(), Matchers.any()))
         .thenReturn(Future.successful(Option(contactDetailsSubscriptionModel)))
-      when(mockEmailVerificationService.sendVerificationLink(Matchers.any(), Matchers.any())(Matchers.any(), Matchers.any()))
+      when(mockEmailVerificationService.sendVerificationLink(Matchers.any(), Matchers.any(), Matchers.any())(Matchers.any()))
         .thenReturn(Future.successful(Some(true)))
-      when(mockEmailVerificationService.verifyEmailAddress(Matchers.any())(Matchers.any(), Matchers.any()))
+      when(mockEmailVerificationService.verifyEmailAddress(Matchers.any())(Matchers.any()))
         .thenReturn(Future.successful(Some(false)))
       showWithSessionAndAuth(testController.show(1))(
         result => status(result) shouldBe OK
@@ -50,9 +50,9 @@ class EmailVerificationControllerSpec extends BaseTestSpec {
     "redirect to the Review Company Details Controller page if email verified" in {
       when(mockKeystoreConnector.fetchAndGetFormData[ContactDetailsSubscriptionModel](Matchers.any())(Matchers.any(), Matchers.any()))
         .thenReturn(Future.successful(Option(contactDetailsSubscriptionModel)))
-      when(mockEmailVerificationService.sendVerificationLink(Matchers.any(), Matchers.any())(Matchers.any(), Matchers.any()))
+      when(mockEmailVerificationService.sendVerificationLink(Matchers.any(), Matchers.any(), Matchers.any())(Matchers.any()))
         .thenReturn(Future.successful(Some(true)))
-      when(mockEmailVerificationService.verifyEmailAddress(Matchers.any())(Matchers.any(), Matchers.any()))
+      when(mockEmailVerificationService.verifyEmailAddress(Matchers.any())(Matchers.any()))
         .thenReturn(Future.successful(Some(true)))
       showWithSessionAndAuth(testController.show(1))(
         result => redirectLocation(result) shouldBe Some(routes.ReviewCompanyDetailsController.show().url)

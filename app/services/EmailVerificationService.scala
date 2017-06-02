@@ -22,42 +22,38 @@ import com.google.inject.Inject
 import connectors.{EmailVerificationConnector, KeystoreConnector}
 import models._
 import play.api.Logger
-import play.api.mvc.{AnyContent, Request}
-import uk.gov.hmrc.http.cache.client.CacheMap
 import uk.gov.hmrc.play.http.HeaderCarrier
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
 @Singleton
-class EmailVerificationServiceImpl @Inject()(keystoreConnector: KeystoreConnector) extends EmailVerificationService {
-
-
-  val emailVerificationTemplate = "verifyEmailAddress"
+class EmailVerificationServiceImpl @Inject()(keystoreConnector: KeystoreConnector,
+                                             emailVerificationConnector: EmailVerificationConnector) extends EmailVerificationService {
 
   def verifyEmailAddress(address: String)
-                        (implicit hc: HeaderCarrier, req: Request[AnyContent]): Future[Option[Boolean]] = {
-    EmailVerificationConnector.checkVerifiedEmail(address) flatMap {
+                        (implicit hc: HeaderCarrier): Future[Option[Boolean]] = {
+    emailVerificationConnector.checkVerifiedEmail(address) flatMap {
         case true => Future.successful(Some(true))
         case _ =>
           Future.successful(Some(false))
     }
   }
 
-  def sendVerificationLink(address: String, returnUrl: String)
-                          (implicit hc: HeaderCarrier, req: Request[AnyContent]): Future[Option[Boolean]] = {
+  def sendVerificationLink(address: String, returnUrl: String, template: String)
+                          (implicit hc: HeaderCarrier): Future[Option[Boolean]] = {
     Logger.warn(s"EmailVerificationServiceImpl -- sendVerificationLink ::: $returnUrl :::::: $address")
-    EmailVerificationConnector.requestVerificationEmail(generateEmailRequest(address, returnUrl)) flatMap {
+    emailVerificationConnector.requestVerificationEmail(generateEmailRequest(address, returnUrl, template)) flatMap {
         case verified => Future.successful(Some(verified))
         case _ => Future.successful(Some(false))
     }
   }
 
 
-  private[services] def generateEmailRequest(address: String, returnUrl: String): EmailVerificationRequest = {
+  private[services] def generateEmailRequest(address: String, returnUrl: String, template: String): EmailVerificationRequest = {
     EmailVerificationRequest(
       email = address,
-      templateId = emailVerificationTemplate,
+      templateId = template,
       templateParameters = Map(),
       linkExpiryDuration = "P1D",
       continueUrl = s"$returnUrl"
@@ -68,7 +64,7 @@ class EmailVerificationServiceImpl @Inject()(keystoreConnector: KeystoreConnecto
 
 trait EmailVerificationService {
   def verifyEmailAddress(address: String)
-                        (implicit hc: HeaderCarrier, req: Request[AnyContent]): Future[Option[Boolean]]
-  def sendVerificationLink(address: String, returnUrl: String)
-                          (implicit hc: HeaderCarrier, req: Request[AnyContent]): Future[Option[Boolean]]
+                        (implicit hc: HeaderCarrier): Future[Option[Boolean]]
+  def sendVerificationLink(address: String, returnUrl: String, template: String)
+                          (implicit hc: HeaderCarrier): Future[Option[Boolean]]
 }

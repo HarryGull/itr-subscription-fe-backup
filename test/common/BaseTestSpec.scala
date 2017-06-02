@@ -19,7 +19,7 @@ package common
 import java.util.UUID
 
 import auth.{AuthorisedActions, TAVCUser}
-import connectors.{KeystoreConnector, ValidateTokenConnector}
+import connectors.{EmailVerificationConnector, KeystoreConnector, ValidateTokenConnector}
 import forms.{ConfirmCorrespondAddressForm, ContactDetailsSubscriptionForm, ProvideCorrespondAddressForm}
 import models.{AddressModel, CompanyRegistrationReviewDetailsModel, ContactDetailsSubscriptionModel, ProvideCorrespondAddressModel}
 import org.joda.time.{DateTime, DateTimeZone}
@@ -73,9 +73,10 @@ trait BaseTestSpec extends UnitSpec with OneAppPerSuite with BeforeAndAfterEach 
   val mockValidateTokenService= mock[ValidateTokenService]
   val mockValidateTokenConnector = mock[ValidateTokenConnector]
   val mockEmailVerificationService = mock[EmailVerificationService]
+  val mockEmailVerificationConnector = mock[EmailVerificationConnector]
 
   val provideModel = ProvideCorrespondAddressModel("test1","test2",Some("test3"),Some("test4"),Some("test5"),"test6")
-  val contactDetailsModel = ContactDetailsSubscriptionModel("test1","test2",Some("test3"),Some("test4"),"test5")
+  val contactDetailsModel = ContactDetailsSubscriptionModel("test1","test2",Some("test3"),Some("test4"),"test5@test.com")
 
   val tokenId = "123456789"
 

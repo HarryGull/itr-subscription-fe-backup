@@ -21,13 +21,13 @@ import com.google.inject.{Inject, Singleton}
 import common.KeystoreKeys
 import config.{AppConfig, FrontendGlobal}
 import connectors.KeystoreConnector
-import models.{CompanyRegistrationReviewDetailsModel, ContactDetailsSubscriptionModel, ProvideCorrespondAddressModel, ReviewCompanyDetailsModel}
+import models._
+import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, Request, Result}
 import services.{EmailVerificationService, RegisteredBusinessCustomerService, SubscriptionService}
 import uk.gov.hmrc.play.frontend.controller.FrontendController
 import utils.CountriesHelper
 import views.html.registrationInformation.ReviewCompanyDetails
-import play.api.i18n.{I18nSupport, MessagesApi}
 
 import scala.concurrent.Future
 
@@ -36,12 +36,12 @@ class ReviewCompanyDetailsController @Inject()(authorised: AuthorisedActions,
                                                keystoreConnector: KeystoreConnector,
                                                registeredBusinessCustomerService: RegisteredBusinessCustomerService,
                                                subscriptionService: SubscriptionService,
+                                               emailVerificationService: EmailVerificationService,
                                                countriesHelper: CountriesHelper,
                                                implicit val applicationConfig: AppConfig,
                                                val messagesApi: MessagesApi)extends FrontendController with I18nSupport {
 
   def show: Action[AnyContent] = authorised.async { implicit user => implicit request =>
-
     for {
       registrationReviewDetails <- registeredBusinessCustomerService.getReviewBusinessCustomerDetails
       correspondenceAddress <- keystoreConnector.fetchAndGetFormData[ProvideCorrespondAddressModel](KeystoreKeys.provideCorrespondAddress)
@@ -50,13 +50,18 @@ class ReviewCompanyDetailsController @Inject()(authorised: AuthorisedActions,
     } yield result
   }
 
-  def submit: Action[AnyContent] = authorised.async { implicit user => implicit request =>
-    subscriptionService.subscribe.map {
-      response => response.status match {
-        case NO_CONTENT => Redirect(applicationConfig.submissionUrl)
-        case _ => InternalServerError(FrontendGlobal.internalServerErrorTemplate)
+  def submit: Action[AnyContent] = authorised.async { implicit user =>
+    implicit request =>
+      for {
+        data <- keystoreConnector.fetchAndGetFormData[ContactDetailsSubscriptionModel](KeystoreKeys.contactDetailsSubscription)
+        isVerified <- emailVerificationService.verifyEmailAddress(data.get.email)
+        response <- subscriptionService.subscribe
+      } yield if(!isVerified.getOrElse(false)) Redirect(routes.EmailVerificationController.show(1)) else {
+        response.status match {
+          case NO_CONTENT => Redirect(applicationConfig.submissionUrl)
+          case _ => InternalServerError(FrontendGlobal.internalServerErrorTemplate)
+        }
       }
-    }
   }
 
   private def createReviewCompanyDetailsModel(registrationReviewDetails: Option[CompanyRegistrationReviewDetailsModel],
