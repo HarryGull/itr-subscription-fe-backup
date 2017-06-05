@@ -17,7 +17,7 @@
 package controllers
 
 import auth.MockConfig
-import common.BaseTestSpec
+import common.{BaseTestSpec, Constants}
 import play.api.test.Helpers._
 import org.mockito.Matchers
 import org.mockito.Mockito._
@@ -42,7 +42,7 @@ class ReviewCompanyDetailsControllerSpec extends BaseTestSpec {
         when(mockEmailVerificationService.verifyEmailAddress(Matchers.any())(Matchers.any()))
           .thenReturn(Future.successful(Some(false)))
         showWithSessionAndAuth(testController.show)(
-          result => redirectLocation(result) shouldBe Some(routes.EmailVerificationController.show(1).url)
+          result => redirectLocation(result) shouldBe Some(routes.EmailVerificationController.show(Constants.ContactDetailsReturnUrl).url)
         )
       }
 
@@ -91,7 +91,7 @@ class ReviewCompanyDetailsControllerSpec extends BaseTestSpec {
           .thenReturn(Future.successful(Some(false)))
         when(mockSubscriptionService.subscribe(Matchers.any(), Matchers.any())).thenReturn(Future.successful(HttpResponse(OK)))
         submitWithSessionAndAuth(testController.submit)(
-          result => redirectLocation(result) shouldBe Some(routes.EmailVerificationController.show(1).url)
+          result => redirectLocation(result) shouldBe Some(routes.EmailVerificationController.show(Constants.ContactDetailsReturnUrl).url)
         )
       }
     }

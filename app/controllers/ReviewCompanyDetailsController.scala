@@ -18,7 +18,7 @@ package controllers
 
 import auth.AuthorisedActions
 import com.google.inject.{Inject, Singleton}
-import common.KeystoreKeys
+import common.{Constants, KeystoreKeys}
 import config.{AppConfig, FrontendGlobal}
 import connectors.KeystoreConnector
 import models._
@@ -48,7 +48,7 @@ class ReviewCompanyDetailsController @Inject()(authorised: AuthorisedActions,
       contactDetails <- keystoreConnector.fetchAndGetFormData[ContactDetailsSubscriptionModel](KeystoreKeys.contactDetailsSubscription)
       result <- createReviewCompanyDetailsModel(registrationReviewDetails,correspondenceAddress,contactDetails)
       isVerified <- emailVerificationService.verifyEmailAddress(if(contactDetails.isDefined) contactDetails.get.email else "")
-    } yield if(!isVerified.getOrElse(false)) Redirect(routes.EmailVerificationController.show(1)) else result
+    } yield if(!isVerified.getOrElse(false)) Redirect(routes.EmailVerificationController.show(Constants.ContactDetailsReturnUrl)) else result
   }
 
   def submit: Action[AnyContent] = authorised.async { implicit user =>
@@ -57,7 +57,7 @@ class ReviewCompanyDetailsController @Inject()(authorised: AuthorisedActions,
         data <- keystoreConnector.fetchAndGetFormData[ContactDetailsSubscriptionModel](KeystoreKeys.contactDetailsSubscription)
         isVerified <- emailVerificationService.verifyEmailAddress(data.get.email)
         response <- subscriptionService.subscribe
-      } yield if(!isVerified.getOrElse(false)) Redirect(routes.EmailVerificationController.show(1)) else {
+      } yield if(!isVerified.getOrElse(false)) Redirect(routes.EmailVerificationController.show(Constants.ContactDetailsReturnUrl)) else {
         response.status match {
           case NO_CONTENT => Redirect(applicationConfig.submissionUrl)
           case _ => InternalServerError(FrontendGlobal.internalServerErrorTemplate)

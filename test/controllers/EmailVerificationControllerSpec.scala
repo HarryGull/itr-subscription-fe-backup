@@ -17,7 +17,7 @@
 package controllers
 
 import auth.MockConfig
-import common.BaseTestSpec
+import common.{BaseTestSpec, Constants}
 import models.{ContactDetailsSubscriptionModel, EmailVerificationModel}
 import org.mockito.Matchers
 import org.mockito.Mockito._
@@ -42,7 +42,7 @@ class EmailVerificationControllerSpec extends BaseTestSpec {
         .thenReturn(Future.successful(Some(true)))
       when(mockEmailVerificationService.verifyEmailAddress(Matchers.any())(Matchers.any()))
         .thenReturn(Future.successful(Some(false)))
-      showWithSessionAndAuth(testController.show(1))(
+      showWithSessionAndAuth(testController.show(Constants.ContactDetailsReturnUrl))(
         result => status(result) shouldBe OK
       )
     }
@@ -54,7 +54,7 @@ class EmailVerificationControllerSpec extends BaseTestSpec {
         .thenReturn(Future.successful(Some(true)))
       when(mockEmailVerificationService.verifyEmailAddress(Matchers.any())(Matchers.any()))
         .thenReturn(Future.successful(Some(true)))
-      showWithSessionAndAuth(testController.show(1))(
+      showWithSessionAndAuth(testController.show(Constants.ContactDetailsReturnUrl))(
         result => redirectLocation(result) shouldBe Some(routes.ReviewCompanyDetailsController.show().url)
       )
     }

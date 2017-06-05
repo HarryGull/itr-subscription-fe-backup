@@ -18,7 +18,7 @@ package controllers
 
 import auth.AuthorisedActions
 import com.google.inject.{Inject, Singleton}
-import common.KeystoreKeys
+import common.{Constants, KeystoreKeys}
 import config.AppConfig
 import connectors.KeystoreConnector
 import forms.ContactDetailsSubscriptionForm
@@ -51,7 +51,7 @@ class ContactDetailsSubscriptionController @Inject()(authorised: AuthorisedActio
       },
       validFormData => {
         keystoreConnector.saveFormData(KeystoreKeys.contactDetailsSubscription, validFormData)
-        Future.successful(Redirect(routes.EmailVerificationController.show(1)))
+        Future.successful(Redirect(routes.EmailVerificationController.show(Constants.ContactDetailsReturnUrl)))
       }
     )
   }
