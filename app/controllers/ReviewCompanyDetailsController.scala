@@ -47,7 +47,8 @@ class ReviewCompanyDetailsController @Inject()(authorised: AuthorisedActions,
       correspondenceAddress <- keystoreConnector.fetchAndGetFormData[ProvideCorrespondAddressModel](KeystoreKeys.provideCorrespondAddress)
       contactDetails <- keystoreConnector.fetchAndGetFormData[ContactDetailsSubscriptionModel](KeystoreKeys.contactDetailsSubscription)
       result <- createReviewCompanyDetailsModel(registrationReviewDetails,correspondenceAddress,contactDetails)
-    } yield result
+      isVerified <- emailVerificationService.verifyEmailAddress(if(contactDetails.isDefined) contactDetails.get.email else "")
+    } yield if(!isVerified.getOrElse(false)) Redirect(routes.EmailVerificationController.show(1)) else result
   }
 
   def submit: Action[AnyContent] = authorised.async { implicit user =>
