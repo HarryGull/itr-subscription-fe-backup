@@ -37,8 +37,19 @@ class ReviewCompanyDetailsControllerSpec extends BaseTestSpec {
 
     "Sending a GET request to ReviewCompanyDetailsController and all details can be retrieved from keystore" should {
 
+      "redirect to Email Verification page" in {
+        allDetails()
+        when(mockEmailVerificationService.verifyEmailAddress(Matchers.any())(Matchers.any()))
+          .thenReturn(Future.successful(Some(false)))
+        showWithSessionAndAuth(testController.show)(
+          result => redirectLocation(result) shouldBe Some(routes.EmailVerificationController.show(1).url)
+        )
+      }
+
       "return a 200" in {
         allDetails()
+        when(mockEmailVerificationService.verifyEmailAddress(Matchers.any())(Matchers.any()))
+          .thenReturn(Future.successful(Some(true)))
         showWithSessionAndAuth(testController.show)(
           result => status(result) shouldBe OK
         )
@@ -50,6 +61,8 @@ class ReviewCompanyDetailsControllerSpec extends BaseTestSpec {
 
       "return a 303" in {
         notAllDetails()
+        when(mockEmailVerificationService.verifyEmailAddress(Matchers.any())(Matchers.any()))
+          .thenReturn(Future.successful(Some(true)))
         showWithSessionAndAuth(testController.show)(
           result => status(result) shouldBe SEE_OTHER
         )
@@ -57,6 +70,8 @@ class ReviewCompanyDetailsControllerSpec extends BaseTestSpec {
 
       "redirect to the confirm correspondence address page" in {
         notAllDetails()
+        when(mockEmailVerificationService.verifyEmailAddress(Matchers.any())(Matchers.any()))
+          .thenReturn(Future.successful(Some(true)))
         showWithSessionAndAuth(testController.show)(
           result => redirectLocation(result) shouldBe Some(routes.ConfirmCorrespondAddressController.show().url)
         )
