@@ -73,7 +73,7 @@ class FrontendAppConfig @Inject()(configuration: Configuration) extends AppConfi
   override lazy val createAccountUrl = loadConfig("create-account.url")
 
   override lazy val emailVerificationReturnUrlOne = loadConfig(s"email.returnUrlOne")
-  override lazy val sendVerificationEmailURL = loadConfig("email-vs.sendVerificationEmailURL")
-  override lazy val checkVerifiedEmailURL = loadConfig("email-vs.checkVerifiedEmailURL")
+  override lazy val sendVerificationEmailURL = baseUrl("email-verification") + loadConfig("email-vs.sendVerificationEmailURL")
+  override lazy val checkVerifiedEmailURL = baseUrl("email-verification") + loadConfig("email-vs.checkVerifiedEmailURL")
   override lazy val emailVerificationTemplate = loadConfig("email.emailVerificationTemplate")
 }
