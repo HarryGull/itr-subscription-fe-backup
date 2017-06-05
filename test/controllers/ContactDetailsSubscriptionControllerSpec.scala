@@ -17,7 +17,7 @@
 package controllers
 
 import auth.MockConfig
-import common.BaseTestSpec
+import common.{BaseTestSpec, Constants}
 import models.ContactDetailsSubscriptionModel
 import org.mockito.Matchers
 import org.mockito.Mockito._
@@ -69,7 +69,7 @@ class ContactDetailsSubscriptionControllerSpec extends BaseTestSpec {
     "redirect to the Review Company Details Controller page" in {
       submitWithSessionAndAuth(testController.submit,formInput:_*)(
         result => {
-          redirectLocation(result) shouldBe Some(routes.EmailVerificationController.show(1).url)
+          redirectLocation(result) shouldBe Some(routes.EmailVerificationController.show(Constants.ContactDetailsReturnUrl).url)
         }
       )
     }
