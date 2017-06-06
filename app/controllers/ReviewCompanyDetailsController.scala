@@ -48,7 +48,7 @@ class ReviewCompanyDetailsController @Inject()(authorised: AuthorisedActions,
       contactDetails <- keystoreConnector.fetchAndGetFormData[ContactDetailsSubscriptionModel](KeystoreKeys.contactDetailsSubscription)
       result <- createReviewCompanyDetailsModel(registrationReviewDetails,correspondenceAddress,contactDetails)
       isVerified <- emailVerificationService.verifyEmailAddress(if(contactDetails.isDefined) contactDetails.get.email else "")
-    } yield if(!isVerified.getOrElse(false)) Redirect(routes.EmailVerificationController.show(Constants.ContactDetailsReturnUrl)) else result
+    } yield if(!isVerified.getOrElse(false)) Redirect(routes.EmailVerificationController.show(Constants.ContactDetailsReturnUrl, Some(contactDetails.get.email))) else result
   }
 
   def submit: Action[AnyContent] = authorised.async { implicit user =>
@@ -57,7 +57,7 @@ class ReviewCompanyDetailsController @Inject()(authorised: AuthorisedActions,
         data <- keystoreConnector.fetchAndGetFormData[ContactDetailsSubscriptionModel](KeystoreKeys.contactDetailsSubscription)
         isVerified <- emailVerificationService.verifyEmailAddress(data.get.email)
         response <- subscriptionService.subscribe
-      } yield if(!isVerified.getOrElse(false)) Redirect(routes.EmailVerificationController.show(Constants.ContactDetailsReturnUrl)) else {
+      } yield if(!isVerified.getOrElse(false)) Redirect(routes.EmailVerificationController.show(Constants.ContactDetailsReturnUrl, Some(data.get.email))) else {
         response.status match {
           case NO_CONTENT => Redirect(applicationConfig.submissionUrl)
           case _ => InternalServerError(FrontendGlobal.internalServerErrorTemplate)

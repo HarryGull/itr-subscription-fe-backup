@@ -17,7 +17,7 @@
 package connectors
 
 import com.google.inject.{Inject, Singleton}
-import config.AppConfig
+import config.{AppConfig, FrontendGlobal}
 import models.EmailVerificationRequest
 import play.api.Logger
 import play.api.http.Status._
@@ -48,36 +48,17 @@ class EmailVerificationConnectorImpl @Inject()(http: WSHttp, applicationConfig: 
     http.GET[HttpResponse](s"$checkVerifiedEmailURL/$email") map {
       _.status match {
         case OK => true
+        case _ => false
       }
-    } recover {
+    }recover {
       case ex: NotFoundException => errorMsg("404")
       case ex: InternalServerException => errorMsg("500")
       case ex: BadGatewayException => errorMsg("502")
     }
   }
 
-  def requestVerificationEmail(emailRequest : EmailVerificationRequest)(implicit hc : HeaderCarrier) : Future[Boolean] = {
-    def errorMsg(status: String, ex: HttpException) = {
-      Logger.error(s"[EmailVerificationConnector] [requestVerificationEmail] request to send verification email returned a $status - email not sent - reason = ${ex.getMessage}")
-      throw new EmailErrorResponse(status)
-    }
-
-    http.POST[EmailVerificationRequest, HttpResponse](s"$sendVerificationEmailURL", emailRequest) map { r =>
-      r.status match {
-        case CREATED => {
-          Logger.debug("[EmailVerificationConnector] [requestVerificationEmail] request to verification service successful")
-          true
-        }
-        case CONFLICT =>
-          Logger.warn("[EmailVerificationConnector] [requestVerificationEmail] request to send verification email returned a 409 - email already verified")
-          false
-      }
-    } recover {
-      case ex: BadRequestException => errorMsg("400", ex)
-      case ex: NotFoundException => errorMsg("404", ex)
-      case ex: InternalServerException => errorMsg("500", ex)
-      case ex: BadGatewayException => errorMsg("502", ex)
-    }
+  def requestVerificationEmail(emailRequest : EmailVerificationRequest)(implicit hc : HeaderCarrier) : Future[HttpResponse] = {
+    http.POST[EmailVerificationRequest, HttpResponse](s"$sendVerificationEmailURL", emailRequest)
   }
 
   def customRead(http: String, url: String, response: HttpResponse) =
@@ -93,5 +74,5 @@ class EmailVerificationConnectorImpl @Inject()(http: WSHttp, applicationConfig: 
 
 trait EmailVerificationConnector {
   def checkVerifiedEmail(email : String)(implicit hc : HeaderCarrier) : Future[Boolean]
-  def requestVerificationEmail(emailRequest : EmailVerificationRequest)(implicit hc : HeaderCarrier) : Future[Boolean]
+  def requestVerificationEmail(emailRequest : EmailVerificationRequest)(implicit hc : HeaderCarrier) : Future[HttpResponse]
 }

@@ -25,9 +25,8 @@ import views.html.registrationInformation.{EmailVerification, ReviewCompanyDetai
 
 class EmailVerificationSpec extends BaseTestSpec {
 
-  val maxContact = ContactDetailsSubscriptionModel("firstname","lastname",Some("00000000000"),Some("00000000000"),"test@test.com")
-  val minContact = ContactDetailsSubscriptionModel("firstname","lastname",None,None,"test@test.com")
-  lazy val pageMax = EmailVerification(EmailVerificationModel.apply(maxContact))(authenticatedFakeRequest(),
+  val email = "test@test.com"
+  lazy val pageMax = EmailVerification(EmailVerificationModel.apply(email))(authenticatedFakeRequest(),
     request2Messages(authenticatedFakeRequest()), MockConfig)
 
   "Email verification page" should {
@@ -38,7 +37,7 @@ class EmailVerificationSpec extends BaseTestSpec {
         document.title() shouldBe Messages("page.registrationInformation.EmailVerification.title")
         document.getElementById("main-heading").text() shouldBe Messages("page.registrationInformation.EmailVerification.heading")
         document.body.getElementById("email-one").text shouldBe Messages("page.registrationInformation.EmailVerification.info.one") +
-          s" ${maxContact.email}" + Messages("page.registrationInformation.EmailVerification.info.two")
+          s" ${email}" + Messages("page.registrationInformation.EmailVerification.info.two")
         document.body.getElementById("help").text shouldBe Messages("page.registrationInformation.EmailVerification.help.link")
 
         document.body.getElementById("help-text-one").text shouldBe Messages("page.registrationInformation.EmailVerification.help.text.one") +
