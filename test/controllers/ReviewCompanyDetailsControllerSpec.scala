@@ -42,7 +42,8 @@ class ReviewCompanyDetailsControllerSpec extends BaseTestSpec {
         when(mockEmailVerificationService.verifyEmailAddress(Matchers.any())(Matchers.any()))
           .thenReturn(Future.successful(Some(false)))
         showWithSessionAndAuth(testController.show)(
-          result => redirectLocation(result) shouldBe Some(routes.EmailVerificationController.show(Constants.ContactDetailsReturnUrl).url)
+          result => redirectLocation(result) shouldBe
+            Some(routes.EmailVerificationController.show(Constants.ContactDetailsReturnUrl, Some("test5@test.com")).url)
         )
       }
 
@@ -91,7 +92,7 @@ class ReviewCompanyDetailsControllerSpec extends BaseTestSpec {
           .thenReturn(Future.successful(Some(false)))
         when(mockSubscriptionService.subscribe(Matchers.any(), Matchers.any())).thenReturn(Future.successful(HttpResponse(OK)))
         submitWithSessionAndAuth(testController.submit)(
-          result => redirectLocation(result) shouldBe Some(routes.EmailVerificationController.show(Constants.ContactDetailsReturnUrl).url)
+          result => redirectLocation(result) shouldBe Some(routes.EmailVerificationController.show(Constants.ContactDetailsReturnUrl, Some("test5@test.com")).url)
         )
       }
     }

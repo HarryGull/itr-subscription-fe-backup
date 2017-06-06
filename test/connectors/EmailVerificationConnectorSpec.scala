@@ -47,14 +47,14 @@ class EmailVerificationConnectorSpec extends BaseTestSpec with WSHTTPMock{
 
       mockHttpPOST(testConnector.sendVerificationEmailURL, HttpResponse(CREATED))
 
-      await(testConnector.requestVerificationEmail(verificationRequest)) shouldBe true
+      await(testConnector.requestVerificationEmail(verificationRequest).status) shouldBe CREATED
     }
 
     "return false with invalid email or verified email request" in {
 
       mockHttpPOST(testConnector.sendVerificationEmailURL, HttpResponse(CONFLICT))
 
-      await(testConnector.requestVerificationEmail(verificationRequest)) shouldBe false
+      await(testConnector.requestVerificationEmail(verificationRequest).status) shouldBe CONFLICT
     }
   }
 

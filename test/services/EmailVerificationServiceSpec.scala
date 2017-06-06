@@ -20,6 +20,8 @@ import auth.MockConfig
 import common.BaseTestSpec
 import org.mockito.Matchers
 import org.mockito.Mockito._
+import play.api.http.Status.{BAD_REQUEST, CREATED, _}
+import uk.gov.hmrc.play.http.HttpResponse
 
 import scala.concurrent.Future
 
@@ -33,16 +35,16 @@ class EmailVerificationServiceSpec extends BaseTestSpec {
 
     "return true when the email is sent successfully" in {
       when(mockEmailVerificationConnector.requestVerificationEmail(Matchers.any())(Matchers.any()))
-        .thenReturn(Future.successful(true))
+        .thenReturn(Future.successful(HttpResponse(CREATED)))
       val result = testService.sendVerificationLink(emailAddress, MockConfig.emailVerificationReturnUrlOne, emailVerificationTemplate)
-      await(result) shouldBe Some(true)
+      await(result.status) shouldBe CREATED
     }
 
     "return false when the email is not sent" in {
       when(mockEmailVerificationConnector.requestVerificationEmail(Matchers.any())(Matchers.any()))
-        .thenReturn(Future.successful(false))
+        .thenReturn(Future.successful(HttpResponse(BAD_REQUEST)))
       val result = testService.sendVerificationLink(emailAddress, MockConfig.emailVerificationReturnUrlOne, emailVerificationTemplate)
-      await(result) shouldBe Some(false)
+      await(result.status) shouldBe BAD_REQUEST
     }
   }
 

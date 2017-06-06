@@ -22,10 +22,11 @@ import com.google.inject.Inject
 import connectors.{EmailVerificationConnector, KeystoreConnector}
 import models._
 import play.api.Logger
-import uk.gov.hmrc.play.http.HeaderCarrier
+import uk.gov.hmrc.play.http.{HeaderCarrier, HttpResponse}
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
+import play.api.http.Status._
 
 @Singleton
 class EmailVerificationServiceImpl @Inject()(keystoreConnector: KeystoreConnector,
@@ -41,12 +42,9 @@ class EmailVerificationServiceImpl @Inject()(keystoreConnector: KeystoreConnecto
   }
 
   def sendVerificationLink(address: String, returnUrl: String, template: String)
-                          (implicit hc: HeaderCarrier): Future[Option[Boolean]] = {
+                          (implicit hc: HeaderCarrier): Future[HttpResponse] = {
     Logger.warn(s"EmailVerificationServiceImpl -- sendVerificationLink ::: $returnUrl :::::: $address")
-    emailVerificationConnector.requestVerificationEmail(generateEmailRequest(address, returnUrl, template)) flatMap {
-        case verified => Future.successful(Some(verified))
-        case _ => Future.successful(Some(false))
-    }
+    emailVerificationConnector.requestVerificationEmail(generateEmailRequest(address, returnUrl, template))
   }
 
 
@@ -66,5 +64,5 @@ trait EmailVerificationService {
   def verifyEmailAddress(address: String)
                         (implicit hc: HeaderCarrier): Future[Option[Boolean]]
   def sendVerificationLink(address: String, returnUrl: String, template: String)
-                          (implicit hc: HeaderCarrier): Future[Option[Boolean]]
+                          (implicit hc: HeaderCarrier): Future[HttpResponse]
 }

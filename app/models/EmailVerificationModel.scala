@@ -19,7 +19,7 @@ package models
 import play.api.libs.functional.syntax._
 import play.api.libs.json.{Json, Reads, __}
 
-case class EmailVerificationModel(contactDetails: ContactDetailsSubscriptionModel)
+case class EmailVerificationModel(email: String)
 
 case class EmailVerificationRequest(
                                      email : String,

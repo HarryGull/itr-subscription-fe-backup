@@ -34,4 +34,4 @@ GET        /signed-out                                  controllers.SignOutContr
 GET        /not-a-company                               controllers.AffinityGroupErrorController.show
 
 # Email verification
-GET        /email-verification/:urlPosition                          controllers.EmailVerificationController.show(urlPosition: Int)
+GET        /email-verification/:urlPosition                          controllers.EmailVerificationController.show(urlPosition: Int, email: Option[String]?=None)

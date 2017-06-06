@@ -23,4 +23,7 @@ trait Constants {
   val StandardRadioButtonNoValue = "No"
   val SuggestedTextMaxLength: Int = 2048
   val ContactDetailsReturnUrl = 1
+  val EmailVerified = "FORWARD"
+  val EmailNotVerified = "SEND_EMAIL"
+  val EmailVerificationError = "ERROR"
 }
