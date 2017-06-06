@@ -17,11 +17,10 @@
 package connectors
 
 import com.google.inject.{Inject, Singleton}
-import config.{AppConfig, WSHttp}
+import config.AppConfig
 import models.EmailVerificationRequest
 import play.api.Logger
 import play.api.http.Status._
-import play.api.libs.json.{JsValue, Json}
 import uk.gov.hmrc.play.http._
 import uk.gov.hmrc.play.http.ws.WSHttp
 
@@ -33,8 +32,9 @@ private[connectors] class EmailErrorResponse(s: String) extends NoStackTrace
 
 @Singleton
 class EmailVerificationConnectorImpl @Inject()(http: WSHttp, applicationConfig: AppConfig) extends EmailVerificationConnector with HttpErrorFunctions {
-  val sendVerificationEmailURL = applicationConfig.sendVerificationEmailURL
-  val checkVerifiedEmailURL = applicationConfig.checkVerifiedEmailURL
+
+  lazy val sendVerificationEmailURL = applicationConfig.sendVerificationEmailURL
+  lazy val checkVerifiedEmailURL = applicationConfig.checkVerifiedEmailURL
 
   implicit val reads = new HttpReads[HttpResponse] {
     def read(http: String, url: String, res: HttpResponse) = customRead(http, url, res)
@@ -73,9 +73,6 @@ class EmailVerificationConnectorImpl @Inject()(http: WSHttp, applicationConfig: 
           false
       }
     } recover {
-      //      case ex: ConflictException =>
-      //        Logger.warn("[EmailVerificationConnector] [requestVerificationEmail] request to send verification email returned a 409 - email already verified")
-      //        false
       case ex: BadRequestException => errorMsg("400", ex)
       case ex: NotFoundException => errorMsg("404", ex)
       case ex: InternalServerException => errorMsg("500", ex)
