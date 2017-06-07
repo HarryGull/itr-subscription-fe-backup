@@ -18,10 +18,11 @@ package controllers
 
 import auth.AuthorisedActions
 import com.google.inject.{Inject, Singleton}
-import common.Constants
+import common.{Constants, KeystoreKeys}
 import config.{AppConfig, FrontendGlobal}
 import connectors.KeystoreConnector
-import models.EmailVerificationModel
+import models.{ContactDetailsSubscriptionModel, EmailVerificationModel}
+import play.api.Logger
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, Request, Result}
 import services.EmailVerificationService
@@ -38,38 +39,46 @@ class EmailVerificationController @Inject()(authorised: AuthorisedActions,
                                             emailVerificationService: EmailVerificationService,
                                             val messagesApi: MessagesApi)extends FrontendController with I18nSupport {
 
-  def show(urlPosition: Int, email: Option[String]): Action[AnyContent] = authorised.async { implicit user =>
+  def show(urlPosition: Int): Action[AnyContent] = authorised.async { implicit user =>
     implicit request =>
       urlPosition match {
         case Constants.ContactDetailsReturnUrl => {
-          val verifyStatus = for {
-            isVerified <- emailVerificationService.verifyEmailAddress(email.getOrElse(""))
 
-          } yield isVerified.getOrElse(false)
+          val contactDetails = for {
+            contactDetails <- keystoreConnector.fetchAndGetFormData[ContactDetailsSubscriptionModel](KeystoreKeys.contactDetailsSubscription)
+          } yield if (contactDetails.isDefined) contactDetails.get.email else ""
+
+          val verifyStatus = for {
+            email <- contactDetails
+            isVerified <- emailVerificationService.verifyEmailAddress(email)
+          } yield (email, isVerified)
 
           val result = verifyStatus.flatMap {
-            case true => Future {Constants.EmailVerified}
-            case _ => {
-              emailVerificationService.sendVerificationLink(email.getOrElse(""), applicationConfig.emailVerificationReturnUrlOne,
-                applicationConfig.emailVerificationTemplate).map { r =>
-                r.status match {
-                  case CREATED => Constants.EmailNotVerified
-                  case CONFLICT => Constants.EmailVerified
-                  case _ => Constants.EmailVerificationError
+            case (_, Some(true)) => Future {
+              ("", Constants.EmailVerified)
+            }
+            case (data, Some(false)) => {
+              emailVerificationService.sendVerificationLink(data, applicationConfig.emailVerificationReturnUrlOne,
+                applicationConfig.emailVerificationTemplate).map {
+                case true => {
+                  (data, Constants.EmailNotVerified)
+                }
+                case false => {
+                  ("", Constants.EmailVerified)
                 }
               }
             }
           }
-          processSendEmailVerification(result, email)
+          processSendEmailVerification(result)
         }
       }
   }
 
-  private def processSendEmailVerification(result: Future[String], email: Option[String])
+  private def processSendEmailVerification(result: Future[(String, String)])
                                           (implicit request: Request[AnyContent]): Future[Result] ={
     result.flatMap {
-      case Constants.EmailVerified => Future.successful(Redirect(controllers.routes.ReviewCompanyDetailsController.show()))
-      case Constants.EmailNotVerified => Future.successful(Ok(EmailVerification(EmailVerificationModel(email.getOrElse("")))))
+      case (_,Constants.EmailVerified) => Future.successful(Redirect(controllers.routes.ReviewCompanyDetailsController.show()))
+      case (data,Constants.EmailNotVerified) => Future.successful(Ok(EmailVerification(EmailVerificationModel(data))))
       case _ => Future.successful(InternalServerError(FrontendGlobal.internalServerErrorTemplate))
     }
   }

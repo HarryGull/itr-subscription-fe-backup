@@ -39,11 +39,12 @@ class EmailVerificationControllerSpec extends BaseTestSpec {
 
     "return a 200 when EMAIL is not verified" in {
       when(mockEmailVerificationService.sendVerificationLink(Matchers.any(), Matchers.any(), Matchers.any())(Matchers.any()))
-        .thenReturn(Future.successful(HttpResponse(CREATED)))
-
+        .thenReturn(Future.successful(true))
+      when(mockKeystoreConnector.fetchAndGetFormData[ContactDetailsSubscriptionModel](Matchers.any())(Matchers.any(), Matchers.any()))
+        .thenReturn(Future.successful(Option(contactDetailsSubscriptionModel)))
       when(mockEmailVerificationService.verifyEmailAddress(Matchers.any())(Matchers.any()))
         .thenReturn(Future.successful(Some(false)))
-      showWithSessionAndAuth(testController.show(Constants.ContactDetailsReturnUrl, email))(
+      showWithSessionAndAuth(testController.show(Constants.ContactDetailsReturnUrl))(
         result => status(result) shouldBe OK
       )
     }
@@ -51,7 +52,9 @@ class EmailVerificationControllerSpec extends BaseTestSpec {
     "redirect to the Review Company Details Controller page if email verified" in {
       when(mockEmailVerificationService.verifyEmailAddress(Matchers.any())(Matchers.any()))
         .thenReturn(Future.successful(Some(true)))
-      showWithSessionAndAuth(testController.show(Constants.ContactDetailsReturnUrl, email))(
+      when(mockKeystoreConnector.fetchAndGetFormData[ContactDetailsSubscriptionModel](Matchers.any())(Matchers.any(), Matchers.any()))
+        .thenReturn(Future.successful(Option(contactDetailsSubscriptionModel)))
+      showWithSessionAndAuth(testController.show(Constants.ContactDetailsReturnUrl))(
         result => redirectLocation(result) shouldBe Some(routes.ReviewCompanyDetailsController.show().url)
       )
     }

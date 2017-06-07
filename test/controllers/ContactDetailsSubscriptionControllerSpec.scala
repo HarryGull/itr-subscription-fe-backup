@@ -69,7 +69,7 @@ class ContactDetailsSubscriptionControllerSpec extends BaseTestSpec {
     "redirect to the Review Company Details Controller page" in {
       submitWithSessionAndAuth(testController.submit,formInput:_*)(
         result => {
-          redirectLocation(result) shouldBe Some(routes.EmailVerificationController.show(Constants.ContactDetailsReturnUrl, Some("test@test.com")).url)
+          redirectLocation(result) shouldBe Some(routes.EmailVerificationController.show(Constants.ContactDetailsReturnUrl).url)
         }
       )
     }

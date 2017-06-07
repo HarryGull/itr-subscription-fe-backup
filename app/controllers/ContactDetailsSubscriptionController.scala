@@ -51,7 +51,7 @@ class ContactDetailsSubscriptionController @Inject()(authorised: AuthorisedActio
       },
       validFormData => {
         keystoreConnector.saveFormData(KeystoreKeys.contactDetailsSubscription, validFormData)
-        Future.successful(Redirect(routes.EmailVerificationController.show(Constants.ContactDetailsReturnUrl, Some(validFormData.email))))
+        Future.successful(Redirect(routes.EmailVerificationController.show(Constants.ContactDetailsReturnUrl)))
       }
     )
   }
