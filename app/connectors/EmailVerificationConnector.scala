@@ -42,13 +42,19 @@ class EmailVerificationConnectorImpl @Inject()(http: WSHttp, applicationConfig: 
 
   def checkVerifiedEmail(email : String)(implicit hc : HeaderCarrier) : Future[Boolean] = {
     def errorMsg(status: String) = {
-      Logger.debug(s"[EmailVerificationConnector] [checkVerifiedEmail] request to check verified email returned a $status - email not found / not verified")
+      Logger.info(s"[EmailVerificationConnector] [checkVerifiedEmail] request to check verified email returned a $status - email not found / not verified")
       false
     }
     http.GET[HttpResponse](s"$checkVerifiedEmailURL/$email") map {
       _.status match {
-        case OK => true
-        case _ => false
+        case OK => {
+          print(" IN THE checkVerifiedEmailURL CASE OK ======================== :::: ")
+          true
+        }
+        case _ => {
+          print(" IN THE checkVerifiedEmailURL CASE ELSE ALL FALSE ======================== :::: ")
+          false
+        }
       }
     }recover {
       case ex: NotFoundException => errorMsg("404")
@@ -57,22 +63,61 @@ class EmailVerificationConnectorImpl @Inject()(http: WSHttp, applicationConfig: 
     }
   }
 
-  def requestVerificationEmail(emailRequest : EmailVerificationRequest)(implicit hc : HeaderCarrier) : Future[HttpResponse] = {
-    http.POST[EmailVerificationRequest, HttpResponse](s"$sendVerificationEmailURL", emailRequest)
+  def requestVerificationEmail(emailRequest : EmailVerificationRequest)(implicit hc : HeaderCarrier) : Future[Boolean] = {
+    def errorMsg(status: String, ex: HttpException) = {
+      Logger.error(s"[EmailVerificationConnector] [requestVerificationEmail] request to send verification email returned a $status - email not sent - reason = ${ex.getMessage}")
+      throw new EmailErrorResponse(status)
+    }
+
+    http.POST[EmailVerificationRequest, HttpResponse](s"$sendVerificationEmailURL", emailRequest)map { r =>
+      r.status match {
+        case CREATED => {
+          Logger.debug("[EmailVerificationConnector] [requestVerificationEmail] request to verification service successful")
+          true
+        }
+        case CONFLICT => {
+          Logger.warn("[EmailVerificationConnector] [requestVerificationEmail] request to send verification email returned a 409 - email already verified")
+          false
+        }
+      }
+    }recover {
+      case ex: BadRequestException => errorMsg("400", ex)
+      case ex: NotFoundException => errorMsg("404", ex)
+      case ex: InternalServerException => errorMsg("500", ex)
+      case ex: BadGatewayException => errorMsg("502", ex)
+    }
   }
 
   def customRead(http: String, url: String, response: HttpResponse) =
     response.status match {
-      case 400 => throw new BadRequestException("Provided incorrect data to Email Verification")
-      case 404 => throw new NotFoundException("Email not found")
-      case 409 => response
-      case 500 => throw new InternalServerException("Email service returned an error")
-      case 502 => throw new BadGatewayException("Email service returned an upstream error")
-      case _ => handleResponse(http, url)(response)
+      case 400 => {
+        print(s" IN THE customRead CATCH 400 ======================== :::: ${response.status}")
+        throw new BadRequestException("Provided incorrect data to Email Verification")
+      }
+      case 404 => {
+        print(" IN THE customRead CATCH 404 ======================== :::: ")
+        throw new NotFoundException("Email not found")
+      }
+      case 409 => {
+        print(s" IN THE customRead CATCH 409 ======================== :::: ${response.status}")
+        response
+      }
+      case 500 => {
+        print(s" IN THE customRead CATCH 500 ======================== ::::  ${response.status} ")
+        throw new InternalServerException("Email service returned an error")
+      }
+      case 502 => {
+        print(s" IN THE customRead CATCH 502 ======================== :::: ${response.status} ")
+        throw new BadGatewayException("Email service returned an upstream error")
+      }
+      case _ => {
+        print(s" IN THE customRead CATCH ELSE ALLL ======================== :::: ${response.status}")
+        handleResponse(http, url)(response)
+      }
     }
 }
 
 trait EmailVerificationConnector {
   def checkVerifiedEmail(email : String)(implicit hc : HeaderCarrier) : Future[Boolean]
-  def requestVerificationEmail(emailRequest : EmailVerificationRequest)(implicit hc : HeaderCarrier) : Future[HttpResponse]
+  def requestVerificationEmail(emailRequest : EmailVerificationRequest)(implicit hc : HeaderCarrier) : Future[Boolean]
 }

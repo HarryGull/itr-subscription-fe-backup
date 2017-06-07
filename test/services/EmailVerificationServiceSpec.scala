@@ -35,16 +35,16 @@ class EmailVerificationServiceSpec extends BaseTestSpec {
 
     "return true when the email is sent successfully" in {
       when(mockEmailVerificationConnector.requestVerificationEmail(Matchers.any())(Matchers.any()))
-        .thenReturn(Future.successful(HttpResponse(CREATED)))
+        .thenReturn(Future.successful(true))
       val result = testService.sendVerificationLink(emailAddress, MockConfig.emailVerificationReturnUrlOne, emailVerificationTemplate)
-      await(result.status) shouldBe CREATED
+      await(result) shouldBe true
     }
 
     "return false when the email is not sent" in {
       when(mockEmailVerificationConnector.requestVerificationEmail(Matchers.any())(Matchers.any()))
-        .thenReturn(Future.successful(HttpResponse(BAD_REQUEST)))
+        .thenReturn(Future.successful(false))
       val result = testService.sendVerificationLink(emailAddress, MockConfig.emailVerificationReturnUrlOne, emailVerificationTemplate)
-      await(result.status) shouldBe BAD_REQUEST
+      await(result) shouldBe false
     }
   }
 
