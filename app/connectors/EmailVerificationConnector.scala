@@ -42,7 +42,7 @@ class EmailVerificationConnectorImpl @Inject()(http: WSHttp, applicationConfig: 
 
   def checkVerifiedEmail(email: String)(implicit hc: HeaderCarrier): Future[Boolean] = {
     def errorMsg(status: String) = {
-      Logger.info(s"[EmailVerificationConnector] [checkVerifiedEmail] request to check verified email returned a " +
+      Logger.warn(s"[EmailVerificationConnector] [checkVerifiedEmail] request to check verified email returned a " +
         s"$status - email not found / not verified")
       false
     }
@@ -61,7 +61,7 @@ class EmailVerificationConnectorImpl @Inject()(http: WSHttp, applicationConfig: 
 
   def requestVerificationEmail(emailRequest: EmailVerificationRequest)(implicit hc: HeaderCarrier): Future[Boolean] = {
     def errorMsg(status: String, ex: HttpException) = {
-      Logger.error(s"[EmailVerificationConnector] [requestVerificationEmail] request to send verification " +
+      Logger.warn(s"[EmailVerificationConnector] [requestVerificationEmail] request to send verification " +
         s"email returned a $status - email not sent - reason = ${ex.getMessage}")
       throw new EmailErrorResponse(status)
     }
