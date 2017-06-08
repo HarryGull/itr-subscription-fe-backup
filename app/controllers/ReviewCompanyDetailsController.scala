@@ -47,21 +47,25 @@ class ReviewCompanyDetailsController @Inject()(authorised: AuthorisedActions,
       correspondenceAddress <- keystoreConnector.fetchAndGetFormData[ProvideCorrespondAddressModel](KeystoreKeys.provideCorrespondAddress)
       contactDetails <- keystoreConnector.fetchAndGetFormData[ContactDetailsSubscriptionModel](KeystoreKeys.contactDetailsSubscription)
       result <- createReviewCompanyDetailsModel(registrationReviewDetails,correspondenceAddress,contactDetails)
-      isVerified <- emailVerificationService.verifyEmailAddress(if(contactDetails.isDefined) contactDetails.get.email else "")
-    } yield if(!isVerified.getOrElse(false)) Redirect(routes.EmailVerificationController.show(Constants.ContactDetailsReturnUrl)) else result
+    } yield result
   }
 
   def submit: Action[AnyContent] = authorised.async { implicit user =>
     implicit request =>
-      for {
+
+      val verifyStatus = for {
         data <- keystoreConnector.fetchAndGetFormData[ContactDetailsSubscriptionModel](KeystoreKeys.contactDetailsSubscription)
         isVerified <- emailVerificationService.verifyEmailAddress(data.get.email)
-        response <- subscriptionService.subscribe
-      } yield if(!isVerified.getOrElse(false)) Redirect(routes.EmailVerificationController.show(Constants.ContactDetailsReturnUrl)) else {
-        response.status match {
-          case NO_CONTENT => Redirect(applicationConfig.submissionUrl)
-          case _ => InternalServerError(FrontendGlobal.internalServerErrorTemplate)
+      } yield isVerified.getOrElse(false)
+
+      verifyStatus.flatMap {
+        case true => subscriptionService.subscribe.map { response =>
+          response.status match {
+            case NO_CONTENT => Redirect(applicationConfig.submissionUrl)
+            case _ => InternalServerError(FrontendGlobal.internalServerErrorTemplate)
+          }
         }
+        case false => Future.successful(Redirect(routes.EmailVerificationController.show(Constants.ContactDetailsReturnUrl)))
       }
   }
 

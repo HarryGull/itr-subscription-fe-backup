@@ -20,14 +20,11 @@ import javax.inject.Singleton
 
 import com.google.inject.Inject
 import connectors.{EmailVerificationConnector, KeystoreConnector}
-import models.Email.GG
 import models._
-import play.api.Logger
-import uk.gov.hmrc.play.http.{HeaderCarrier, HttpResponse}
+import uk.gov.hmrc.play.http.HeaderCarrier
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
-import play.api.http.Status._
 
 @Singleton
 class EmailVerificationServiceImpl @Inject()(keystoreConnector: KeystoreConnector,
@@ -44,7 +41,6 @@ class EmailVerificationServiceImpl @Inject()(keystoreConnector: KeystoreConnecto
 
   def sendVerificationLink(address: String, returnUrl: String, template: String)
                           (implicit hc: HeaderCarrier): Future[Boolean] = {
-    Logger.warn(s"EmailVerificationServiceImpl -- sendVerificationLink ::: $returnUrl :::::: $address")
     emailVerificationConnector.requestVerificationEmail(generateEmailRequest(address, returnUrl, template)) map {
       sent =>
         val verified = sent // if not sent the it's because the email address was already verified
