@@ -22,7 +22,6 @@ import common.{Constants, KeystoreKeys}
 import config.{AppConfig, FrontendGlobal}
 import connectors.KeystoreConnector
 import models.{ContactDetailsSubscriptionModel, EmailVerificationModel}
-import play.api.Logger
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, Request, Result}
 import services.EmailVerificationService
