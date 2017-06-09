@@ -21,6 +21,7 @@ import config.AppConfig
 import models.EmailVerificationRequest
 import play.api.Logger
 import play.api.http.Status._
+import play.api.libs.json.Json
 import uk.gov.hmrc.play.http._
 import uk.gov.hmrc.play.http.ws.WSHttp
 
@@ -66,6 +67,7 @@ class EmailVerificationConnectorImpl @Inject()(http: WSHttp, applicationConfig: 
       throw new EmailErrorResponse(status)
     }
 
+    Logger.info(s" **************************** EmailVerificationRequest JSON ======== ${Json.toJson(emailRequest)}")
     http.POST[EmailVerificationRequest, HttpResponse](s"$sendVerificationEmailURL", emailRequest) map { r =>
       r.status match {
         case CREATED => {
