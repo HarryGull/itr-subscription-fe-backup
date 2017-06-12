@@ -66,8 +66,7 @@ class EmailVerificationConnectorImpl @Inject()(http: WSHttp, applicationConfig: 
         s"email returned a $status - email not sent - reason = ${ex.getMessage}")
       throw new EmailErrorResponse(status)
     }
-
-    Logger.info(s" **************************** EmailVerificationRequest JSON ======== ${Json.toJson(emailRequest)}")
+    Logger.debug(s" **************************** EmailVerificationRequest JSON ======== ${Json.toJson(emailRequest)}")
     http.POST[EmailVerificationRequest, HttpResponse](s"$sendVerificationEmailURL", emailRequest) map { r =>
       r.status match {
         case CREATED => {
