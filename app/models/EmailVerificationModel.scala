@@ -40,23 +40,3 @@ case class Email(
                   verified : Boolean,
                   returnLinkEmailSent : Boolean
                 )
-
-object Email {
-  val GG = "GG"
-  implicit val reads = (
-    (__ \ "address").read[String] and
-      (__ \ "type").read[String] and
-      (__ \ "link-sent").read[Boolean] and
-      (__ \ "verified").read[Boolean] and
-      (__ \ "return-link-email-sent").read[Boolean].orElse(Reads.pure(true))
-    )(Email.apply _)
-
-  implicit val writes = (
-    (__ \ "address").write[String] and
-      (__ \ "type").write[String] and
-      (__ \ "link-sent").write[Boolean] and
-      (__ \ "verified").write[Boolean] and
-      (__ \ "return-link-email-sent").write[Boolean]
-
-    )(unlift(Email.unapply))
-}
