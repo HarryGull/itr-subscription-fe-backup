@@ -36,20 +36,9 @@ class SubscriptionConnectorImpl @Inject()(http: WSHttp, applicationConfig: AppCo
   def subscribe(subscriptionModel: SubscriptionTypeModel, safeID: String, postcode: String)(implicit hc: HeaderCarrier): Future[HttpResponse] = {
     http.POST[JsValue, HttpResponse](s"$serviceUrl/investment-tax-relief-subscription/$safeID/$postcode/subscribe",Json.toJson(subscriptionModel))
   }
-
-  def updateEmail(registrationId: String, email: Email)(implicit hc: HeaderCarrier): Future[Option[Email]] = {
-    val json = Json.toJson(email)
-    http.PUT[JsValue, Email](s"$serviceUrl/investment-tax-relief-subscription/update-email", json).map{
-      e => Some(e)
-    } recover {
-      case ex: BadRequestException =>
-        None
-    }
-  }
 }
 
 trait SubscriptionConnector {
 
   def subscribe(subscriptionModel: SubscriptionTypeModel, safeID: String, postcode: String)(implicit hc: HeaderCarrier): Future[HttpResponse]
-  def updateEmail(registrationId: String, email: Email)(implicit hc: HeaderCarrier): Future[Option[Email]]
 }
