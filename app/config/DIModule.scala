@@ -61,8 +61,6 @@ class DIModule extends AbstractModule {
     // test only
     bind(classOf[AuthenticatorConnector]).to(classOf[AuthenticatorConnectorImpl])
     bind(classOf[GgStubsConnector]).to(classOf[GgStubsConnectorImpl])
-    bind(classOf[DeEnrolmentConnector]).to(classOf[DeEnrolmentConnectorImpl])
-
 
   }
 
