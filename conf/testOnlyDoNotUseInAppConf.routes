@@ -10,7 +10,6 @@
 # Failing to follow this rule may result in test routes deployed in production.
 
 GET        /investment-tax-relief-subscription/test-only/reset-enrolments       testOnly.controllers.ResetEnrolmentsController.resetEnrolments
-GET        /investment-tax-relief-subscription/test-only/de-enrol               testOnly.controllers.DeEnrolController.deEnrol
 
 # Add all the application routes to the prod.routes file
 ->         /                                 prod.Routes
