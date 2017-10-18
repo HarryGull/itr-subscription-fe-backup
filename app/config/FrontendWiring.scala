@@ -25,11 +25,6 @@ import uk.gov.hmrc.play.frontend.auth.connectors.AuthConnector
 import uk.gov.hmrc.play.http.ws.{WSDelete, WSGet, WSPost, WSPut}
 import uk.gov.hmrc.http.{ HttpDelete, HttpGet, HttpPut }
 
-//object WSHttp extends WSGet with WSPut with WSPost with WSDelete with AppName with RunMode {
-//  override val hooks = NoneRequired
-//} gary
-
-
 object WSHttp extends uk.gov.hmrc.play.http.ws.WSHttp with HttpGet with HttpPatch with HttpPut with HttpPost with HttpDelete with AppName with RunMode {
   override val hooks = NoneRequired
 }
