@@ -28,13 +28,13 @@ import play.api.mvc.{Action, AnyContent}
 import services.RegisteredBusinessCustomerService
 import uk.gov.hmrc.http.cache.client.CacheMap
 import uk.gov.hmrc.play.frontend.controller.FrontendController
-import uk.gov.hmrc.play.http.HeaderCarrier
 import views.html.registrationInformation.ConfirmCorrespondAddress
 import play.api.i18n.{I18nSupport, MessagesApi}
 import uk.gov.hmrc.play.health.routes
 import utils.CountriesHelper
 
 import scala.concurrent.Future
+import uk.gov.hmrc.http.HeaderCarrier
 
 @Singleton
 class ConfirmCorrespondAddressController @Inject()(authorised: AuthorisedActions,

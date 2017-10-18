@@ -22,8 +22,8 @@ import models.etmp.{CorrespondenceDetailsModel, SubscriptionTypeModel}
 import org.mockito.Matchers
 import org.mockito.Mockito._
 import play.api.libs.json.JsValue
-import uk.gov.hmrc.play.http.HttpResponse
 import play.api.test.Helpers._
+import uk.gov.hmrc.http.HttpResponse
 
 class SubscriptionConnectorSpec extends BaseTestSpec {
 
@@ -37,7 +37,7 @@ class SubscriptionConnectorSpec extends BaseTestSpec {
 
     "create a url using the safeID and postcode" in {
       when(mockHttp.POST[JsValue, HttpResponse](Matchers.eq(s"${testConnector.serviceUrl}/investment-tax-relief-subscription/$safeID/$postcode/subscribe"),
-        Matchers.any(),Matchers.any())(Matchers.any(),Matchers.any(),Matchers.any())).thenReturn(HttpResponse(OK))
+        Matchers.any(),Matchers.any())(Matchers.any(),Matchers.any(),Matchers.any(), Matchers.any())).thenReturn(HttpResponse(OK))
       val result = testConnector.subscribe(subscriptionModel,safeID,postcode)
       await(result).status shouldBe OK
     }

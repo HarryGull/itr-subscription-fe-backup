@@ -20,13 +20,14 @@ import play.api.mvc.{AnyContent, Request, Result}
 import play.api.mvc.Results.Redirect
 import services.AuthService
 import uk.gov.hmrc.play.frontend.auth._
-import uk.gov.hmrc.play.http.HeaderCarrier
 
 import scala.concurrent.{ExecutionContext, Future}
+import uk.gov.hmrc.http.HeaderCarrier
+import uk.gov.hmrc.play.HeaderCarrierConverter
 
 class AffinityGroupPredicate(authService: AuthService)(implicit ec: ExecutionContext) extends PageVisibilityPredicate {
   override def apply(authContext: AuthContext, request: Request[AnyContent]): Future[PageVisibilityResult] = {
-    implicit val hc = HeaderCarrier.fromHeadersAndSession(request.headers, Some(request.session))
+    implicit val hc = HeaderCarrierConverter.fromHeadersAndSession(request.headers, Some(request.session))
     authService.getAffinityGroup.map {
       case Some(affinityGroup) => {
         if(affinityGroup.equals("Organisation")) PageIsVisible

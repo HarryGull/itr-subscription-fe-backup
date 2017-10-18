@@ -21,10 +21,10 @@ import connectors.AuthConnector
 import org.mockito.Matchers
 import org.mockito.Mockito._
 import play.api.libs.json.Json
-import uk.gov.hmrc.play.http.{HttpResponse, Upstream5xxResponse}
 import play.api.test.Helpers._
 
 import scala.concurrent.Future
+import uk.gov.hmrc.http.Upstream5xxResponse
 
 class ValidateTokenServiceSpec extends BaseTestSpec {
 

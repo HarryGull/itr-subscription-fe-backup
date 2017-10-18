@@ -21,10 +21,10 @@ import javax.inject.Singleton
 import com.google.inject.Inject
 import connectors.ValidateTokenConnector
 import play.api.Logger
-import uk.gov.hmrc.play.http.HeaderCarrier
 import scala.concurrent.ExecutionContext.Implicits.global
 
 import scala.concurrent.Future
+import uk.gov.hmrc.http.HeaderCarrier
 
 
 @Singleton

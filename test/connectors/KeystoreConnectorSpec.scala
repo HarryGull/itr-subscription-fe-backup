@@ -22,10 +22,10 @@ import org.mockito.Matchers
 import org.mockito.Mockito._
 import play.api.libs.json.Json
 import uk.gov.hmrc.http.cache.client.CacheMap
-import uk.gov.hmrc.play.http.{HeaderCarrier, HttpResponse}
 import play.api.test.Helpers._
 
 import scala.concurrent.Future
+import uk.gov.hmrc.http.{ HeaderCarrier, HttpResponse }
 
 class KeystoreConnectorSpec extends BaseTestSpec {
   
@@ -35,7 +35,7 @@ class KeystoreConnectorSpec extends BaseTestSpec {
   "fetchAndGetFormData" should {
 
     "fetch and get from keystore" in {
-      when(mockSessionCache.fetchAndGetEntry[ConfirmCorrespondAddressModel](Matchers.anyString())(Matchers.any(), Matchers.any()))
+      when(mockSessionCache.fetchAndGetEntry[ConfirmCorrespondAddressModel](Matchers.anyString())(Matchers.any(), Matchers.any(), Matchers.any()))
         .thenReturn(Future.successful(Option(confirmCorrespondAddressModel)))
       val result = testConnector.fetchAndGetFormData[ConfirmCorrespondAddressModel]("test")
       await(result) shouldBe Some(confirmCorrespondAddressModel)
@@ -46,7 +46,7 @@ class KeystoreConnectorSpec extends BaseTestSpec {
 
     "save data to keystore" in {
       val returnedCacheMap = CacheMap("test", Map("data" -> Json.toJson(confirmCorrespondAddressModel)))
-      when(mockSessionCache.cache[ConfirmCorrespondAddressModel](Matchers.anyString(), Matchers.any())(Matchers.any(), Matchers.any()))
+      when(mockSessionCache.cache[ConfirmCorrespondAddressModel](Matchers.anyString(), Matchers.any())(Matchers.any(), Matchers.any(), Matchers.any()))
         .thenReturn(Future.successful(returnedCacheMap))
       val result = testConnector.saveFormData("test", confirmCorrespondAddressModel)
       await(result) shouldBe returnedCacheMap
@@ -56,7 +56,7 @@ class KeystoreConnectorSpec extends BaseTestSpec {
   "clearKeystore" should {
 
     "clear the data from keystore" in {
-      when(mockSessionCache.remove()(Matchers.any[HeaderCarrier]())).thenReturn(Future.successful(HttpResponse(OK)))
+      when(mockSessionCache.remove()(Matchers.any[HeaderCarrier](), Matchers.any())).thenReturn(Future.successful(HttpResponse(OK)))
       val result = testConnector.clearKeystore()
       await(result).status shouldBe OK
     }
@@ -67,7 +67,7 @@ class KeystoreConnectorSpec extends BaseTestSpec {
 
     "convert review details json to CompanyRegistrationReviewDetailsModel" in {
       when(mockSessionCache.fetchAndGetEntry[CompanyRegistrationReviewDetailsModel]
-        (Matchers.anyString())(Matchers.any[HeaderCarrier](),Matchers.any()))
+        (Matchers.anyString())(Matchers.any[HeaderCarrier](),Matchers.any(), Matchers.any()))
         .thenReturn(Future.successful(Some(validModel)))
       val result = testConnector.fetchAndGetReviewDetailsForSession
       await(result) shouldBe Some(validModel)

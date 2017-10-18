@@ -18,10 +18,11 @@ package connectors
 
 import com.google.inject.{Inject, Singleton}
 import config.AppConfig
-import uk.gov.hmrc.play.http.HeaderCarrier
 import uk.gov.hmrc.play.http.ws.WSHttp
 
 import scala.concurrent.Future
+import uk.gov.hmrc.http.HeaderCarrier
+import uk.gov.hmrc.play.http.logging.MdcLoggingExecutionContext._
 
 @Singleton
 class ValidateTokenConnectorImpl @Inject()(http: WSHttp, applicationConfig: AppConfig) extends ValidateTokenConnector {

@@ -21,9 +21,13 @@ import com.google.inject.name.Named
 import models.CompanyRegistrationReviewDetailsModel
 import play.api.libs.json.Format
 import uk.gov.hmrc.http.cache.client.{CacheMap, SessionCache}
-import uk.gov.hmrc.play.http.{HeaderCarrier, HttpResponse}
+import uk.gov.hmrc.play.http.logging.MdcLoggingExecutionContext._
+
+
+
 
 import scala.concurrent.Future
+import uk.gov.hmrc.http.{ HeaderCarrier, HttpResponse }
 
 @Singleton
 class KeystoreConnectorImpl @Inject()(@Named("ITR") itrSessionCache: SessionCache,

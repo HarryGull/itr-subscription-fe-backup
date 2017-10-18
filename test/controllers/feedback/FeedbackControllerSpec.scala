@@ -24,10 +24,10 @@ import play.api.http.Status
 import play.api.mvc.{AnyContent, Request, RequestHeader}
 import play.api.test.Helpers._
 import play.twirl.api.Html
-import uk.gov.hmrc.play.http.HttpResponse
 import uk.gov.hmrc.play.partials.FormPartialRetriever
 
 import scala.concurrent.Future
+import uk.gov.hmrc.http.HttpResponse
 
 class FeedbackControllerSpec extends BaseTestSpec {
 
@@ -56,7 +56,7 @@ class FeedbackControllerSpec extends BaseTestSpec {
 
   "POST /feedback" should {
     "return form with thank you for valid selections" in {
-      when(mockHttp.POSTForm[HttpResponse](Matchers.any(), Matchers.any())(Matchers.any(), Matchers.any())).thenReturn(
+      when(mockHttp.POSTForm[HttpResponse](Matchers.any(), Matchers.any())(Matchers.any(), Matchers.any(), Matchers.any())).thenReturn(
         Future.successful(HttpResponse(Status.OK, responseString = Some("1234"))))
 
       submitWithSessionAndAuth(testController.submit)(
@@ -65,7 +65,7 @@ class FeedbackControllerSpec extends BaseTestSpec {
     }
 
     "return form with errors for invalid selections" in {
-      when(mockHttp.POSTForm[HttpResponse](Matchers.any(), Matchers.any())(Matchers.any(), Matchers.any())).thenReturn(
+      when(mockHttp.POSTForm[HttpResponse](Matchers.any(), Matchers.any())(Matchers.any(), Matchers.any(), Matchers.any())).thenReturn(
         Future.successful(HttpResponse(Status.BAD_REQUEST, responseString = Some("<p>:^(</p>"))))
       submitWithSessionAndAuth(testController.submit)(
         result => status(result) shouldBe Status.BAD_REQUEST
@@ -73,7 +73,7 @@ class FeedbackControllerSpec extends BaseTestSpec {
     }
 
     "return error for other http code back from contact-frontend" in {
-      when(mockHttp.POSTForm[HttpResponse](Matchers.any(), Matchers.any())(Matchers.any(), Matchers.any())).thenReturn(
+      when(mockHttp.POSTForm[HttpResponse](Matchers.any(), Matchers.any())(Matchers.any(), Matchers.any(), Matchers.any())).thenReturn(
         Future.successful(HttpResponse(FORBIDDEN)))
       showWithSessionAndAuth(testController.submit)(
         result => status(result) shouldBe Status.INTERNAL_SERVER_ERROR
@@ -81,7 +81,7 @@ class FeedbackControllerSpec extends BaseTestSpec {
     }
 
     "return internal server error when there is an empty form" in {
-      when(mockHttp.POSTForm[HttpResponse](Matchers.any(), Matchers.any())(Matchers.any(), Matchers.any())).thenReturn(
+      when(mockHttp.POSTForm[HttpResponse](Matchers.any(), Matchers.any())(Matchers.any(), Matchers.any(), Matchers.any())).thenReturn(
         Future.successful(HttpResponse(Status.OK, responseString = Some("1234"))))
       showWithSessionAndAuth(testController.submit)(
         result => status(result) shouldBe Status.INTERNAL_SERVER_ERROR

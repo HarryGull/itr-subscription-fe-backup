@@ -19,15 +19,16 @@ package auth
 import com.google.inject.{Inject, Singleton}
 import play.api.mvc._
 import config.AppConfig
-import services.{ValidateTokenService, AuthService, RegisteredBusinessCustomerService}
+import services.{AuthService, RegisteredBusinessCustomerService, ValidateTokenService}
 import connectors.KeystoreConnector
 import play.api.Configuration
 import uk.gov.hmrc.play.frontend.auth.connectors.AuthConnector
 import uk.gov.hmrc.play.frontend.auth.{Actions, AuthenticationProvider, TaxRegime}
 import uk.gov.hmrc.play.frontend.auth.connectors.domain.Accounts
-import uk.gov.hmrc.play.http.HeaderCarrier
 
 import scala.concurrent.{ExecutionContext, Future}
+import uk.gov.hmrc.http.HeaderCarrier
+import uk.gov.hmrc.play.HeaderCarrierConverter
 
 @Singleton
 class AuthorisedForTAVC @Inject()(val authConnector: AuthConnector,
@@ -42,7 +43,7 @@ class AuthorisedForTAVC @Inject()(val authConnector: AuthConnector,
   lazy val postSignInRedirectUrl: String = applicationConfig.introductionUrl
 
   // $COVERAGE-OFF$
-  implicit private def hc(implicit request: Request[_]): HeaderCarrier = HeaderCarrier.fromHeadersAndSession(request.headers, Some(request.session))
+  implicit private def hc(implicit request: Request[_]): HeaderCarrier = HeaderCarrierConverter.fromHeadersAndSession(request.headers, Some(request.session))
   // $COVERAGE-ON$
 
   private lazy val visibilityPredicate = new TAVCCompositePageVisibilityPredicate(

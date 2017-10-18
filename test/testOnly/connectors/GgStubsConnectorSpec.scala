@@ -21,9 +21,9 @@ import org.mockito.Matchers
 import org.mockito.Mockito._
 import play.api.libs.json.Json
 import play.api.test.Helpers._
-import uk.gov.hmrc.play.http.HttpResponse
 
 import scala.concurrent.Future
+import uk.gov.hmrc.http.HttpResponse
 
 class GgStubsConnectorSpec extends BaseTestSpec {
   
@@ -38,7 +38,7 @@ class GgStubsConnectorSpec extends BaseTestSpec {
       lazy val response = await(result)
       "Return OK" in {
         when(mockHttp.POSTEmpty[HttpResponse]
-          (Matchers.eq(s"${testConnector.serviceURL}/${testConnector.resetURI}"))(Matchers.any(), Matchers.eq(hc)))
+          (Matchers.eq(s"${testConnector.serviceURL}/${testConnector.resetURI}"))(Matchers.any(), Matchers.eq(hc), Matchers.any()))
           .thenReturn(Future.successful(HttpResponse(OK)))
         val result = testConnector.resetEnrolments()
         val response = await(result)
@@ -53,14 +53,14 @@ class GgStubsConnectorSpec extends BaseTestSpec {
 
     "Return OK" in {
       when(mockHttp.POSTEmpty[HttpResponse]
-        (Matchers.eq(s"${testConnector.serviceURL}/${testConnector.resetURI}"))(Matchers.any(), Matchers.eq(hc)))
+        (Matchers.eq(s"${testConnector.serviceURL}/${testConnector.resetURI}"))(Matchers.any(), Matchers.eq(hc), Matchers.any()))
         .thenReturn(Future.successful(HttpResponse(BAD_REQUEST, Some(jsonError))))
       response.status shouldBe BAD_REQUEST
     }
 
     "Return a JSON response" in {
       when(mockHttp.POSTEmpty[HttpResponse]
-        (Matchers.eq(s"${testConnector.serviceURL}/${testConnector.resetURI}"))(Matchers.any(), Matchers.eq(hc)))
+        (Matchers.eq(s"${testConnector.serviceURL}/${testConnector.resetURI}"))(Matchers.any(), Matchers.eq(hc), Matchers.any()))
         .thenReturn(Future.successful(HttpResponse(BAD_REQUEST, Some(jsonError))))
       Json.parse(response.body) shouldBe jsonError
     }

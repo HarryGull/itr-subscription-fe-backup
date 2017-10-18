@@ -23,9 +23,10 @@ package testOnly.connectors
 import com.google.inject.{Inject, Singleton}
 import uk.gov.hmrc.play.config.ServicesConfig
 import uk.gov.hmrc.play.http.ws.WSHttp
-import uk.gov.hmrc.play.http.{HeaderCarrier, HttpResponse}
+import uk.gov.hmrc.play.http.logging.MdcLoggingExecutionContext._
 
 import scala.concurrent.Future
+import uk.gov.hmrc.http.{ HeaderCarrier, HttpResponse }
 
 @Singleton
 class AuthenticatorConnectorImpl @Inject()(http: WSHttp) extends AuthenticatorConnector with ServicesConfig with RawResponseReads {

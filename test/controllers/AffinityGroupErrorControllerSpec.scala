@@ -21,7 +21,6 @@ import common.{BaseTestSpec, KeystoreKeys}
 import org.mockito.Matchers
 import org.mockito.Mockito._
 import play.api.test.Helpers._
-import uk.gov.hmrc.play.http.Upstream5xxResponse
 
 import scala.concurrent.Future
 

@@ -21,7 +21,6 @@ import play.api.Logger
 import play.api.mvc.Results.Redirect
 import play.api.mvc._
 import uk.gov.hmrc.play.frontend.auth.{AuthContext, GovernmentGateway, UserCredentials}
-import uk.gov.hmrc.play.http.SessionKeys
 
 import scala.concurrent.Future
 

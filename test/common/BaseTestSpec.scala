@@ -37,8 +37,6 @@ import uk.gov.hmrc.http.cache.client.SessionCache
 import uk.gov.hmrc.play.frontend.auth.{AuthContext, AuthenticationProviderIds}
 import uk.gov.hmrc.play.frontend.auth.connectors.domain
 import uk.gov.hmrc.play.frontend.auth.connectors.domain.{ConfidenceLevel, CredentialStrength}
-import uk.gov.hmrc.play.http.{HeaderCarrier, SessionKeys}
-import uk.gov.hmrc.play.http.logging.SessionId
 import uk.gov.hmrc.play.http.ws.WSHttp
 import uk.gov.hmrc.play.test.UnitSpec
 import uk.gov.hmrc.time.DateTimeUtils
@@ -46,6 +44,8 @@ import utils.{CountriesHelper, Validation}
 
 import scala.concurrent.Future
 import scala.concurrent.ExecutionContext.Implicits.global
+import uk.gov.hmrc.http.{ HeaderCarrier, SessionKeys }
+import uk.gov.hmrc.http.logging.SessionId
 
 trait BaseTestSpec extends UnitSpec with OneAppPerSuite with BeforeAndAfterEach with I18nSupport with MockitoSugar {
 
