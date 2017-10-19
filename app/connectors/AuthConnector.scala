@@ -19,11 +19,12 @@ package connectors
 import javax.inject.{Inject, Singleton}
 
 import config.AppConfig
-import uk.gov.hmrc.play.http.HeaderCarrier
-import uk.gov.hmrc.play.http._
 import uk.gov.hmrc.play.http.ws.WSHttp
 
 import scala.concurrent.Future
+import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse}
+import uk.gov.hmrc.play.http.logging.MdcLoggingExecutionContext._
+
 
 @Singleton
 class AuthConnectorImpl @Inject()(http: WSHttp, applicationConfig: AppConfig) extends AuthConnector {

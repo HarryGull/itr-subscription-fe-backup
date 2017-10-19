@@ -22,10 +22,10 @@ import com.google.inject.Inject
 import connectors.{EmailVerificationConnector, KeystoreConnector}
 import models._
 import play.api.Logger
-import uk.gov.hmrc.play.http.HeaderCarrier
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
+import uk.gov.hmrc.http.HeaderCarrier
 
 @Singleton
 class EmailVerificationServiceImpl @Inject()(keystoreConnector: KeystoreConnector,

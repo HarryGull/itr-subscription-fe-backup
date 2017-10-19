@@ -16,19 +16,18 @@
 
 package config
 
+import uk.gov.hmrc.http._
 import uk.gov.hmrc.crypto.ApplicationCrypto
 import uk.gov.hmrc.http.cache.client.{ShortLivedHttpCaching => HMRCShortLivedHttpCaching, SessionCache, ShortLivedCache}
-import uk.gov.hmrc.play.audit.http.config.LoadAuditingConfig
 import uk.gov.hmrc.play.audit.http.connector.{AuditConnector => Auditing}
 import uk.gov.hmrc.play.config.{AppName, RunMode, ServicesConfig}
 import uk.gov.hmrc.play.frontend.auth.connectors.AuthConnector
-import uk.gov.hmrc.play.http.{HttpDelete, HttpPut, HttpGet}
 import uk.gov.hmrc.play.http.ws.{WSDelete, WSGet, WSPost, WSPut}
+import uk.gov.hmrc.http.{ HttpDelete, HttpGet, HttpPut }
 
-object WSHttp extends WSGet with WSPut with WSPost with WSDelete with AppName with RunMode {
+object WSHttp extends uk.gov.hmrc.play.http.ws.WSHttp with HttpGet with HttpPatch with HttpPut with HttpPost with HttpDelete with AppName with RunMode {
   override val hooks = NoneRequired
 }
-
 object FrontendAuthConnector extends AuthConnector with ServicesConfig {
   val serviceUrl = baseUrl("auth")
   lazy val http = WSHttp

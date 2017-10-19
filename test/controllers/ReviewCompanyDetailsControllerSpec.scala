@@ -22,9 +22,9 @@ import play.api.test.Helpers._
 import org.mockito.Matchers
 import org.mockito.Mockito._
 import services.SubscriptionService
-import uk.gov.hmrc.play.http.HttpResponse
 
 import scala.concurrent.Future
+import uk.gov.hmrc.http.HttpResponse
 
 class ReviewCompanyDetailsControllerSpec extends BaseTestSpec {
 

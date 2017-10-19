@@ -24,9 +24,9 @@ import models.{CompanyRegistrationReviewDetailsModel, ContactDetailsSubscription
 import play.api.Logger
 import play.api.libs.json.Json
 import play.api.http.Status._
-import uk.gov.hmrc.play.http.{HeaderCarrier, HttpResponse}
 
 import scala.concurrent.{ExecutionContext, Future}
+import uk.gov.hmrc.http.{ HeaderCarrier, HttpResponse }
 
 class SubscriptionServiceImpl @Inject()(subscriptionConnector: SubscriptionConnector,
                                         keystoreConnector: KeystoreConnector,

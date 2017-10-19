@@ -20,16 +20,16 @@ import org.scalatest.mock.MockitoSugar
 import uk.gov.hmrc.play.frontend.auth.connectors.AuthConnector
 import uk.gov.hmrc.play.frontend.auth.connectors.domain.ConfidenceLevel
 import uk.gov.hmrc.play.frontend.auth.connectors.domain.{Accounts, Authority, CredentialStrength}
-import uk.gov.hmrc.play.http.{HeaderCarrier, HttpGet}
 
-import scala.concurrent.Future
+import scala.concurrent.{ExecutionContext, Future}
+import uk.gov.hmrc.http.{HeaderCarrier, HttpGet}
 
 object MockAuthConnector extends AuthConnector with MockitoSugar {
 
   override val http : HttpGet = mock[HttpGet]
   override val serviceUrl: String = ""
 
-  override def currentAuthority(implicit hc: HeaderCarrier): Future[Option[Authority]] = {
+  override def currentAuthority(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Option[Authority]] = {
     Future.successful(strongStrengthUser)
   }
 

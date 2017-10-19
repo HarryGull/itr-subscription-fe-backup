@@ -21,9 +21,9 @@ import javax.inject.{Inject, Singleton}
 import connectors.AuthConnector
 import play.api.Logger
 import play.api.http.Status._
-import uk.gov.hmrc.play.http.HeaderCarrier
 
 import scala.concurrent.{ExecutionContext, Future}
+import uk.gov.hmrc.http.HeaderCarrier
 
 @Singleton
 class AuthServiceImpl @Inject()(authConnector: AuthConnector) extends AuthService {

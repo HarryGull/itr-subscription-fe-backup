@@ -22,10 +22,10 @@ import models.EmailVerificationRequest
 import org.mockito.Matchers
 import org.mockito.Mockito.when
 import play.api.http.Status.{CONFLICT, CREATED, OK}
-import uk.gov.hmrc.play.http.{HeaderCarrier, HttpResponse, NotFoundException}
 import utils.WSHTTPMock
 
 import scala.concurrent.Future
+import uk.gov.hmrc.http.{ HeaderCarrier, HttpResponse, NotFoundException }
 
 class EmailVerificationConnectorSpec extends BaseTestSpec with WSHTTPMock{
 
@@ -67,7 +67,7 @@ class EmailVerificationConnectorSpec extends BaseTestSpec with WSHTTPMock{
     }
 
     "return false when passed an email either not valid or not verified yet" in {
-      when(mockWSHttp.GET[HttpResponse](Matchers.anyString())(Matchers.any(), Matchers.any[HeaderCarrier]()))
+      when(mockWSHttp.GET[HttpResponse](Matchers.anyString())(Matchers.any(), Matchers.any[HeaderCarrier](), Matchers.any()))
         .thenReturn(Future.failed(new NotFoundException("error")))
 
       await(testConnector.checkVerifiedEmail(verifiedEmail)) shouldBe false

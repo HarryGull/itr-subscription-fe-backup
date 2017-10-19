@@ -19,11 +19,20 @@ package config
 import com.google.inject.{Inject, Singleton}
 import uk.gov.hmrc.play.audit.http.HttpAuditing
 import connectors.AuditConnector
+import uk.gov.hmrc.http._
 import uk.gov.hmrc.play.config.{AppName, RunMode}
-import uk.gov.hmrc.play.http.hooks.HttpHook
 import uk.gov.hmrc.play.http.ws.WSHttp
+import uk.gov.hmrc.http.hooks.HttpHook
 
 @Singleton
-class Http @Inject()(override val auditConnector: AuditConnector) extends WSHttp with AppName with RunMode with HttpAuditing {
+class Http @Inject()(override val auditConnector: AuditConnector) extends uk.gov.hmrc.play.http.ws.WSHttp
+  with HttpGet
+  with HttpPatch
+  with HttpPut
+  with HttpPost
+  with HttpDelete
+  with AppName
+  with RunMode
+  with HttpAuditing {
   override val hooks: Seq[HttpHook] = Seq(AuditingHook)
 }

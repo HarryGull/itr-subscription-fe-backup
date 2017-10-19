@@ -20,9 +20,9 @@ import com.google.inject.Inject
 import connectors.KeystoreConnector
 import models.CompanyRegistrationReviewDetailsModel
 import play.api.Logger
-import uk.gov.hmrc.play.http.HeaderCarrier
 
 import scala.concurrent.{ExecutionContext, Future}
+import uk.gov.hmrc.http.HeaderCarrier
 
 class RegisteredBusinessCustomerServiceImpl @Inject()(keystoreConnector: KeystoreConnector) extends RegisteredBusinessCustomerService {
 

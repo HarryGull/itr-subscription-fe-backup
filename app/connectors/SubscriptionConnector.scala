@@ -20,14 +20,14 @@ import com.google.inject.{Inject, Singleton}
 import config.AppConfig
 import models.Email
 import models.etmp.SubscriptionTypeModel
-import play.api.Logger
 import play.api.libs.json.{JsValue, Json}
 import uk.gov.hmrc.play.http.ws.WSHttp
-import uk.gov.hmrc.play.http.{BadRequestException, HeaderCarrier, HttpResponse}
+import uk.gov.hmrc.play.http.logging.MdcLoggingExecutionContext._
 
 import scala.concurrent.Future
 
 import scala.concurrent.ExecutionContext.Implicits.global
+import uk.gov.hmrc.http.{ HeaderCarrier, HttpResponse }
 
 @Singleton
 class SubscriptionConnectorImpl @Inject()(http: WSHttp, applicationConfig: AppConfig) extends SubscriptionConnector {

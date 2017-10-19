@@ -20,8 +20,8 @@ import auth.MockConfig
 import common.BaseTestSpec
 import org.mockito.Matchers
 import org.mockito.Mockito._
-import uk.gov.hmrc.play.http.HttpResponse
 import play.api.test.Helpers._
+import uk.gov.hmrc.http.HttpResponse
 
 class AuthConnectorSpec extends BaseTestSpec {
 
@@ -33,7 +33,7 @@ class AuthConnectorSpec extends BaseTestSpec {
 
     "return the http response from http call" in {
       when(mockHttp.GET[HttpResponse](Matchers.eq(s"${testConnector.serviceUrl}/${testConnector.authorityUri}"))
-        (Matchers.any(),Matchers.any())).thenReturn(HttpResponse(OK))
+        (Matchers.any(),Matchers.any(), Matchers.any())).thenReturn(HttpResponse(OK))
       val result = testConnector.getAuthority()
       await(result).status shouldBe OK
     }

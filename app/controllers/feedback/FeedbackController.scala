@@ -30,10 +30,10 @@ import uk.gov.hmrc.play.frontend.controller.FrontendController
 import uk.gov.hmrc.play.frontend.filters.SessionCookieCryptoFilter
 import uk.gov.hmrc.play.partials._
 import play.api.i18n.{I18nSupport, MessagesApi}
-import uk.gov.hmrc.play.http.{HeaderCarrier, HttpReads, HttpResponse}
 import uk.gov.hmrc.play.http.ws.WSHttp
 
 import scala.concurrent.Future
+import uk.gov.hmrc.http.{ HeaderCarrier, HttpReads, HttpResponse }
 
 @Singleton
 class FeedbackController @Inject()(authorised: AuthorisedActions,
@@ -76,7 +76,9 @@ class FeedbackController @Inject()(authorised: AuthorisedActions,
 
   def submit: Action[AnyContent] = authorised.async { implicit user => implicit request =>
     request.body.asFormUrlEncoded.map { formData =>
-      http.POSTForm[HttpResponse](feedbackHmrcSubmitPartialUrl, formData)(readPartialsForm, partialsReadyHeaderCarrier).map {
+//      implicit  val ec = fromLoggingDetails(partialsReadyHeaderCarrier)
+      http.POSTForm[HttpResponse](feedbackHmrcSubmitPartialUrl, formData)(readPartialsForm, partialsReadyHeaderCarrier,
+        implicitly).map {
         resp =>
           resp.status match {
             case HttpStatus.OK => Redirect(routes.FeedbackController.thankyou()).withSession(request.session + (TICKET_ID -> resp.body))

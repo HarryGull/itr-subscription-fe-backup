@@ -21,7 +21,6 @@ import common.BaseTestSpec
 import org.mockito.Matchers
 import org.mockito.Mockito._
 import play.api.http.Status.{BAD_REQUEST, CREATED, _}
-import uk.gov.hmrc.play.http.HttpResponse
 
 import scala.concurrent.Future
 

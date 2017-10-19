@@ -20,14 +20,15 @@ import services.RegisteredBusinessCustomerService
 import play.api.mvc.{AnyContent, Request}
 import play.api.mvc.Results.Redirect
 import uk.gov.hmrc.play.frontend.auth._
-import uk.gov.hmrc.play.http.HeaderCarrier
 
 import scala.concurrent.{ExecutionContext, Future}
+import uk.gov.hmrc.http.HeaderCarrier
+import uk.gov.hmrc.play.HeaderCarrierConverter
 
 class BusinessCustomerPredicate(businessCustomerFrontendUri:String, rbcService: RegisteredBusinessCustomerService)
                                (implicit ec: ExecutionContext) extends PageVisibilityPredicate {
   override def apply(authContext: AuthContext, request: Request[AnyContent]): Future[PageVisibilityResult] = {
-    implicit val hc = HeaderCarrier.fromHeadersAndSession(request.headers, Some(request.session))
+    implicit val hc = HeaderCarrierConverter.fromHeadersAndSession(request.headers, Some(request.session))
     rbcService.getReviewBusinessCustomerDetails.map {
       case Some(companyRegistrationReviewDetailsModel) => PageIsVisible
       case _ => PageBlocked(needsBusinessCustomerDetails)

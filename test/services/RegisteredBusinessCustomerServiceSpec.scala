@@ -19,7 +19,7 @@ package services
 import common.BaseTestSpec
 import org.mockito.Matchers
 import org.mockito.Mockito._
-import uk.gov.hmrc.play.http.HeaderCarrier
+import uk.gov.hmrc.http.HeaderCarrier
 
 class RegisteredBusinessCustomerServiceSpec extends BaseTestSpec {
   
